@@ -11,9 +11,7 @@
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "yarn test:flow && yarn test:js",
     "test:flow": "flow check",
-    "test:js": "echo 0",
-    "ci:test:flow": "yarn test:flow",
-    "ci:test:js": "yarn test:js"
+    "test:js": "echo 0"
   },
   "keywords": [
     "react-native",

@@ -31,9 +31,12 @@ class Button extends React.Component<$FlowFixMeProps> {
 }
 
 type Props = {};
-export default class App extends Component<Props> {
+type State = {
+  permissions: Object,
+};
+export default class App extends Component<Props, State> {
   state = {
-    permissions: null,
+    permissions: {},
   };
 
   UNSAFE_componentWillMount() {
