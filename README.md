@@ -1,5 +1,7 @@
 # `@react-native-community/push-notification-ios`
 
+React Native Push Notification API for iOS.
+
 ## Getting started
 Install the library using either Yarn:
 
@@ -22,8 +24,9 @@ react-native link @react-native-community/push-notification-ios
 <details>
 <summary>Manually link the library</summary>
    
-- Add the following to your Project: node_modules/@react-native-community/push-notification-ios/ios/PushNotificationIOS.xcodeproj
-- Add the following to Link Binary With Libraries: libRNCPushNotificationIOS.a
+- Add the following to your Project: `node_modules/@react-native-community/push-notification-ios/ios/PushNotificationIOS.xcodeproj`
+- Add the following to Link Binary With Libraries: `libRNCPushNotificationIOS.a`
+</details>
 
 Finally, to enable support for `notification` and `register` events you need to augment your AppDelegate.
 
@@ -59,7 +62,6 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
   [RNCPushNotificationIOS didReceiveLocalNotification:notification];
 }
 ```
-</details>
 
 ## Migrating from the core `react-native` module
 This module was created when the PushNotificationIOS was split out from the core of React Native. To migrate to this module you need to follow the installation instructions above and then change you imports from:
