@@ -5,7 +5,7 @@ package = JSON.parse(File.read(File.join(File.dirname(__FILE__), "package.json")
 Pod::Spec.new do |s|
   # NPM package specification
   
-  s.name           = 'RNCPushNotificationIOS'
+  s.name           = 'RNPushNotificationIOS'
   s.version        = package['version']
   s.summary        = package['description']
   s.description    = package['description']
