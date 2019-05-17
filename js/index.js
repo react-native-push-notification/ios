@@ -13,8 +13,6 @@
 import { NativeEventEmitter, NativeModules, Platform } from 'react-native';
 import invariant from 'invariant';
 
-console.log(NativeModules);
-
 const { RNCPushNotificationIOS } = NativeModules;
 
 const PushNotificationEmitter = new NativeEventEmitter(RNCPushNotificationIOS);
