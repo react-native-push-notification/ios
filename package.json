@@ -22,8 +22,8 @@
     "notification"
   ],
   "peerDependencies": {
-    "react": "16.6.3",
-    "react-native": "0.58.4"
+    "react": ">=16.6.3",
+    "react-native": ">=0.58.4"
   },
   "dependencies": {
     "invariant": "^2.2.4"
