@@ -5,13 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @format
- * @flow
  */
 
-'use strict';
+"use strict";
 
-import { NativeEventEmitter, NativeModules, Platform } from 'react-native';
-import invariant from 'invariant';
+import { NativeEventEmitter, NativeModules } from "react-native";
+import invariant from "invariant";
 
 const { RNCPushNotificationIOS } = NativeModules;
 
@@ -19,45 +18,50 @@ const PushNotificationEmitter = new NativeEventEmitter(RNCPushNotificationIOS);
 
 const _notifHandlers = new Map();
 
-const DEVICE_NOTIF_EVENT = 'remoteNotificationReceived';
-const NOTIF_REGISTER_EVENT = 'remoteNotificationsRegistered';
-const NOTIF_REGISTRATION_ERROR_EVENT = 'remoteNotificationRegistrationError';
-const DEVICE_LOCAL_NOTIF_EVENT = 'localNotificationReceived';
+const DEVICE_NOTIF_EVENT = "remoteNotificationReceived";
+const NOTIF_REGISTER_EVENT = "remoteNotificationsRegistered";
+const NOTIF_REGISTRATION_ERROR_EVENT = "remoteNotificationRegistrationError";
+const DEVICE_LOCAL_NOTIF_EVENT = "localNotificationReceived";
 
 export type ContentAvailable = 1 | null | void;
 
 export type FetchResult = {
-  NewData: string,
-  NoData: string,
-  ResultFailed: string,
+  NewData: string;
+  NoData: string;
+  ResultFailed: string;
 };
 
 /**
  * An event emitted by PushNotificationIOS.
  */
-export type PushNotificationEventName = $Enum<{
+export type PushNotificationEventName =
   /**
    * Fired when a remote notification is received. The handler will be invoked
    * with an instance of `PushNotificationIOS`.
    */
-  notification: string,
+  | "notification"
   /**
    * Fired when a local notification is received. The handler will be invoked
    * with an instance of `PushNotificationIOS`.
    */
-  localNotification: string,
+  | "localNotification"
   /**
    * Fired when the user registers for remote notifications. The handler will be
    * invoked with a hex string representing the deviceToken.
    */
-  register: string,
+  | "register"
   /**
    * Fired when the user fails to register for remote notifications. Typically
    * occurs when APNS is having issues, or the device is a simulator. The
    * handler will be invoked with {message: string, code: number, details: any}.
    */
-  registrationError: string,
-}>;
+  | "registrationError";
+
+export type NativeNotif = {
+  remote: boolean;
+  notificationId: string;
+  [key: string]: any;
+};
 
 /**
  *
@@ -67,8 +71,8 @@ export type PushNotificationEventName = $Enum<{
  * See https://facebook.github.io/react-native/docs/pushnotificationios.html
  */
 class PushNotificationIOS {
-  _data: Object;
-  _alert: string | Object;
+  _data: Record<string, any>;
+  _alert: string | Record<string, any>;
   _sound: string;
   _category: string;
   _contentAvailable: ContentAvailable;
@@ -79,9 +83,9 @@ class PushNotificationIOS {
   _threadID: string;
 
   static FetchResult: FetchResult = {
-    NewData: 'UIBackgroundFetchResultNewData',
-    NoData: 'UIBackgroundFetchResultNoData',
-    ResultFailed: 'UIBackgroundFetchResultFailed',
+    NewData: "UIBackgroundFetchResultNewData",
+    NoData: "UIBackgroundFetchResultNoData",
+    ResultFailed: "UIBackgroundFetchResultFailed"
   };
 
   /**
@@ -126,7 +130,7 @@ class PushNotificationIOS {
    * See https://facebook.github.io/react-native/docs/pushnotificationios.html#getdeliverednotifications
    */
   static getDeliveredNotifications(
-    callback: (notifications: Array<Object>) => void,
+    callback: (notifications: Array<Object>) => void
   ): void {
     RNCPushNotificationIOS.getDeliveredNotifications(callback);
   }
@@ -184,40 +188,40 @@ class PushNotificationIOS {
    */
   static addEventListener(type: PushNotificationEventName, handler: Function) {
     invariant(
-      type === 'notification' ||
-        type === 'register' ||
-        type === 'registrationError' ||
-        type === 'localNotification',
-      'PushNotificationIOS only supports `notification`, `register`, `registrationError`, and `localNotification` events',
+      type === "notification" ||
+        type === "register" ||
+        type === "registrationError" ||
+        type === "localNotification",
+      "PushNotificationIOS only supports `notification`, `register`, `registrationError`, and `localNotification` events"
     );
     let listener;
-    if (type === 'notification') {
+    if (type === "notification") {
       listener = PushNotificationEmitter.addListener(
         DEVICE_NOTIF_EVENT,
         notifData => {
           handler(new PushNotificationIOS(notifData));
-        },
+        }
       );
-    } else if (type === 'localNotification') {
+    } else if (type === "localNotification") {
       listener = PushNotificationEmitter.addListener(
         DEVICE_LOCAL_NOTIF_EVENT,
         notifData => {
           handler(new PushNotificationIOS(notifData));
-        },
+        }
       );
-    } else if (type === 'register') {
+    } else if (type === "register") {
       listener = PushNotificationEmitter.addListener(
         NOTIF_REGISTER_EVENT,
         registrationInfo => {
           handler(registrationInfo.deviceToken);
-        },
+        }
       );
-    } else if (type === 'registrationError') {
+    } else if (type === "registrationError") {
       listener = PushNotificationEmitter.addListener(
         NOTIF_REGISTRATION_ERROR_EVENT,
         errorInfo => {
           handler(errorInfo);
-        },
+        }
       );
     }
     _notifHandlers.set(type, listener);
@@ -231,14 +235,14 @@ class PushNotificationIOS {
    */
   static removeEventListener(
     type: PushNotificationEventName,
-    handler: Function,
+    _handler: () => any
   ) {
     invariant(
-      type === 'notification' ||
-        type === 'register' ||
-        type === 'registrationError' ||
-        type === 'localNotification',
-      'PushNotificationIOS only supports `notification`, `register`, `registrationError`, and `localNotification` events',
+      type === "notification" ||
+        type === "register" ||
+        type === "registrationError" ||
+        type === "localNotification",
+      "PushNotificationIOS only supports `notification`, `register`, `registrationError`, and `localNotification` events"
     );
     const listener = _notifHandlers.get(type);
     if (!listener) {
@@ -257,26 +261,26 @@ class PushNotificationIOS {
    * See https://facebook.github.io/react-native/docs/pushnotificationios.html#requestpermissions
    */
   static requestPermissions(permissions?: {
-    alert?: boolean,
-    badge?: boolean,
-    sound?: boolean,
+    alert?: boolean;
+    badge?: boolean;
+    sound?: boolean;
   }): Promise<{
-    alert: boolean,
-    badge: boolean,
-    sound: boolean,
+    alert: boolean;
+    badge: boolean;
+    sound: boolean;
   }> {
     let requestedPermissions = {};
     if (permissions) {
       requestedPermissions = {
         alert: !!permissions.alert,
         badge: !!permissions.badge,
-        sound: !!permissions.sound,
+        sound: !!permissions.sound
       };
     } else {
       requestedPermissions = {
         alert: true,
         badge: true,
-        sound: true,
+        sound: true
       };
     }
     return RNCPushNotificationIOS.requestPermissions(requestedPermissions);
@@ -298,7 +302,7 @@ class PushNotificationIOS {
    * See https://facebook.github.io/react-native/docs/pushnotificationios.html#checkpermissions
    */
   static checkPermissions(callback: Function) {
-    invariant(typeof callback === 'function', 'Must provide a valid callback');
+    invariant(typeof callback === "function", "Must provide a valid callback");
     RNCPushNotificationIOS.checkPermissions(callback);
   }
 
@@ -308,11 +312,11 @@ class PushNotificationIOS {
    *
    * See https://facebook.github.io/react-native/docs/pushnotificationios.html#getinitialnotification
    */
-  static getInitialNotification(): Promise<?PushNotificationIOS> {
+  static getInitialNotification(): Promise<PushNotificationIOS> {
     return RNCPushNotificationIOS.getInitialNotification().then(
-      notification => {
+      (notification: any) => {
         return notification && new PushNotificationIOS(notification);
-      },
+      }
     );
   }
 
@@ -322,7 +326,7 @@ class PushNotificationIOS {
    * `getInitialNotification` is sufficient
    *
    */
-  constructor(nativeNotif: Object) {
+  constructor(nativeNotif: NativeNotif) {
     this._data = {};
     this._remoteNotificationCompleteCallbackCalled = false;
     this._isRemote = nativeNotif.remote;
@@ -335,13 +339,13 @@ class PushNotificationIOS {
       // https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html
       Object.keys(nativeNotif).forEach(notifKey => {
         const notifVal = nativeNotif[notifKey];
-        if (notifKey === 'aps') {
+        if (notifKey === "aps") {
           this._alert = notifVal.alert;
           this._sound = notifVal.sound;
           this._badgeCount = notifVal.badge;
           this._category = notifVal.category;
-          this._contentAvailable = notifVal['content-available'];
-          this._threadID = notifVal['thread-id'];
+          this._contentAvailable = notifVal["content-available"];
+          this._threadID = notifVal["thread-id"];
         } else {
           this._data[notifKey] = notifVal;
         }
@@ -374,14 +378,14 @@ class PushNotificationIOS {
 
     RNCPushNotificationIOS.onFinishRemoteNotification(
       this._notificationId,
-      fetchResult,
+      fetchResult
     );
   }
 
   /**
    * An alias for `getAlert` to get the notification's main message string
    */
-  getMessage(): ?string | ?Object {
+  getMessage(): string | Object {
     // alias because "alert" is an ambiguous name
     return this._alert;
   }
@@ -391,7 +395,7 @@ class PushNotificationIOS {
    *
    * See https://facebook.github.io/react-native/docs/pushnotificationios.html#getsound
    */
-  getSound(): ?string {
+  getSound(): string {
     return this._sound;
   }
 
@@ -400,7 +404,7 @@ class PushNotificationIOS {
    *
    * See https://facebook.github.io/react-native/docs/pushnotificationios.html#getcategory
    */
-  getCategory(): ?string {
+  getCategory(): string {
     return this._category;
   }
 
@@ -409,7 +413,7 @@ class PushNotificationIOS {
    *
    * See https://facebook.github.io/react-native/docs/pushnotificationios.html#getalert
    */
-  getAlert(): ?string | ?Object {
+  getAlert(): string | Object {
     return this._alert;
   }
 
@@ -427,7 +431,7 @@ class PushNotificationIOS {
    *
    * See https://facebook.github.io/react-native/docs/pushnotificationios.html#getbadgecount
    */
-  getBadgeCount(): ?number {
+  getBadgeCount(): number {
     return this._badgeCount;
   }
 
@@ -436,7 +440,7 @@ class PushNotificationIOS {
    *
    * See https://facebook.github.io/react-native/docs/pushnotificationios.html#getdata
    */
-  getData(): ?Object {
+  getData(): Object {
     return this._data;
   }
 
@@ -445,9 +449,9 @@ class PushNotificationIOS {
    *
    * See https://facebook.github.io/react-native/docs/pushnotificationios.html#getthreadid
    */
-  getThreadID(): ?string {
+  getThreadID(): string {
     return this._threadID;
   }
 }
 
-module.exports = PushNotificationIOS;
+export default PushNotificationIOS;

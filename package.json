@@ -2,7 +2,8 @@
   "name": "@react-native-community/push-notification-ios",
   "version": "1.0.2",
   "description": "React Native Push Notification API for iOS",
-  "main": "js/index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "author": "Rafael Lincoln <rafaellincolnpereira@gmail.com>",
   "contributors": [],
   "homepage": "https://github.com/react-native-community/react-native-push-notification-ios#readme",
@@ -11,7 +12,9 @@
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "yarn test:flow && yarn test:js",
     "test:flow": "flow check",
-    "test:js": "echo 0"
+    "test:js": "echo 0",
+    "build": "tsc",
+    "type-check": "tsc -noEmit"
   },
   "keywords": [
     "react-native",
@@ -30,6 +33,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
+    "@types/invariant": "^2.2.30",
+    "@types/react-native": "^0.60.17",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "24.1.0",
     "babel-plugin-module-resolver": "^3.1.3",
