@@ -7,10 +7,10 @@
  * @format
  */
 
-"use strict";
+'use strict';
 
-import { NativeEventEmitter, NativeModules } from "react-native";
-import invariant from "invariant";
+import { NativeEventEmitter, NativeModules } from 'react-native';
+import invariant from 'invariant';
 
 const { RNCPushNotificationIOS } = NativeModules;
 
@@ -18,10 +18,10 @@ const PushNotificationEmitter = new NativeEventEmitter(RNCPushNotificationIOS);
 
 const _notifHandlers = new Map();
 
-const DEVICE_NOTIF_EVENT = "remoteNotificationReceived";
-const NOTIF_REGISTER_EVENT = "remoteNotificationsRegistered";
-const NOTIF_REGISTRATION_ERROR_EVENT = "remoteNotificationRegistrationError";
-const DEVICE_LOCAL_NOTIF_EVENT = "localNotificationReceived";
+const DEVICE_NOTIF_EVENT = 'remoteNotificationReceived';
+const NOTIF_REGISTER_EVENT = 'remoteNotificationsRegistered';
+const NOTIF_REGISTRATION_ERROR_EVENT = 'remoteNotificationRegistrationError';
+const DEVICE_LOCAL_NOTIF_EVENT = 'localNotificationReceived';
 
 export type ContentAvailable = 1 | null | void;
 
@@ -39,23 +39,23 @@ export type PushNotificationEventName =
    * Fired when a remote notification is received. The handler will be invoked
    * with an instance of `PushNotificationIOS`.
    */
-  | "notification"
+  | 'notification'
   /**
    * Fired when a local notification is received. The handler will be invoked
    * with an instance of `PushNotificationIOS`.
    */
-  | "localNotification"
+  | 'localNotification'
   /**
    * Fired when the user registers for remote notifications. The handler will be
    * invoked with a hex string representing the deviceToken.
    */
-  | "register"
+  | 'register'
   /**
    * Fired when the user fails to register for remote notifications. Typically
    * occurs when APNS is having issues, or the device is a simulator. The
    * handler will be invoked with {message: string, code: number, details: any}.
    */
-  | "registrationError";
+  | 'registrationError';
 
 export type NativeNotif = {
   remote: boolean;
@@ -83,9 +83,9 @@ class PushNotificationIOS {
   _threadID: string;
 
   static FetchResult: FetchResult = {
-    NewData: "UIBackgroundFetchResultNewData",
-    NoData: "UIBackgroundFetchResultNoData",
-    ResultFailed: "UIBackgroundFetchResultFailed"
+    NewData: 'UIBackgroundFetchResultNewData',
+    NoData: 'UIBackgroundFetchResultNoData',
+    ResultFailed: 'UIBackgroundFetchResultFailed'
   };
 
   /**
@@ -188,35 +188,35 @@ class PushNotificationIOS {
    */
   static addEventListener(type: PushNotificationEventName, handler: Function) {
     invariant(
-      type === "notification" ||
-        type === "register" ||
-        type === "registrationError" ||
-        type === "localNotification",
-      "PushNotificationIOS only supports `notification`, `register`, `registrationError`, and `localNotification` events"
+      type === 'notification' ||
+        type === 'register' ||
+        type === 'registrationError' ||
+        type === 'localNotification',
+      'PushNotificationIOS only supports `notification`, `register`, `registrationError`, and `localNotification` events'
     );
     let listener;
-    if (type === "notification") {
+    if (type === 'notification') {
       listener = PushNotificationEmitter.addListener(
         DEVICE_NOTIF_EVENT,
         notifData => {
           handler(new PushNotificationIOS(notifData));
         }
       );
-    } else if (type === "localNotification") {
+    } else if (type === 'localNotification') {
       listener = PushNotificationEmitter.addListener(
         DEVICE_LOCAL_NOTIF_EVENT,
         notifData => {
           handler(new PushNotificationIOS(notifData));
         }
       );
-    } else if (type === "register") {
+    } else if (type === 'register') {
       listener = PushNotificationEmitter.addListener(
         NOTIF_REGISTER_EVENT,
         registrationInfo => {
           handler(registrationInfo.deviceToken);
         }
       );
-    } else if (type === "registrationError") {
+    } else if (type === 'registrationError') {
       listener = PushNotificationEmitter.addListener(
         NOTIF_REGISTRATION_ERROR_EVENT,
         errorInfo => {
@@ -238,11 +238,11 @@ class PushNotificationIOS {
     _handler: () => any
   ) {
     invariant(
-      type === "notification" ||
-        type === "register" ||
-        type === "registrationError" ||
-        type === "localNotification",
-      "PushNotificationIOS only supports `notification`, `register`, `registrationError`, and `localNotification` events"
+      type === 'notification' ||
+        type === 'register' ||
+        type === 'registrationError' ||
+        type === 'localNotification',
+      'PushNotificationIOS only supports `notification`, `register`, `registrationError`, and `localNotification` events'
     );
     const listener = _notifHandlers.get(type);
     if (!listener) {
@@ -302,7 +302,7 @@ class PushNotificationIOS {
    * See https://facebook.github.io/react-native/docs/pushnotificationios.html#checkpermissions
    */
   static checkPermissions(callback: Function) {
-    invariant(typeof callback === "function", "Must provide a valid callback");
+    invariant(typeof callback === 'function', 'Must provide a valid callback');
     RNCPushNotificationIOS.checkPermissions(callback);
   }
 
@@ -339,13 +339,13 @@ class PushNotificationIOS {
       // https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html
       Object.keys(nativeNotif).forEach(notifKey => {
         const notifVal = nativeNotif[notifKey];
-        if (notifKey === "aps") {
+        if (notifKey === 'aps') {
           this._alert = notifVal.alert;
           this._sound = notifVal.sound;
           this._badgeCount = notifVal.badge;
           this._category = notifVal.category;
-          this._contentAvailable = notifVal["content-available"];
-          this._threadID = notifVal["thread-id"];
+          this._contentAvailable = notifVal['content-available'];
+          this._threadID = notifVal['thread-id'];
         } else {
           this._data[notifKey] = notifVal;
         }
