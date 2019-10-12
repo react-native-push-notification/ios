@@ -6,10 +6,11 @@
  */
 
 #import <React/RCTEventEmitter.h>
+#import <UserNotifications/UserNotifications.h>
 
 extern NSString *const RNCRemoteNotificationReceived;
 
-@interface RNCPushNotificationIOS : RCTEventEmitter
+@interface RNCPushNotificationIOS : RCTEventEmitter <UNUserNotificationCenterDelegate>
 
 typedef void (^RNCRemoteNotificationCallback)(UIBackgroundFetchResult result);
 

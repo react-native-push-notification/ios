@@ -7,8 +7,6 @@
 
 #import "RNCPushNotificationIOS.h"
 
-#import <UserNotifications/UserNotifications.h>
-
 #import <React/RCTBridge.h>
 #import <React/RCTConvert.h>
 #import <React/RCTEventDispatcher.h>
@@ -28,13 +26,13 @@ static NSString *const kErrorUnableToRequestPermissions = @"E_UNABLE_TO_REQUEST_
 
 RCT_ENUM_CONVERTER(NSCalendarUnit,
                    (@{
-                      @"year": @(NSCalendarUnitYear),
-                      @"month": @(NSCalendarUnitMonth),
-                      @"week": @(NSCalendarUnitWeekOfYear),
-                      @"day": @(NSCalendarUnitDay),
-                      @"hour": @(NSCalendarUnitHour),
-                      @"minute": @(NSCalendarUnitMinute)
-                      }),
+                       @"year": @(NSCalendarUnitYear),
+                       @"month": @(NSCalendarUnitMonth),
+                       @"week": @(NSCalendarUnitWeekOfYear),
+                       @"day": @(NSCalendarUnitDay),
+                       @"hour": @(NSCalendarUnitHour),
+                       @"minute": @(NSCalendarUnitMinute)
+                   }),
                    0,
                    integerValue)
 
@@ -48,81 +46,82 @@ RCT_ENUM_CONVERTER(NSCalendarUnit,
 
 + (UILocalNotification *)UILocalNotification:(id)json
 {
-  NSDictionary<NSString *, id> *details = [self NSDictionary:json];
-  BOOL isSilent = [RCTConvert BOOL:details[@"isSilent"]];
-  UILocalNotification *notification = [UILocalNotification new];
-  notification.alertTitle = [RCTConvert NSString:details[@"alertTitle"]];
-  notification.fireDate = [RCTConvert NSDate:details[@"fireDate"]] ?: [NSDate date];
-  notification.alertBody = [RCTConvert NSString:details[@"alertBody"]];
-  notification.alertAction = [RCTConvert NSString:details[@"alertAction"]];
-  notification.userInfo = [RCTConvert NSDictionary:details[@"userInfo"]];
-  notification.category = [RCTConvert NSString:details[@"category"]];
-  notification.repeatInterval = [RCTConvert NSCalendarUnit:details[@"repeatInterval"]];
-  if (details[@"applicationIconBadgeNumber"]) {
-    notification.applicationIconBadgeNumber = [RCTConvert NSInteger:details[@"applicationIconBadgeNumber"]];
-  }
-  if (!isSilent) {
-    notification.soundName = [RCTConvert NSString:details[@"soundName"]] ?: UILocalNotificationDefaultSoundName;
-  }
-  return notification;
+    NSDictionary<NSString *, id> *details = [self NSDictionary:json];
+    BOOL isSilent = [RCTConvert BOOL:details[@"isSilent"]];
+    UILocalNotification *notification = [UILocalNotification new];
+    notification.alertTitle = [RCTConvert NSString:details[@"alertTitle"]];
+    notification.fireDate = [RCTConvert NSDate:details[@"fireDate"]] ?: [NSDate date];
+    notification.alertBody = [RCTConvert NSString:details[@"alertBody"]];
+    notification.alertAction = [RCTConvert NSString:details[@"alertAction"]];
+    notification.userInfo = [RCTConvert NSDictionary:details[@"userInfo"]];
+    notification.category = [RCTConvert NSString:details[@"category"]];
+    notification.repeatInterval = [RCTConvert NSCalendarUnit:details[@"repeatInterval"]];
+    if (details[@"applicationIconBadgeNumber"]) {
+        notification.applicationIconBadgeNumber = [RCTConvert NSInteger:details[@"applicationIconBadgeNumber"]];
+    }
+    if (!isSilent) {
+        notification.soundName = [RCTConvert NSString:details[@"soundName"]] ?: UILocalNotificationDefaultSoundName;
+    }
+    return notification;
 }
 
 RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
-                                               @"UIBackgroundFetchResultNewData": @(UIBackgroundFetchResultNewData),
-                                               @"UIBackgroundFetchResultNoData": @(UIBackgroundFetchResultNoData),
-                                               @"UIBackgroundFetchResultFailed": @(UIBackgroundFetchResultFailed),
-                                               }), UIBackgroundFetchResultNoData, integerValue)
+    @"UIBackgroundFetchResultNewData": @(UIBackgroundFetchResultNewData),
+    @"UIBackgroundFetchResultNoData": @(UIBackgroundFetchResultNoData),
+    @"UIBackgroundFetchResultFailed": @(UIBackgroundFetchResultFailed),
+}), UIBackgroundFetchResultNoData, integerValue)
 
 @end
 #endif //TARGET_OS_TV
 
 @implementation RNCPushNotificationIOS
 {
-  RCTPromiseResolveBlock _requestPermissionsResolveBlock;
+    RCTPromiseResolveBlock _requestPermissionsResolveBlock;
 }
 
 #if !TARGET_OS_TV
 
 static NSDictionary *RCTFormatLocalNotification(UILocalNotification *notification)
 {
-  NSMutableDictionary *formattedLocalNotification = [NSMutableDictionary dictionary];
-  if (notification.fireDate) {
-    NSDateFormatter *formatter = [NSDateFormatter new];
-    [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"];
-    NSString *fireDateString = [formatter stringFromDate:notification.fireDate];
-    formattedLocalNotification[@"fireDate"] = fireDateString;
-  }
-  formattedLocalNotification[@"alertAction"] = RCTNullIfNil(notification.alertAction);
-  formattedLocalNotification[@"alertBody"] = RCTNullIfNil(notification.alertBody);
-  formattedLocalNotification[@"applicationIconBadgeNumber"] = @(notification.applicationIconBadgeNumber);
-  formattedLocalNotification[@"category"] = RCTNullIfNil(notification.category);
-  formattedLocalNotification[@"soundName"] = RCTNullIfNil(notification.soundName);
-  formattedLocalNotification[@"userInfo"] = RCTNullIfNil(RCTJSONClean(notification.userInfo));
-  formattedLocalNotification[@"remote"] = @NO;
-  return formattedLocalNotification;
+    NSMutableDictionary *formattedLocalNotification = [NSMutableDictionary dictionary];
+    if (notification.fireDate) {
+        NSDateFormatter *formatter = [NSDateFormatter new];
+        [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"];
+        NSString *fireDateString = [formatter stringFromDate:notification.fireDate];
+        formattedLocalNotification[@"fireDate"] = fireDateString;
+    }
+    formattedLocalNotification[@"alertAction"] = RCTNullIfNil(notification.alertAction);
+    formattedLocalNotification[@"alertBody"] = RCTNullIfNil(notification.alertBody);
+    formattedLocalNotification[@"applicationIconBadgeNumber"] = @(notification.applicationIconBadgeNumber);
+    formattedLocalNotification[@"category"] = RCTNullIfNil(notification.category);
+    formattedLocalNotification[@"soundName"] = RCTNullIfNil(notification.soundName);
+    formattedLocalNotification[@"userInfo"] = RCTNullIfNil(RCTJSONClean(notification.userInfo));
+    formattedLocalNotification[@"remote"] = @NO;
+    return formattedLocalNotification;
 }
 
+API_AVAILABLE(ios(10.0))
 static NSDictionary *RCTFormatUNNotification(UNNotification *notification)
 {
-  NSMutableDictionary *formattedNotification = [NSMutableDictionary dictionary];
-  UNNotificationContent *content = notification.request.content;
-  
-  formattedNotification[@"identifier"] = notification.request.identifier;
-  
-  if (notification.date) {
-    NSDateFormatter *formatter = [NSDateFormatter new];
-    [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"];
-    NSString *dateString = [formatter stringFromDate:notification.date];
-    formattedNotification[@"date"] = dateString;
-  }
-  
-  formattedNotification[@"title"] = RCTNullIfNil(content.title);
-  formattedNotification[@"body"] = RCTNullIfNil(content.body);
-  formattedNotification[@"category"] = RCTNullIfNil(content.categoryIdentifier);
-  formattedNotification[@"thread-id"] = RCTNullIfNil(content.threadIdentifier);
-  formattedNotification[@"userInfo"] = RCTNullIfNil(RCTJSONClean(content.userInfo));
-  
-  return formattedNotification;
+    NSMutableDictionary *formattedNotification = [NSMutableDictionary dictionary];
+    UNNotificationContent *content = notification.request.content;
+    
+    formattedNotification[@"identifier"] = notification.request.identifier;
+    
+    if (notification.date) {
+        NSDateFormatter *formatter = [NSDateFormatter new];
+        [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"];
+        NSString *dateString = [formatter stringFromDate:notification.date];
+        formattedNotification[@"date"] = dateString;
+    }
+    
+    formattedNotification[@"title"] = RCTNullIfNil(content.title);
+    formattedNotification[@"body"] = RCTNullIfNil(content.body);
+    formattedNotification[@"category"] = RCTNullIfNil(content.categoryIdentifier);
+    formattedNotification[@"thread-id"] = RCTNullIfNil(content.threadIdentifier);
+    formattedNotification[@"userInfo"] = RCTNullIfNil(RCTJSONClean(content.userInfo));
+    
+    return formattedNotification;
 }
 
 #endif //TARGET_OS_TV
@@ -131,167 +130,182 @@ RCT_EXPORT_MODULE()
 
 - (dispatch_queue_t)methodQueue
 {
-  return dispatch_get_main_queue();
+    return dispatch_get_main_queue();
 }
 
 #if !TARGET_OS_TV
 - (void)startObserving
 {
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(handleLocalNotificationReceived:)
-                                               name:kLocalNotificationReceived
-                                             object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(handleRemoteNotificationReceived:)
-                                               name:RCTRemoteNotificationReceived
-                                             object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(handleRegisterUserNotificationSettings:)
-                                               name:kRegisterUserNotificationSettings
-                                             object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(handleRemoteNotificationsRegistered:)
-                                               name:kRemoteNotificationsRegistered
-                                             object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(handleRemoteNotificationRegistrationError:)
-                                               name:kRemoteNotificationRegistrationFailed
-                                             object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleLocalNotificationReceived:)
+                                                 name:kLocalNotificationReceived
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleRemoteNotificationReceived:)
+                                                 name:RCTRemoteNotificationReceived
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleRegisterUserNotificationSettings:)
+                                                 name:kRegisterUserNotificationSettings
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleRemoteNotificationsRegistered:)
+                                                 name:kRemoteNotificationsRegistered
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleRemoteNotificationRegistrationError:)
+                                                 name:kRemoteNotificationRegistrationFailed
+                                               object:nil];
 }
 
 - (void)stopObserving
 {
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (NSArray<NSString *> *)supportedEvents
 {
-  return @[@"localNotificationReceived",
-           @"remoteNotificationReceived",
-           @"remoteNotificationsRegistered",
-           @"remoteNotificationRegistrationError"];
+    return @[@"localNotificationReceived",
+             @"remoteNotificationReceived",
+             @"remoteNotificationsRegistered",
+             @"remoteNotificationRegistrationError"];
 }
 
 + (void)didRegisterUserNotificationSettings:(__unused UIUserNotificationSettings *)notificationSettings
 {
-  if ([UIApplication instancesRespondToSelector:@selector(registerForRemoteNotifications)]) {
-    [RCTSharedApplication() registerForRemoteNotifications];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kRegisterUserNotificationSettings
-                                                        object:self
-                                                      userInfo:@{@"notificationSettings": notificationSettings}];
-  }
+    if ([UIApplication instancesRespondToSelector:@selector(registerForRemoteNotifications)]) {
+        [RCTSharedApplication() registerForRemoteNotifications];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kRegisterUserNotificationSettings
+                                                            object:self
+                                                          userInfo:@{@"notificationSettings": notificationSettings}];
+    }
 }
 
 + (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
-  NSMutableString *hexString = [NSMutableString string];
-  NSUInteger deviceTokenLength = deviceToken.length;
-  const unsigned char *bytes = deviceToken.bytes;
-  for (NSUInteger i = 0; i < deviceTokenLength; i++) {
-    [hexString appendFormat:@"%02x", bytes[i]];
-  }
-  [[NSNotificationCenter defaultCenter] postNotificationName:kRemoteNotificationsRegistered
-                                                      object:self
-                                                    userInfo:@{@"deviceToken" : [hexString copy]}];
+    NSMutableString *hexString = [NSMutableString string];
+    NSUInteger deviceTokenLength = deviceToken.length;
+    const unsigned char *bytes = deviceToken.bytes;
+    for (NSUInteger i = 0; i < deviceTokenLength; i++) {
+        [hexString appendFormat:@"%02x", bytes[i]];
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:kRemoteNotificationsRegistered
+                                                        object:self
+                                                      userInfo:@{@"deviceToken" : [hexString copy]}];
 }
 
 + (void)didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
-  [[NSNotificationCenter defaultCenter] postNotificationName:kRemoteNotificationRegistrationFailed
-                                                      object:self
-                                                    userInfo:@{@"error": error}];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kRemoteNotificationRegistrationFailed
+                                                        object:self
+                                                      userInfo:@{@"error": error}];
 }
 
 + (void)didReceiveRemoteNotification:(NSDictionary *)notification
 {
-  NSDictionary *userInfo = @{@"notification": notification};
-  [[NSNotificationCenter defaultCenter] postNotificationName:RCTRemoteNotificationReceived
-                                                      object:self
-                                                    userInfo:userInfo];
+    NSDictionary *userInfo = @{@"notification": notification};
+    [[NSNotificationCenter defaultCenter] postNotificationName:RCTRemoteNotificationReceived
+                                                        object:self
+                                                      userInfo:userInfo];
 }
 
 + (void)didReceiveRemoteNotification:(NSDictionary *)notification
               fetchCompletionHandler:(RNCRemoteNotificationCallback)completionHandler
 {
-  NSDictionary *userInfo = @{@"notification": notification, @"completionHandler": completionHandler};
-  [[NSNotificationCenter defaultCenter] postNotificationName:RCTRemoteNotificationReceived
-                                                      object:self
-                                                    userInfo:userInfo];
+    NSDictionary *userInfo = @{@"notification": notification, @"completionHandler": completionHandler};
+    [[NSNotificationCenter defaultCenter] postNotificationName:RCTRemoteNotificationReceived
+                                                        object:self
+                                                      userInfo:userInfo];
 }
 
 + (void)didReceiveLocalNotification:(UILocalNotification *)notification
 {
-  [[NSNotificationCenter defaultCenter] postNotificationName:kLocalNotificationReceived
-                                                      object:self
-                                                    userInfo:RCTFormatLocalNotification(notification)];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kLocalNotificationReceived
+                                                        object:self
+                                                      userInfo:RCTFormatLocalNotification(notification)];
 }
 
 - (void)handleLocalNotificationReceived:(NSNotification *)notification
 {
-  [self sendEventWithName:@"localNotificationReceived" body:notification.userInfo];
+    [self sendEventWithName:@"localNotificationReceived" body:notification.userInfo];
 }
 
-- (void)handleRemoteNotificationReceived:(NSNotification *)notification
+- (void)handleRemoteNotificationReceived:(NSDictionary *)userInfo
 {
-  NSMutableDictionary *remoteNotification = [NSMutableDictionary dictionaryWithDictionary:notification.userInfo[@"notification"]];
-  RNCRemoteNotificationCallback completionHandler = notification.userInfo[@"completionHandler"];
-  NSString *notificationId = [[NSUUID UUID] UUIDString];
-  remoteNotification[@"notificationId"] = notificationId;
-  remoteNotification[@"remote"] = @YES;
-  if (completionHandler) {
-    if (!self.remoteNotificationCallbacks) {
-      // Lazy initialization
-      self.remoteNotificationCallbacks = [NSMutableDictionary dictionary];
+    NSMutableDictionary *remoteNotification = [NSMutableDictionary dictionaryWithDictionary:userInfo[@"notification"]];
+    RNCRemoteNotificationCallback completionHandler = userInfo[@"completionHandler"];
+    NSString *notificationId = [[NSUUID UUID] UUIDString];
+    remoteNotification[@"notificationId"] = notificationId;
+    remoteNotification[@"remote"] = @YES;
+    if (completionHandler) {
+        if (!self.remoteNotificationCallbacks) {
+            // Lazy initialization
+            self.remoteNotificationCallbacks = [NSMutableDictionary dictionary];
+        }
+        self.remoteNotificationCallbacks[notificationId] = completionHandler;
     }
-    self.remoteNotificationCallbacks[notificationId] = completionHandler;
-  }
-  
-  [self sendEventWithName:@"remoteNotificationReceived" body:remoteNotification];
+    
+    [self sendEventWithName:@"remoteNotificationReceived" body:remoteNotification];
 }
 
 - (void)handleRemoteNotificationsRegistered:(NSNotification *)notification
 {
-  [self sendEventWithName:@"remoteNotificationsRegistered" body:notification.userInfo];
+    [self sendEventWithName:@"remoteNotificationsRegistered" body:notification.userInfo];
 }
 
 - (void)handleRemoteNotificationRegistrationError:(NSNotification *)notification
 {
-  NSError *error = notification.userInfo[@"error"];
-  NSDictionary *errorDetails = @{
-                                 @"message": error.localizedDescription,
-                                 @"code": @(error.code),
-                                 @"details": error.userInfo,
-                                 };
-  [self sendEventWithName:@"remoteNotificationRegistrationError" body:errorDetails];
+    NSError *error = notification.userInfo[@"error"];
+    NSDictionary *errorDetails = @{
+        @"message": error.localizedDescription,
+        @"code": @(error.code),
+        @"details": error.userInfo,
+    };
+    [self sendEventWithName:@"remoteNotificationRegistrationError" body:errorDetails];
 }
 
 - (void)handleRegisterUserNotificationSettings:(NSNotification *)notification
 {
-  if (_requestPermissionsResolveBlock == nil) {
-    return;
-  }
-  
-  UIUserNotificationSettings *notificationSettings = notification.userInfo[@"notificationSettings"];
-  NSDictionary *notificationTypes = @{
-                                      @"alert": @((notificationSettings.types & UIUserNotificationTypeAlert) > 0),
-                                      @"sound": @((notificationSettings.types & UIUserNotificationTypeSound) > 0),
-                                      @"badge": @((notificationSettings.types & UIUserNotificationTypeBadge) > 0),
-                                      };
-  
-  _requestPermissionsResolveBlock(notificationTypes);
-  // Clean up listener added in requestPermissions
-  [self removeListeners:1];
-  _requestPermissionsResolveBlock = nil;
+    if (_requestPermissionsResolveBlock == nil) {
+        return;
+    }
+    
+    UIUserNotificationSettings *notificationSettings = notification.userInfo[@"notificationSettings"];
+    NSDictionary *notificationTypes = @{
+        @"alert": @((notificationSettings.types & UIUserNotificationTypeAlert) > 0),
+        @"sound": @((notificationSettings.types & UIUserNotificationTypeSound) > 0),
+        @"badge": @((notificationSettings.types & UIUserNotificationTypeBadge) > 0),
+    };
+    
+    _requestPermissionsResolveBlock(notificationTypes);
+    // Clean up listener added in requestPermissions
+    [self removeListeners:1];
+    _requestPermissionsResolveBlock = nil;
+}
+
+// - MARK:// UNUserNotificationCenterDelegate
+
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler  API_AVAILABLE(ios(10.0)) {
+    NSDictionary* notificationData = response.notification.request.content.userInfo;
+    NSDictionary* userInfo = @{@"notification": notificationData, @"completionHandler": completionHandler};
+    [self handleRemoteNotificationReceived:userInfo];
+}
+
+// Called when a notification is delivered to a foreground app.
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler  API_AVAILABLE(ios(10.0)) {
+    NSDictionary* notificationData = notification.request.content.userInfo;
+    NSDictionary* userInfo = @{@"notification": notificationData, @"completionHandler": completionHandler};
+    [self handleRemoteNotificationReceived:userInfo];
 }
 
 RCT_EXPORT_METHOD(onFinishRemoteNotification:(NSString *)notificationId fetchResult:(UIBackgroundFetchResult)result) {
-  RNCRemoteNotificationCallback completionHandler = self.remoteNotificationCallbacks[notificationId];
-  if (!completionHandler) {
-    RCTLogError(@"There is no completion handler with notification id: %@", notificationId);
-    return;
-  }
-  completionHandler(result);
-  [self.remoteNotificationCallbacks removeObjectForKey:notificationId];
+    RNCRemoteNotificationCallback completionHandler = self.remoteNotificationCallbacks[notificationId];
+    if (!completionHandler) {
+        RCTLogError(@"There is no completion handler with notification id: %@", notificationId);
+        return;
+    }
+    completionHandler(result);
+    [self.remoteNotificationCallbacks removeObjectForKey:notificationId];
 }
 
 /**
@@ -299,7 +313,7 @@ RCT_EXPORT_METHOD(onFinishRemoteNotification:(NSString *)notificationId fetchRes
  */
 RCT_EXPORT_METHOD(setApplicationIconBadgeNumber:(NSInteger)number)
 {
-  RCTSharedApplication().applicationIconBadgeNumber = number;
+    RCTSharedApplication().applicationIconBadgeNumber = number;
 }
 
 /**
@@ -307,168 +321,229 @@ RCT_EXPORT_METHOD(setApplicationIconBadgeNumber:(NSInteger)number)
  */
 RCT_EXPORT_METHOD(getApplicationIconBadgeNumber:(RCTResponseSenderBlock)callback)
 {
-  callback(@[@(RCTSharedApplication().applicationIconBadgeNumber)]);
+    callback(@[@(RCTSharedApplication().applicationIconBadgeNumber)]);
 }
 
 RCT_EXPORT_METHOD(requestPermissions:(NSDictionary *)permissions
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
-  if (RCTRunningInAppExtension()) {
-    reject(kErrorUnableToRequestPermissions, nil, RCTErrorWithMessage(@"Requesting push notifications is currently unavailable in an app extension"));
-    return;
-  }
-  
-  if (_requestPermissionsResolveBlock != nil) {
-    RCTLogError(@"Cannot call requestPermissions twice before the first has returned.");
-    return;
-  }
-  
-  // Add a listener to make sure that startObserving has been called
-  [self addListener:@"remoteNotificationsRegistered"];
-  _requestPermissionsResolveBlock = resolve;
-  
-  UIUserNotificationType types = UIUserNotificationTypeNone;
-  if (permissions) {
-    if ([RCTConvert BOOL:permissions[@"alert"]]) {
-      types |= UIUserNotificationTypeAlert;
+    if (RCTRunningInAppExtension()) {
+        reject(kErrorUnableToRequestPermissions, nil, RCTErrorWithMessage(@"Requesting push notifications is currently unavailable in an app extension"));
+        return;
     }
-    if ([RCTConvert BOOL:permissions[@"badge"]]) {
-      types |= UIUserNotificationTypeBadge;
+    
+    if (@available(iOS 10.0, *)) {
+        UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
+        center.delegate = self;
+        UNAuthorizationOptions options = UNAuthorizationOptionNone;
+        if (permissions) {
+            if ([RCTConvert BOOL:permissions[@"alert"]]) {
+                options |= UNAuthorizationOptionAlert;
+            }
+            if ([RCTConvert BOOL:permissions[@"badge"]]) {
+                options |= UNAuthorizationOptionBadge;
+            }
+            if ([RCTConvert BOOL:permissions[@"sound"]]) {
+                options |= UNAuthorizationOptionSound;
+            }
+            if (@available(iOS 12.0, *)) {
+                if ([RCTConvert BOOL:permissions[@"provisional"]]) {
+                    options |= UNAuthorizationOptionProvisional;
+                }
+            }
+        } else {
+            options = UNAuthorizationOptionAlert | UNAuthorizationOptionBadge | UNAuthorizationOptionSound;
+            if (@available(iOS 12.0, *)) {
+                options |= UNAuthorizationOptionProvisional;
+            }
+        }
+        [center requestAuthorizationWithOptions:(UNAuthorizationOptionSound | UNAuthorizationOptionAlert | UNAuthorizationOptionBadge) completionHandler:^(BOOL granted, NSError * _Nullable error){
+            if (!error) {
+                resolve(@{
+                    @"granted": @(granted)
+                });
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [RCTSharedApplication() registerForRemoteNotifications];
+                });
+            } else {
+                reject(@"Permission not granted", nil, error);
+            }
+        }];
+        
+    } else {
+        if (_requestPermissionsResolveBlock != nil) {
+            RCTLogError(@"Cannot call requestPermissions twice before the first has returned.");
+            return;
+        }
+        // Add a listener to make sure that startObserving has been called
+        [self addListener:@"remoteNotificationsRegistered"];
+        _requestPermissionsResolveBlock = resolve;
+        UIUserNotificationType types = UIUserNotificationTypeNone;
+        if (permissions) {
+            if ([RCTConvert BOOL:permissions[@"alert"]]) {
+                types |= UIUserNotificationTypeAlert;
+            }
+            if ([RCTConvert BOOL:permissions[@"badge"]]) {
+                types |= UIUserNotificationTypeBadge;
+            }
+            if ([RCTConvert BOOL:permissions[@"sound"]]) {
+                types |= UIUserNotificationTypeSound;
+            }
+        } else {
+            types = UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound;
+        }
+        
+        UIUserNotificationSettings *notificationSettings =
+        [UIUserNotificationSettings settingsForTypes:types categories:nil];
+        [RCTSharedApplication() registerUserNotificationSettings:notificationSettings];
     }
-    if ([RCTConvert BOOL:permissions[@"sound"]]) {
-      types |= UIUserNotificationTypeSound;
-    }
-  } else {
-    types = UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound;
-  }
-  
-  UIUserNotificationSettings *notificationSettings =
-  [UIUserNotificationSettings settingsForTypes:types categories:nil];
-  [RCTSharedApplication() registerUserNotificationSettings:notificationSettings];
 }
 
 RCT_EXPORT_METHOD(abandonPermissions)
 {
-  [RCTSharedApplication() unregisterForRemoteNotifications];
+    [RCTSharedApplication() unregisterForRemoteNotifications];
 }
 
 RCT_EXPORT_METHOD(checkPermissions:(RCTResponseSenderBlock)callback)
 {
-  if (RCTRunningInAppExtension()) {
-    callback(@[@{@"alert": @NO, @"badge": @NO, @"sound": @NO}]);
-    return;
-  }
-  
-  NSUInteger types = [RCTSharedApplication() currentUserNotificationSettings].types;
-  callback(@[@{
-               @"alert": @((types & UIUserNotificationTypeAlert) > 0),
-               @"badge": @((types & UIUserNotificationTypeBadge) > 0),
-               @"sound": @((types & UIUserNotificationTypeSound) > 0),
-               }]);
+    if (RCTRunningInAppExtension()) {
+        callback(@[@{@"alert": @NO, @"badge": @NO, @"sound": @NO}]);
+        return;
+    }
+    
+    if (@available(iOS 10.0, *)) {
+        UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
+        [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
+            callback(@[@{
+                       @"alert": @(settings.alertSetting == UNNotificationSettingEnabled),
+                       @"badge": @(settings.badgeSetting == UNNotificationSettingEnabled),
+                       @"sound": @(settings.soundSetting == UNNotificationSettingEnabled),
+            }]);
+        }];
+    } else {
+        NSUInteger types = [RCTSharedApplication() currentUserNotificationSettings].types;
+        callback(@[@{
+                       @"alert": @((types & UIUserNotificationTypeAlert) > 0),
+                       @"badge": @((types & UIUserNotificationTypeBadge) > 0),
+                       @"sound": @((types & UIUserNotificationTypeSound) > 0),
+        }]);
+    }
 }
 
 RCT_EXPORT_METHOD(presentLocalNotification:(UILocalNotification *)notification)
 {
-  [RCTSharedApplication() presentLocalNotificationNow:notification];
+    [RCTSharedApplication() presentLocalNotificationNow:notification];
 }
 
 RCT_EXPORT_METHOD(scheduleLocalNotification:(UILocalNotification *)notification)
 {
-  [RCTSharedApplication() scheduleLocalNotification:notification];
+    [RCTSharedApplication() scheduleLocalNotification:notification];
 }
 
 RCT_EXPORT_METHOD(cancelAllLocalNotifications)
 {
-  [RCTSharedApplication() cancelAllLocalNotifications];
+    [RCTSharedApplication() cancelAllLocalNotifications];
 }
 
 RCT_EXPORT_METHOD(cancelLocalNotifications:(NSDictionary<NSString *, id> *)userInfo)
 {
-  for (UILocalNotification *notification in RCTSharedApplication().scheduledLocalNotifications) {
-    __block BOOL matchesAll = YES;
-    NSDictionary<NSString *, id> *notificationInfo = notification.userInfo;
-    // Note: we do this with a loop instead of just `isEqualToDictionary:`
-    // because we only require that all specified userInfo values match the
-    // notificationInfo values - notificationInfo may contain additional values
-    // which we don't care about.
-    [userInfo enumerateKeysAndObjectsUsingBlock:^(NSString *key, id obj, BOOL *stop) {
-      if (![notificationInfo[key] isEqual:obj]) {
-        matchesAll = NO;
-        *stop = YES;
-      }
-    }];
-    if (matchesAll) {
-      [RCTSharedApplication() cancelLocalNotification:notification];
+    for (UILocalNotification *notification in RCTSharedApplication().scheduledLocalNotifications) {
+        __block BOOL matchesAll = YES;
+        NSDictionary<NSString *, id> *notificationInfo = notification.userInfo;
+        // Note: we do this with a loop instead of just `isEqualToDictionary:`
+        // because we only require that all specified userInfo values match the
+        // notificationInfo values - notificationInfo may contain additional values
+        // which we don't care about.
+        [userInfo enumerateKeysAndObjectsUsingBlock:^(NSString *key, id obj, BOOL *stop) {
+            if (![notificationInfo[key] isEqual:obj]) {
+                matchesAll = NO;
+                *stop = YES;
+            }
+        }];
+        if (matchesAll) {
+            [RCTSharedApplication() cancelLocalNotification:notification];
+        }
     }
-  }
 }
 
 RCT_EXPORT_METHOD(getInitialNotification:(RCTPromiseResolveBlock)resolve
                   reject:(__unused RCTPromiseRejectBlock)reject)
 {
-  NSMutableDictionary<NSString *, id> *initialNotification =
-  [self.bridge.launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey] mutableCopy];
-  
-  UILocalNotification *initialLocalNotification =
-  self.bridge.launchOptions[UIApplicationLaunchOptionsLocalNotificationKey];
-  
-  if (initialNotification) {
-    initialNotification[@"remote"] = @YES;
-    resolve(initialNotification);
-  } else if (initialLocalNotification) {
-    resolve(RCTFormatLocalNotification(initialLocalNotification));
-  } else {
-    resolve((id)kCFNull);
-  }
+    NSMutableDictionary<NSString *, id> *initialNotification =
+    [self.bridge.launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey] mutableCopy];
+    
+    UILocalNotification *initialLocalNotification =
+    self.bridge.launchOptions[UIApplicationLaunchOptionsLocalNotificationKey];
+    
+    if (initialNotification) {
+        initialNotification[@"remote"] = @YES;
+        resolve(initialNotification);
+    } else if (initialLocalNotification) {
+        resolve(RCTFormatLocalNotification(initialLocalNotification));
+    } else {
+        resolve((id)kCFNull);
+    }
 }
 
 RCT_EXPORT_METHOD(getScheduledLocalNotifications:(RCTResponseSenderBlock)callback)
 {
-  NSArray<UILocalNotification *> *scheduledLocalNotifications = RCTSharedApplication().scheduledLocalNotifications;
-  NSMutableArray<NSDictionary *> *formattedScheduledLocalNotifications = [NSMutableArray new];
-  for (UILocalNotification *notification in scheduledLocalNotifications) {
-    [formattedScheduledLocalNotifications addObject:RCTFormatLocalNotification(notification)];
-  }
-  callback(@[formattedScheduledLocalNotifications]);
+    NSArray<UILocalNotification *> *scheduledLocalNotifications = RCTSharedApplication().scheduledLocalNotifications;
+    NSMutableArray<NSDictionary *> *formattedScheduledLocalNotifications = [NSMutableArray new];
+    for (UILocalNotification *notification in scheduledLocalNotifications) {
+        [formattedScheduledLocalNotifications addObject:RCTFormatLocalNotification(notification)];
+    }
+    callback(@[formattedScheduledLocalNotifications]);
 }
 
 RCT_EXPORT_METHOD(removeAllDeliveredNotifications)
 {
-  if ([UNUserNotificationCenter class]) {
-    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
-    [center removeAllDeliveredNotifications];
-  }
+    if (@available(iOS 10.0, *)) {
+        if ([UNUserNotificationCenter class]) {
+            UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+            [center removeAllDeliveredNotifications];
+        }
+    } else {
+        // Fallback on earlier versions
+    }
 }
 
 RCT_EXPORT_METHOD(removeDeliveredNotifications:(NSArray<NSString *> *)identifiers)
 {
-  if ([UNUserNotificationCenter class]) {
-    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
-    [center removeDeliveredNotificationsWithIdentifiers:identifiers];
-  }
+    if (@available(iOS 10.0, *)) {
+        if ([UNUserNotificationCenter class]) {
+            UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+            [center removeDeliveredNotificationsWithIdentifiers:identifiers];
+        }
+    } else {
+        // Fallback on earlier versions
+    }
 }
 
 RCT_EXPORT_METHOD(getDeliveredNotifications:(RCTResponseSenderBlock)callback)
 {
-  if ([UNUserNotificationCenter class]) {
-    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
-    [center getDeliveredNotificationsWithCompletionHandler:^(NSArray<UNNotification *> *_Nonnull notifications) {
-      NSMutableArray<NSDictionary *> *formattedNotifications = [NSMutableArray new];
-      
-      for (UNNotification *notification in notifications) {
-        [formattedNotifications addObject:RCTFormatUNNotification(notification)];
-      }
-      callback(@[formattedNotifications]);
-    }];
-  }
+    if (@available(iOS 10.0, *)) {
+        if ([UNUserNotificationCenter class]) {
+            UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+            [center getDeliveredNotificationsWithCompletionHandler:^(NSArray<UNNotification *> *_Nonnull notifications) {
+                NSMutableArray<NSDictionary *> *formattedNotifications = [NSMutableArray new];
+                
+                for (UNNotification *notification in notifications) {
+                    [formattedNotifications addObject:RCTFormatUNNotification(notification)];
+                }
+                callback(@[formattedNotifications]);
+            }];
+        }
+    } else {
+        // Fallback on earlier versions
+    }
 }
 
 #else //TARGET_OS_TV
 
 - (NSArray<NSString *> *)supportedEvents
 {
-  return @[];
+    return @[];
 }
 
 #endif //TARGET_OS_TV
