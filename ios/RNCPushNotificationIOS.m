@@ -288,6 +288,7 @@ RCT_EXPORT_MODULE()
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler  API_AVAILABLE(ios(10.0)) {
     NSMutableDictionary* notificationData = [NSMutableDictionary dictionaryWithDictionary:response.notification.request.content.userInfo];
     notificationData[@"userInteraction"] = @YES;
+    notificationData[@"notification_action"] = response.actionIdentifier;
     NSDictionary* userInfo = @{@"notification": notificationData, @"completionHandler": completionHandler};
     [self handleRemoteNotificationReceived:userInfo];
 }

@@ -13,6 +13,8 @@ extern NSString *const RNCRemoteNotificationReceived;
 @interface RNCPushNotificationIOS : RCTEventEmitter <UNUserNotificationCenterDelegate>
 
 typedef void (^RNCRemoteNotificationCallback)(UIBackgroundFetchResult result);
+API_AVAILABLE(ios(10.0))
+typedef void (^RNCNotificationWillPresentCallback)(UNNotificationPresentationOptions options);
 
 #if !TARGET_OS_TV
 + (void)didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings;
