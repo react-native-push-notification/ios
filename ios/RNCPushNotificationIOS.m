@@ -286,16 +286,76 @@ RCT_EXPORT_MODULE()
 // - MARK:// UNUserNotificationCenterDelegate
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler  API_AVAILABLE(ios(10.0)) {
-    NSDictionary* notificationData = response.notification.request.content.userInfo;
+    NSMutableDictionary* notificationData = [NSMutableDictionary dictionaryWithDictionary:response.notification.request.content.userInfo];
+    notificationData[@"userInteraction"] = @YES;
     NSDictionary* userInfo = @{@"notification": notificationData, @"completionHandler": completionHandler};
     [self handleRemoteNotificationReceived:userInfo];
 }
 
 // Called when a notification is delivered to a foreground app.
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler  API_AVAILABLE(ios(10.0)) {
-    NSDictionary* notificationData = notification.request.content.userInfo;
+    NSMutableDictionary* notificationData = [NSMutableDictionary dictionaryWithDictionary:notification.request.content.userInfo];
+    notificationData[@"userInteraction"] = @NO;
     NSDictionary* userInfo = @{@"notification": notificationData, @"completionHandler": completionHandler};
     [self handleRemoteNotificationReceived:userInfo];
+}
+
+- (void)scheduleNotificationFromUILocalNotification:(UILocalNotification*)notification API_AVAILABLE(ios(10.0)) {
+    UNMutableNotificationContent *content = [UNMutableNotificationContent new];
+    content.title = notification.alertTitle;
+    content.body = notification.alertBody;
+    if (notification.soundName != NULL) {
+        content.sound = [UNNotificationSound soundNamed:notification.soundName];
+    } else {
+        content.sound = [UNNotificationSound defaultSound];
+    }
+    
+    NSCalendarUnit units;
+    BOOL repeats = NO;
+    if (notification.repeatInterval) {
+        units = notification.repeatInterval;
+        repeats = YES;
+    } else {
+        units = NSCalendarUnitYear + NSCalendarUnitMonth + NSCalendarUnitDay + NSCalendarUnitHour + NSCalendarUnitMinute + NSCalendarUnitSecond;
+    }
+    NSDateComponents *triggerDate = [[NSCalendar currentCalendar]
+                                     components: units
+                                     fromDate:notification.fireDate];
+    
+    UNCalendarNotificationTrigger *trigger = [UNCalendarNotificationTrigger triggerWithDateMatchingComponents:triggerDate repeats:repeats];
+    
+    NSString *identifier = @"RNCPushNotificationIOS";
+    UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:identifier
+                                                                          content:content trigger:trigger];
+    
+    UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
+    [center addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
+        if (error != nil) {
+            NSLog(@"Something went wrong: %@",error);
+        }
+    }];
+}
+
+RCT_EXPORT_METHOD(onFinishWillPresentNotification:(NSString *)notificationId options:(NSArray<NSString *> *)options) {
+    if (@available(iOS 10.0, *)) {
+        RNCNotificationWillPresentCallback completionHandler = self.remoteNotificationCallbacks[notificationId];
+        if (!completionHandler) {
+            RCTLogError(@"There is no completion handler with notification id: %@", notificationId);
+            return;
+        }
+        UNNotificationPresentationOptions notificationOptions = UNNotificationPresentationOptionNone;
+        if ([options containsObject:@"alert"]) {
+            notificationOptions |= UNNotificationPresentationOptionAlert;
+        }
+        if ([options containsObject:@"sound"]) {
+            notificationOptions |= UNNotificationPresentationOptionSound;
+        }
+        if ([options containsObject:@"badge"]) {
+            notificationOptions |= UNNotificationPresentationOptionBadge;
+        }
+        completionHandler(notificationOptions);
+        [self.remoteNotificationCallbacks removeObjectForKey:notificationId];
+    }
 }
 
 RCT_EXPORT_METHOD(onFinishRemoteNotification:(NSString *)notificationId fetchResult:(UIBackgroundFetchResult)result) {
@@ -416,9 +476,9 @@ RCT_EXPORT_METHOD(checkPermissions:(RCTResponseSenderBlock)callback)
         UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
         [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
             callback(@[@{
-                       @"alert": @(settings.alertSetting == UNNotificationSettingEnabled),
-                       @"badge": @(settings.badgeSetting == UNNotificationSettingEnabled),
-                       @"sound": @(settings.soundSetting == UNNotificationSettingEnabled),
+                           @"alert": @(settings.alertSetting == UNNotificationSettingEnabled),
+                           @"badge": @(settings.badgeSetting == UNNotificationSettingEnabled),
+                           @"sound": @(settings.soundSetting == UNNotificationSettingEnabled),
             }]);
         }];
     } else {
@@ -433,37 +493,40 @@ RCT_EXPORT_METHOD(checkPermissions:(RCTResponseSenderBlock)callback)
 
 RCT_EXPORT_METHOD(presentLocalNotification:(UILocalNotification *)notification)
 {
-    [RCTSharedApplication() presentLocalNotificationNow:notification];
+    if (@available(iOS 10.0, *)) {
+        notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:1];
+        [self scheduleNotificationFromUILocalNotification:notification];
+    } else {
+        [RCTSharedApplication() presentLocalNotificationNow:notification];
+    }
 }
 
 RCT_EXPORT_METHOD(scheduleLocalNotification:(UILocalNotification *)notification)
 {
-    [RCTSharedApplication() scheduleLocalNotification:notification];
+    if (@available(iOS 10.0, *)) {
+        [self scheduleNotificationFromUILocalNotification:notification];
+    } else {
+        [RCTSharedApplication() scheduleLocalNotification:notification];
+    }
 }
 
 RCT_EXPORT_METHOD(cancelAllLocalNotifications)
 {
-    [RCTSharedApplication() cancelAllLocalNotifications];
+    if (@available(iOS 10.0, *)) {
+        UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
+        [center removeAllPendingNotificationRequests];
+    } else {
+        [RCTSharedApplication() cancelAllLocalNotifications];
+    }
 }
 
-RCT_EXPORT_METHOD(cancelLocalNotifications:(NSDictionary<NSString *, id> *)userInfo)
+RCT_EXPORT_METHOD(cancelLocalNotifications:(NSArray<NSString *> *)identifiers)
 {
-    for (UILocalNotification *notification in RCTSharedApplication().scheduledLocalNotifications) {
-        __block BOOL matchesAll = YES;
-        NSDictionary<NSString *, id> *notificationInfo = notification.userInfo;
-        // Note: we do this with a loop instead of just `isEqualToDictionary:`
-        // because we only require that all specified userInfo values match the
-        // notificationInfo values - notificationInfo may contain additional values
-        // which we don't care about.
-        [userInfo enumerateKeysAndObjectsUsingBlock:^(NSString *key, id obj, BOOL *stop) {
-            if (![notificationInfo[key] isEqual:obj]) {
-                matchesAll = NO;
-                *stop = YES;
-            }
-        }];
-        if (matchesAll) {
-            [RCTSharedApplication() cancelLocalNotification:notification];
-        }
+    if (@available(iOS 10.0, *)) {
+        UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
+        [center removePendingNotificationRequestsWithIdentifiers:identifiers];
+    } else {
+        // Fallback on earlier versions
     }
 }
 

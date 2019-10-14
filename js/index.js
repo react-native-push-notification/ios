@@ -77,6 +77,8 @@ class PushNotificationIOS {
   _isRemote: boolean;
   _remoteNotificationCompleteCallbackCalled: boolean;
   _threadID: string;
+  _notificationAction: string; // selected action on notification
+  _userInteraction: boolean;
 
   static FetchResult: FetchResult = {
     NewData: 'UIBackgroundFetchResultNewData',
@@ -342,6 +344,10 @@ class PushNotificationIOS {
           this._category = notifVal.category;
           this._contentAvailable = notifVal['content-available'];
           this._threadID = notifVal['thread-id'];
+        } else if (notifKey === 'notification-action') {
+          this._notificationAction = notifVal;
+        } else if (notifKey === 'userInteraction') {
+          this._userInteraction = notifVal;
         } else {
           this._data[notifKey] = notifVal;
         }
@@ -354,6 +360,21 @@ class PushNotificationIOS {
       this._data = nativeNotif.userInfo;
       this._category = nativeNotif.category;
     }
+  }
+
+  present(options: string[]) {
+    if (
+      !this._isRemote ||
+      !this._notificationId ||
+      this._remoteNotificationCompleteCallbackCalled
+    ) {
+      return;
+    }
+    this._remoteNotificationCompleteCallbackCalled = true;
+    RNCPushNotificationIOS.onFinishWillPresentNotification(
+      this._notificationId,
+      options,
+    );
   }
 
   /**
