@@ -167,6 +167,7 @@ RCT_EXPORT_MODULE()
 {
     return @[@"localNotificationReceived",
              @"remoteNotificationReceived",
+             @"remoteNotificationOpened",
              @"remoteNotificationsRegistered",
              @"remoteNotificationRegistrationError"];
 }

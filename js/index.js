@@ -20,6 +20,7 @@ const PushNotificationEmitter = new NativeEventEmitter(RNCPushNotificationIOS);
 const _notifHandlers = new Map();
 
 const DEVICE_NOTIF_EVENT = 'remoteNotificationReceived';
+const DEVICE_NOTIF_OPENED_EVENT = 'remoteNotificationOpened';
 const NOTIF_REGISTER_EVENT = 'remoteNotificationsRegistered';
 const NOTIF_REGISTRATION_ERROR_EVENT = 'remoteNotificationRegistrationError';
 const DEVICE_LOCAL_NOTIF_EVENT = 'localNotificationReceived';
@@ -32,15 +33,22 @@ export type FetchResult = {
   ResultFailed: string,
 };
 
+export type PushNotificationPresentOption = 'none' | 'alert' | 'sound' | 'badge';
+
 /**
  * An event emitted by PushNotificationIOS.
  */
 export type PushNotificationEventName = $Enum<{
   /**
-   * Fired when a remote notification is received. The handler will be invoked
+   * Fired when a notification is received. The handler will be invoked
    * with an instance of `PushNotificationIOS`.
    */
   notification: string,
+  /**
+   * Fired when a notification is opened. The handler will be invoked
+   * with an instance of `PushNotificationIOS`.
+   */
+  notificationOpened: string,
   /**
    * Fired when a local notification is received. The handler will be invoked
    * with an instance of `PushNotificationIOS`.
@@ -187,6 +195,7 @@ class PushNotificationIOS {
   static addEventListener(type: PushNotificationEventName, handler: Function) {
     invariant(
       type === 'notification' ||
+        type === 'notificationOpened'
         type === 'register' ||
         type === 'registrationError' ||
         type === 'localNotification',
@@ -196,6 +205,13 @@ class PushNotificationIOS {
     if (type === 'notification') {
       listener = PushNotificationEmitter.addListener(
         DEVICE_NOTIF_EVENT,
+        notifData => {
+          handler(new PushNotificationIOS(notifData));
+        },
+      );
+    } else if (type === 'notificationOpened') {
+      listener = PushNotificationEmitter.addListener(
+        DEVICE_NOTIF_OPENED_EVENT,
         notifData => {
           handler(new PushNotificationIOS(notifData));
         },
@@ -362,7 +378,7 @@ class PushNotificationIOS {
     }
   }
 
-  present(options: string[]) {
+  present(options: PushNotificationPresentOption[]) {
     if (
       !this._isRemote ||
       !this._notificationId ||
