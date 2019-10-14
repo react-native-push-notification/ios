@@ -347,7 +347,7 @@ class PushNotificationIOS {
         } else if (notifKey === 'notification-action') {
           this._notificationAction = notifVal;
         } else if (notifKey === 'userInteraction') {
-          this._userInteraction = notifVal;
+          this._userInteraction = notifVal
         } else {
           this._data[notifKey] = notifVal;
         }
@@ -468,6 +468,10 @@ class PushNotificationIOS {
    */
   getThreadID(): ?string {
     return this._threadID;
+  }
+
+  getUserInteraction(): string {
+    return this._userInteraction;
   }
 }
 
