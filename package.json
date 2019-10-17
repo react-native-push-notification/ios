@@ -3,6 +3,7 @@
   "version": "1.0.2",
   "description": "React Native Push Notification API for iOS",
   "main": "js/index.js",
+  "types": "index.d.ts",
   "author": "Rafael Lincoln <rafaellincolnpereira@gmail.com>",
   "contributors": [],
   "homepage": "https://github.com/react-native-community/react-native-push-notification-ios#readme",
