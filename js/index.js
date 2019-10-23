@@ -450,4 +450,4 @@ class PushNotificationIOS {
   }
 }
 
-module.exports = PushNotificationIOS;
+export default PushNotificationIOS;
