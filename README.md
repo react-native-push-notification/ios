@@ -21,7 +21,7 @@ cd ios && pod install
 
 - `react-native <= 0.59`
 ```
-react-native link @react-native-community/async-storage
+react-native link @react-native-community/push-notification-ios
 ```
 
 - upgrading to `react-native >= 0.60`
