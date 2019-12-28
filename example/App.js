@@ -8,15 +8,9 @@
  */
 
 import React, {Component} from 'react';
-import {
-  AlertIOS,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  View,
-} from 'react-native';
+import {Alert, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
-
+import RCTDeviceEventEmitter from 'react-native/Libraries/EventEmitter/RCTDeviceEventEmitter';
 class Button extends React.Component<$FlowFixMeProps> {
   render() {
     return (
@@ -74,6 +68,7 @@ export default class App extends Component<Props, State> {
   }
 
   render() {
+    console.log(PushNotificationIOS);
     return (
       <View style={styles.container}>
         <Button
@@ -86,15 +81,13 @@ export default class App extends Component<Props, State> {
           label="Send fake local notification"
         />
         <Button
-            onPress={() =>
-              PushNotificationIOS.setApplicationIconBadgeNumber(42)
-            }
-            label="Set app's icon badge to 42"
-          />
-          <Button
-            onPress={() => PushNotificationIOS.setApplicationIconBadgeNumber(0)}
-            label="Clear app's icon badge"
-          />
+          onPress={() => PushNotificationIOS.setApplicationIconBadgeNumber(42)}
+          label="Set app's icon badge to 42"
+        />
+        <Button
+          onPress={() => PushNotificationIOS.setApplicationIconBadgeNumber(0)}
+          label="Clear app's icon badge"
+        />
         <View>
           <Button
             onPress={this._showPermissions.bind(this)}
@@ -107,7 +100,7 @@ export default class App extends Component<Props, State> {
   }
 
   _sendNotification() {
-    require('RCTDeviceEventEmitter').emit('remoteNotificationReceived', {
+    RCTDeviceEventEmitter.emit('remoteNotificationReceived', {
       remote: true,
       aps: {
         alert: 'Sample notification',
@@ -122,25 +115,21 @@ export default class App extends Component<Props, State> {
   _sendLocalNotification() {
     PushNotificationIOS.presentLocalNotification({
       alertBody: 'Sample local notification',
-      applicationIconBadgeNumber: 1
+      applicationIconBadgeNumber: 1,
     });
   }
 
   _onRegistered(deviceToken) {
-    AlertIOS.alert(
-      'Registered For Remote Push',
-      `Device Token: ${deviceToken}`,
-      [
-        {
-          text: 'Dismiss',
-          onPress: null,
-        },
-      ],
-    );
+    Alert.alert('Registered For Remote Push', `Device Token: ${deviceToken}`, [
+      {
+        text: 'Dismiss',
+        onPress: null,
+      },
+    ]);
   }
 
   _onRegistrationError(error) {
-    AlertIOS.alert(
+    Alert.alert(
       'Failed To Register For Remote Push',
       `Error (${error.code}): ${error.message}`,
       [
@@ -159,7 +148,7 @@ export default class App extends Component<Props, State> {
       category: ${notification.getCategory()};\n
       content-available: ${notification.getContentAvailable()}.`;
 
-    AlertIOS.alert('Push Notification Received', result, [
+    Alert.alert('Push Notification Received', result, [
       {
         text: 'Dismiss',
         onPress: null,
@@ -168,7 +157,7 @@ export default class App extends Component<Props, State> {
   }
 
   _onLocalNotification(notification) {
-    AlertIOS.alert(
+    Alert.alert(
       'Local Notification Received',
       'Alert message: ' + notification.getMessage(),
       [
@@ -186,7 +175,6 @@ export default class App extends Component<Props, State> {
     });
   }
 }
-
 
 const styles = StyleSheet.create({
   container: {
