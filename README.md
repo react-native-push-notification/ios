@@ -1,5 +1,7 @@
 # `@react-native-community/push-notification-ios`
 
+[![Lean Core Extracted](https://img.shields.io/badge/Lean%20Core-Extracted-brightgreen.svg)][lean-core-issue]
+
 React Native Push Notification API for iOS.
 
 ## Getting started
@@ -75,3 +77,5 @@ to:
 ```javascript
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 ```
+
+[lean-core-issue]:https://github.com/facebook/react-native/issues/23313
