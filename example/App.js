@@ -86,15 +86,13 @@ export default class App extends Component<Props, State> {
           label="Send fake local notification"
         />
         <Button
-            onPress={() =>
-              PushNotificationIOS.setApplicationIconBadgeNumber(42)
-            }
-            label="Set app's icon badge to 42"
-          />
-          <Button
-            onPress={() => PushNotificationIOS.setApplicationIconBadgeNumber(0)}
-            label="Clear app's icon badge"
-          />
+          onPress={() => PushNotificationIOS.setApplicationIconBadgeNumber(42)}
+          label="Set app's icon badge to 42"
+        />
+        <Button
+          onPress={() => PushNotificationIOS.setApplicationIconBadgeNumber(0)}
+          label="Clear app's icon badge"
+        />
         <View>
           <Button
             onPress={this._showPermissions.bind(this)}
@@ -122,7 +120,7 @@ export default class App extends Component<Props, State> {
   _sendLocalNotification() {
     PushNotificationIOS.presentLocalNotification({
       alertBody: 'Sample local notification',
-      applicationIconBadgeNumber: 1
+      applicationIconBadgeNumber: 1,
     });
   }
 
@@ -186,7 +184,6 @@ export default class App extends Component<Props, State> {
     });
   }
 }
-
 
 const styles = StyleSheet.create({
   container: {

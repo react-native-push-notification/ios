@@ -10,10 +10,10 @@
 
 'use strict';
 
-import { NativeEventEmitter, NativeModules, Platform } from 'react-native';
+import {NativeEventEmitter, NativeModules} from 'react-native';
 import invariant from 'invariant';
 
-const { RNCPushNotificationIOS } = NativeModules;
+const {RNCPushNotificationIOS} = NativeModules;
 
 const PushNotificationEmitter = new NativeEventEmitter(RNCPushNotificationIOS);
 
