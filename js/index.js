@@ -35,7 +35,7 @@ export type FetchResult = {
 /**
  * An event emitted by PushNotificationIOS.
  */
-export type PushNotificationEventName = $Enum<{
+export type PushNotificationEventName = $Keys<{
   /**
    * Fired when a remote notification is received. The handler will be invoked
    * with an instance of `PushNotificationIOS`.
