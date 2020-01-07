@@ -43,7 +43,8 @@
     "metro-react-native-babel-preset": "0.51.1",
     "prettier": "^1.19.1",
     "react": "16.6.3",
-    "react-native": "0.58.4"
+    "react-native": "0.58.4",
+    "typescript": "^3.7.4"
   },
   "repository": {
     "type": "git",
