@@ -1,41 +1,51 @@
-# `@react-native-community/push-notification-ios`
+# @react-native-community/push-notification-ios
 
 [![Lean Core Extracted](https://img.shields.io/badge/Lean%20Core-Extracted-brightgreen.svg)][lean-core-issue]
 
 React Native Push Notification API for iOS.
 
 ## Getting started
-Install the library using either Yarn:
+
+### Install
 
 ```
 yarn add @react-native-community/push-notification-ios
 ```
 
-or npm:
+### Link
+There are a couple of cases for linking. Choose the appropriate one.
+- `react-native >= 0.60`
 
+ The package is [automatically linked](https://github.com/react-native-community/cli/blob/master/docs/autolinking.md) when building the app. All you need to do is:
 ```
-npm install --save @react-native-community/push-notification-ios
+cd ios && pod install
 ```
 
-You then need to link the native parts of the library for the platforms you are using. The easiest way to link the library is using the CLI tool by running this command from the root of your project:
-
+- `react-native <= 0.59`
 ```
 react-native link @react-native-community/push-notification-ios
 ```
 
-<details>
-<summary>Manually link the library</summary>
-   
-- Add the following to your Project: `node_modules/@react-native-community/push-notification-ios/ios/PushNotificationIOS.xcodeproj`
-- Add the following to Link Binary With Libraries: `libRNCPushNotificationIOS.a`
-</details>
+- upgrading to `react-native >= 0.60`
+
+ First, unlink the library. Then follow the instructions above.
+ ```
+ react-native unlink @react-native-community/push-notification-ios
+ ```
+
+- manual linking
+
+ If you don't want to use the methods above, you can always [link the library manually](./docs/manual-linking.md).
+
+### Update `AppDelegate.m`
 
 Finally, to enable support for `notification` and `register` events you need to augment your AppDelegate.
 
-#### `AppDelegate.m`
-
-- `#import <RNCPushNotificationIOS.h>`
-
+At the top of the file:
+```
+#import <RNCPushNotificationIOS.h>
+```
+Then, add the following lines:
 ```objective-c
 // Required to register for notifications
 - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
@@ -68,13 +78,13 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 ## Migrating from the core `react-native` module
 This module was created when the PushNotificationIOS was split out from the core of React Native. To migrate to this module you need to follow the installation instructions above and then change you imports from:
 
-```javascript
+```js
 import { PushNotificationIOS } from "react-native";
 ```
 
 to:
 
-```javascript
+```js
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 ```
 
