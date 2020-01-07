@@ -1,6 +1,9 @@
 # @react-native-community/push-notification-ios
 
-[![Lean Core Extracted](https://img.shields.io/badge/Lean%20Core-Extracted-brightgreen.svg)][lean-core-issue]
+[![Build Status][build-badge]][build]
+[![Version][version-badge]][package]
+[![MIT License][license-badge]][license]
+[![Lean Core Badge][lean-core-badge]][lean-core-issue]
 
 React Native Push Notification API for iOS.
 
@@ -88,4 +91,11 @@ to:
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 ```
 
-[lean-core-issue]:https://github.com/facebook/react-native/issues/23313
+[build-badge]: https://img.shields.io/circleci/project/github/react-native-community/react-native-push-notification-ios/master.svg?style=flat-square
+[build]: https://circleci.com/gh/react-native-community/react-native-push-notification-ios
+[version-badge]: https://img.shields.io/npm/v/@react-native-community/push-notification-ios.svg?style=flat-square
+[package]: https://www.npmjs.com/package/@react-native-community/push-notification-ios
+[license-badge]: https://img.shields.io/npm/l/@react-native-community/push-notification-ios.svg?style=flat-square
+[license]: https://opensource.org/licenses/MIT
+[lean-core-badge]: https://img.shields.io/badge/Lean%20Core-Extracted-brightgreen.svg?style=flat-square
+[lean-core-issue]: https://github.com/facebook/react-native/issues/23313
