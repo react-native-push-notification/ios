@@ -1,6 +1,6 @@
 {
   "name": "@react-native-community/push-notification-ios",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "React Native Push Notification API for iOS",
   "main": "js/index.js",
   "types": "index.d.ts",
@@ -14,7 +14,7 @@
     "test:flow": "flow check",
     "test:js": "echo 0",
     "lint": "eslint .",
-    "test:tsc":"tsc --noEmit"
+    "test:tsc": "tsc --noEmit"
   },
   "keywords": [
     "react-native",
