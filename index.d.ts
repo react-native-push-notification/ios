@@ -261,4 +261,4 @@ export interface PushNotificationIOSStatic {
 
 declare const PushNotificationIOS: PushNotificationIOSStatic;
 
-export = PushNotificationIOS;
+export default PushNotificationIOS;
