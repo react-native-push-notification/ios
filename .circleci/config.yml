@@ -44,6 +44,10 @@ aliases:
     name: Lint
     command: yarn lint
 
+  - &tsc
+    name: TypeScript type check
+    command: yarn test:tsc
+
 # -------------------------
 #        DEFAULTS
 # -------------------------
@@ -100,6 +104,14 @@ jobs:
           at: ~/react-native-push-notification-ios
       - run: *eslint
 
+  tsc:
+    <<: *js_defaults
+    steps:
+      - attach_workspace:
+          at: ~/react-native-push-notification-ios
+      - run: *tsc
+
+
 # -------------------------
 #        WORK FLOWS
 # -------------------------
@@ -115,5 +127,8 @@ workflows:
           requires:
             - checkout-code
       - lint:
+          requires:
+            - checkout-code
+      - tsc:
           requires:
             - checkout-code
