@@ -61,7 +61,7 @@ export interface PresentLocalNotificationDetails {
 }
 
 export interface ScheduleLocalNotificationDetails {
-  fireDate: Date;
+  fireDate: string; // Use Date.toISOString() to convert to the expected format
   alertBody: string;
   alertAction: string;
   soundName?: string;
