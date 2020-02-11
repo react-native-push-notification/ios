@@ -52,23 +52,92 @@ export interface PushNotification {
 }
 
 export interface PresentLocalNotificationDetails {
+  /**
+   * The "action" displayed beneath an actionable notification. Defaults to "view";
+   */
+  alertAction?: string;
+  /**
+   * The message displayed in the notification alert.
+   */
   alertBody: string;
-  alertAction: string;
-  soundName?: string;
-  category?: string;
-  userInfo?: Record<string, any>;
+  /**
+   * The text displayed as the title of the notification alert.
+   */
+  alertTitle?: string;
+  /**
+   * The number to display as the app's icon badge. Setting the number to 0 removes the icon badge. (optional)
+   */
   applicationIconBadgeNumber?: number;
+  /**
+   * The category of this notification, required for actionable notifications. (optional)
+   */
+  category?: string;
+  /**
+   * The sound played when the notification is fired (optional).
+   */
+  soundName?: string;
+  /**
+   * If true, the notification will appear without sound (optional).
+   */
+  isSilent?: boolean;
+  /**
+   * An object containing additional notification data (optional).
+   */
+  userInfo?: Record<string, any>;
 }
 
 export interface ScheduleLocalNotificationDetails {
-  fireDate: string; // Use Date.toISOString() to convert to the expected format
+  /**
+   * The "action" displayed beneath an actionable notification. Defaults to "view";
+   */
+  alertAction?: string;
+  /**
+   * The message displayed in the notification alert.
+   */
   alertBody: string;
-  alertAction: string;
+  /**
+   * The text displayed as the title of the notification alert.
+   */
+  alertTitle?: string;
+  /**
+   * The number to display as the app's icon badge. Setting the number to 0 removes the icon badge. (optional)
+   */
+  applicationIconBadgeNumber?: number;
+  /**
+   * The category of this notification, required for actionable notifications. (optional)
+   */
+  category?: string;
+  /**
+   * The date and time when the system should deliver the notification.
+   * Use Date.toISOString() to convert to the expected format
+   */
+  fireDate: string;
+  /**
+   * The sound played when the notification is fired (optional).
+   */
   soundName?: string;
+  /**
+   * If true, the notification will appear without sound (optional).
+   */
+  isSilent?: boolean;
+  /**
+   * An object containing additional notification data (optional).
+   */
+  userInfo?: Record<string, any>;
+  /**
+   * The interval to repeat as a string. Possible values: minute, hour, day, week, month, year.
+   */
+  repeatInterval?: 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';
+}
+
+export type DeliveredNotification = {
+  identifier: string;
+  title: string;
+  body: string;
   category?: string;
   userInfo?: Record<string, any>;
-  applicationIconBadgeNumber?: number;
-}
+  'thread-id'?: string;
+};
 
 export interface PushNotificationPermissions {
   alert?: boolean;
@@ -138,7 +207,7 @@ export interface PushNotificationIOSStatic {
    */
   getDeliveredNotifications(
     callback: (notifications: Record<string, any>[]) => void,
-  ): void;
+  ): DeliveredNotification;
 
   /**
    * Removes the specified notifications from Notification Center
@@ -256,7 +325,7 @@ export interface PushNotificationIOSStatic {
    * This method returns a promise that resolves to either the notification
    * object if the app was launched by a push notification, or `null` otherwise.
    */
-  getInitialNotification(): Promise<PushNotification>;
+  getInitialNotification(): Promise<PushNotification | null>;
 }
 
 declare const PushNotificationIOS: PushNotificationIOSStatic;
