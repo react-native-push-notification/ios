@@ -5,7 +5,9 @@
   "main": "js/index.js",
   "types": "index.d.ts",
   "author": "Rafael Lincoln <rafaellincolnpereira@gmail.com>",
-  "contributors": [],
+  "contributors": [
+    "Jesse Katsumata <jesse.katsumata@gmail.com>"
+  ],
   "homepage": "https://github.com/react-native-community/react-native-push-notification-ios#readme",
   "license": "MIT",
   "scripts": {
@@ -33,7 +35,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
-    "@react-native-community/eslint-config": "^0.0.5",
+    "@react-native-community/eslint-config": "^0.0.7",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "24.1.0",
     "babel-plugin-module-resolver": "^3.1.3",
