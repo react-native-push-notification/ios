@@ -15,7 +15,7 @@
     "test": "yarn test:flow && yarn test:js",
     "test:flow": "flow check",
     "test:js": "echo 0",
-    "lint": "eslint .",
+    "lint": "eslint \"js/*.js\" --cache",
     "test:tsc": "tsc --noEmit"
   },
   "keywords": [
