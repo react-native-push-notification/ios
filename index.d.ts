@@ -153,7 +153,7 @@ export type PushNotificationEventName =
 
 /**
  * Handle push notifications for your app, including permission handling and icon badge number.
- * @see https://facebook.github.io/react-native/docs/pushnotificationios.html#content
+ * @see https://reactnative.dev/docs/pushnotificationios.html#content
  *
  * //FIXME: BGR: The documentation seems completely off compared to the actual js implementation. I could never get the example to run
  */
@@ -196,14 +196,14 @@ export interface PushNotificationIOSStatic {
   /**
    * Remove all delivered notifications from Notification Center.
    *
-   * See https://facebook.github.io/react-native/docs/pushnotificationios.html#removealldeliverednotifications
+   * See https://reactnative.dev/docs/pushnotificationios.html#removealldeliverednotifications
    */
   removeAllDeliveredNotifications(): void;
 
   /**
    * Provides you with a list of the app’s notifications that are still displayed in Notification Center.
    *
-   * See https://facebook.github.io/react-native/docs/pushnotificationios.html#getdeliverednotifications
+   * See https://reactnative.dev/docs/pushnotificationios.html#getdeliverednotifications
    */
   getDeliveredNotifications(
     callback: (notifications: Record<string, any>[]) => void,
@@ -212,7 +212,7 @@ export interface PushNotificationIOSStatic {
   /**
    * Removes the specified notifications from Notification Center
    *
-   * See https://facebook.github.io/react-native/docs/pushnotificationios.html#removedeliverednotifications
+   * See https://reactnative.dev/docs/pushnotificationios.html#removedeliverednotifications
    */
   removeDeliveredNotifications(identifiers: string[]): void;
 
