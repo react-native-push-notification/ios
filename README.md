@@ -124,8 +124,8 @@ to:
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 ```
 
-[build-badge]: https://img.shields.io/circleci/project/github/react-native-community/react-native-push-notification-ios/master.svg?style=flat-square
-[build]: https://circleci.com/gh/react-native-community/react-native-push-notification-ios
+[build-badge]: https://img.shields.io/circleci/project/github/react-native-community/push-notification-ios/master.svg?style=flat-square
+[build]: https://circleci.com/gh/react-native-community/push-notification-ios
 [version-badge]: https://img.shields.io/npm/v/@react-native-community/push-notification-ios.svg?style=flat-square
 [package]: https://www.npmjs.com/package/@react-native-community/push-notification-ios
 [license-badge]: https://img.shields.io/npm/l/@react-native-community/push-notification-ios.svg?style=flat-square
