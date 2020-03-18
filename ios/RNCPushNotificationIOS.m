@@ -176,7 +176,7 @@ RCT_EXPORT_MODULE()
 {
   NSMutableString *hexString = [NSMutableString string];
   NSUInteger deviceTokenLength = deviceToken.length;
-  const unsigned char *bytes = reinterpret_cast<const unsigned char *>(deviceToken.bytes);
+  const unsigned char *bytes = deviceToken.bytes;
   for (NSUInteger i = 0; i < deviceTokenLength; i++) {
     [hexString appendFormat:@"%02x", bytes[i]];
   }
@@ -349,7 +349,7 @@ static inline NSDictionary *RCTPromiseResolveValueForUNNotificationSettings(UNNo
 static inline NSDictionary *RCTSettingsDictForUNNotificationSettings(BOOL alert, BOOL badge, BOOL sound) {
   return @{@"alert": @(alert), @"badge": @(badge), @"sound": @(sound)};
   }	
-}
+
 
 RCT_EXPORT_METHOD(presentLocalNotification:(UILocalNotification *)notification)
 {
