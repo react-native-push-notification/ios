@@ -4,13 +4,19 @@
  *
  * @format
  * @flow
- * @lint-ignore-every XPLATJSCOPYRIGHT1
  */
 
 import React, {Component} from 'react';
-import {Alert, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
+import {
+  Alert,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View,
+  DeviceEventEmitter,
+} from 'react-native';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
-import RCTDeviceEventEmitter from 'react-native/Libraries/EventEmitter/RCTDeviceEventEmitter';
+
 class Button extends React.Component<$FlowFixMeProps> {
   render() {
     return (
@@ -100,7 +106,7 @@ export default class App extends Component<Props, State> {
   }
 
   _sendNotification() {
-    RCTDeviceEventEmitter.emit('remoteNotificationReceived', {
+    DeviceEventEmitter.emit('remoteNotificationReceived', {
       remote: true,
       aps: {
         alert: 'Sample notification',
