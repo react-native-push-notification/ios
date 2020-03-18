@@ -5,7 +5,7 @@
  * @flow
  */
 
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Alert,
   StyleSheet,
@@ -29,82 +29,39 @@ class Button extends React.Component<$FlowFixMeProps> {
   }
 }
 
-type Props = {};
-type State = {
-  permissions: Object,
-};
-export class App extends Component<Props, State> {
-  state = {
-    permissions: {},
-  };
+export const App = () => {
+  const [permissions, setPermissions] = useState({});
 
-  UNSAFE_componentWillMount() {
-    PushNotificationIOS.addEventListener('register', this._onRegistered);
-    PushNotificationIOS.addEventListener(
-      'registrationError',
-      this._onRegistrationError,
-    );
-    PushNotificationIOS.addEventListener(
-      'notification',
-      this._onRemoteNotification,
-    );
-    PushNotificationIOS.addEventListener(
-      'localNotification',
-      this._onLocalNotification,
-    );
-
+  useEffect(() => {
     PushNotificationIOS.requestPermissions();
-  }
-
-  componentWillUnmount() {
-    PushNotificationIOS.removeEventListener('register', this._onRegistered);
-    PushNotificationIOS.removeEventListener(
+    PushNotificationIOS.addEventListener('register', onRegistered);
+    PushNotificationIOS.addEventListener(
       'registrationError',
-      this._onRegistrationError,
+      onRegistrationError,
     );
-    PushNotificationIOS.removeEventListener(
-      'notification',
-      this._onRemoteNotification,
-    );
-    PushNotificationIOS.removeEventListener(
+    PushNotificationIOS.addEventListener('notification', onRemoteNotification);
+    PushNotificationIOS.addEventListener(
       'localNotification',
-      this._onLocalNotification,
+      onLocalNotification,
     );
-  }
+    return () => {
+      PushNotificationIOS.removeEventListener('register', onRegistered);
+      PushNotificationIOS.removeEventListener(
+        'registrationError',
+        onRegistrationError,
+      );
+      PushNotificationIOS.removeEventListener(
+        'notification',
+        onRemoteNotification,
+      );
+      PushNotificationIOS.removeEventListener(
+        'localNotification',
+        onLocalNotification,
+      );
+    };
+  }, []);
 
-  render() {
-    console.log(PushNotificationIOS);
-    return (
-      <View style={styles.container}>
-        <Button
-          onPress={this._sendNotification}
-          label="Send fake notification"
-        />
-
-        <Button
-          onPress={this._sendLocalNotification}
-          label="Send fake local notification"
-        />
-        <Button
-          onPress={() => PushNotificationIOS.setApplicationIconBadgeNumber(42)}
-          label="Set app's icon badge to 42"
-        />
-        <Button
-          onPress={() => PushNotificationIOS.setApplicationIconBadgeNumber(0)}
-          label="Clear app's icon badge"
-        />
-        <View>
-          <Button
-            onPress={this._showPermissions.bind(this)}
-            label="Show enabled permissions"
-          />
-          <Text>{JSON.stringify(this.state.permissions)}</Text>
-        </View>
-      </View>
-    );
-  }
-
-  _sendNotification() {
+  const sendNotification = () => {
     DeviceEventEmitter.emit('remoteNotificationReceived', {
       remote: true,
       aps: {
@@ -115,25 +72,33 @@ export class App extends Component<Props, State> {
         'content-available': 1,
       },
     });
-  }
+  };
 
-  _sendLocalNotification() {
+  const sendLocalNotification = () => {
     PushNotificationIOS.presentLocalNotification({
       alertBody: 'Sample local notification',
+      fireDate: new Date().toISOString(),
       applicationIconBadgeNumber: 1,
     });
-  }
+  };
 
-  _onRegistered(deviceToken) {
+  const scheduleLocalNotification = () => {
+    PushNotificationIOS.scheduleLocalNotification({
+      alertBody: 'Test Local Notification',
+      fireDate: new Date().toISOString(),
+    });
+  };
+
+  const onRegistered = deviceToken => {
     Alert.alert('Registered For Remote Push', `Device Token: ${deviceToken}`, [
       {
         text: 'Dismiss',
         onPress: null,
       },
     ]);
-  }
+  };
 
-  _onRegistrationError(error) {
+  const onRegistrationError = error => {
     Alert.alert(
       'Failed To Register For Remote Push',
       `Error (${error.code}): ${error.message}`,
@@ -144,9 +109,9 @@ export class App extends Component<Props, State> {
         },
       ],
     );
-  }
+  };
 
-  _onRemoteNotification(notification) {
+  const onRemoteNotification = notification => {
     const result = `Message: ${notification.getMessage()};\n
       badge: ${notification.getBadgeCount()};\n
       sound: ${notification.getSound()};\n
@@ -159,9 +124,9 @@ export class App extends Component<Props, State> {
         onPress: null,
       },
     ]);
-  }
+  };
 
-  _onLocalNotification(notification) {
+  const onLocalNotification = notification => {
     Alert.alert(
       'Local Notification Received',
       'Alert message: ' + notification.getMessage(),
@@ -172,14 +137,42 @@ export class App extends Component<Props, State> {
         },
       ],
     );
-  }
+  };
 
-  _showPermissions() {
+  const showPermissions = () => {
     PushNotificationIOS.checkPermissions(permissions => {
-      this.setState({permissions});
+      setPermissions({permissions});
     });
-  }
-}
+  };
+
+  return (
+    <View style={styles.container}>
+      <Button onPress={sendNotification} label="Send fake notification" />
+
+      <Button
+        onPress={sendLocalNotification}
+        label="Send fake local notification"
+      />
+      <Button
+        onPress={scheduleLocalNotification}
+        label="Schedule fake local notification"
+      />
+
+      <Button
+        onPress={() => PushNotificationIOS.setApplicationIconBadgeNumber(42)}
+        label="Set app's icon badge to 42"
+      />
+      <Button
+        onPress={() => PushNotificationIOS.setApplicationIconBadgeNumber(0)}
+        label="Clear app's icon badge"
+      />
+      <View>
+        <Button onPress={showPermissions} label="Show enabled permissions" />
+        <Text>{JSON.stringify(permissions)}</Text>
+      </View>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
