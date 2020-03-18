@@ -1,5 +1,5 @@
 // Type definitions for @react-native-community/push-notification-ios 1.0.2
-// Project: https://github.com/react-native-community/react-native-push-notification-ios
+// Project: https://github.com/react-native-community/push-notification-ios
 // Definitions by: Jules Sam. Randolph <https://github.com/jsamr>
 
 export interface FetchResult {

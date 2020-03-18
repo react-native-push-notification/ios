@@ -52,7 +52,7 @@ aliases:
 #        DEFAULTS
 # -------------------------
 defaults: &defaults
-  working_directory: ~/react-native-push-notification-ios
+  working_directory: ~/push-notification-ios
   environment:
     - GIT_COMMIT_DESC: git log --format=oneline -n 1 $CIRCLE_SHA1
 
@@ -87,28 +87,28 @@ jobs:
     <<: *js_defaults
     steps:
       - attach_workspace:
-          at: ~/react-native-push-notification-ios
+          at: ~/push-notification-ios
       - run: *flow
 
   javascript:
     <<: *js_defaults
     steps:
       - attach_workspace:
-          at: ~/react-native-push-notification-ios
+          at: ~/push-notification-ios
       - run: *javascript
 
   lint:
     <<: *js_defaults
     steps:
       - attach_workspace:
-          at: ~/react-native-push-notification-ios
+          at: ~/push-notification-ios
       - run: *eslint
 
   tsc:
     <<: *js_defaults
     steps:
       - attach_workspace:
-          at: ~/react-native-push-notification-ios
+          at: ~/push-notification-ios
       - run: *tsc
 
 
