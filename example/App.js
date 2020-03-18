@@ -2,20 +2,19 @@
  * Sample React Native App
  * https://github.com/facebook/react-native
  *
- * @format
  * @flow
- * @lint-ignore-every XPLATJSCOPYRIGHT1
  */
 
 import React, {Component} from 'react';
 import {
-  AlertIOS,
+  Alert,
   StyleSheet,
   Text,
   TouchableHighlight,
   View,
+  DeviceEventEmitter,
 } from 'react-native';
-import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import PushNotificationIOS from '../js';
 
 class Button extends React.Component<$FlowFixMeProps> {
   render() {
@@ -34,7 +33,7 @@ type Props = {};
 type State = {
   permissions: Object,
 };
-export default class App extends Component<Props, State> {
+export class App extends Component<Props, State> {
   state = {
     permissions: {},
   };
@@ -74,6 +73,7 @@ export default class App extends Component<Props, State> {
   }
 
   render() {
+    console.log(PushNotificationIOS);
     return (
       <View style={styles.container}>
         <Button
@@ -105,7 +105,7 @@ export default class App extends Component<Props, State> {
   }
 
   _sendNotification() {
-    require('RCTDeviceEventEmitter').emit('remoteNotificationReceived', {
+    DeviceEventEmitter.emit('remoteNotificationReceived', {
       remote: true,
       aps: {
         alert: 'Sample notification',
@@ -125,20 +125,16 @@ export default class App extends Component<Props, State> {
   }
 
   _onRegistered(deviceToken) {
-    AlertIOS.alert(
-      'Registered For Remote Push',
-      `Device Token: ${deviceToken}`,
-      [
-        {
-          text: 'Dismiss',
-          onPress: null,
-        },
-      ],
-    );
+    Alert.alert('Registered For Remote Push', `Device Token: ${deviceToken}`, [
+      {
+        text: 'Dismiss',
+        onPress: null,
+      },
+    ]);
   }
 
   _onRegistrationError(error) {
-    AlertIOS.alert(
+    Alert.alert(
       'Failed To Register For Remote Push',
       `Error (${error.code}): ${error.message}`,
       [
@@ -157,7 +153,7 @@ export default class App extends Component<Props, State> {
       category: ${notification.getCategory()};\n
       content-available: ${notification.getContentAvailable()}.`;
 
-    AlertIOS.alert('Push Notification Received', result, [
+    Alert.alert('Push Notification Received', result, [
       {
         text: 'Dismiss',
         onPress: null,
@@ -166,7 +162,7 @@ export default class App extends Component<Props, State> {
   }
 
   _onLocalNotification(notification) {
-    AlertIOS.alert(
+    Alert.alert(
       'Local Notification Received',
       'Alert message: ' + notification.getMessage(),
       [
