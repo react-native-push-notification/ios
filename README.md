@@ -101,7 +101,7 @@ And then in your AppDelegate implementation, add the following:
   // Define UNUserNotificationCenter
   UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
   center.delegate = self;
-  
+
   return YES;
 }
 
