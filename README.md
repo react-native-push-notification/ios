@@ -1,38 +1,61 @@
-# `@react-native-community/push-notification-ios`
+# @react-native-community/push-notification-ios
+
+[![Build Status][build-badge]][build]
+[![Version][version-badge]][package]
+[![MIT License][license-badge]][license]
+[![Lean Core Badge][lean-core-badge]][lean-core-issue]
 
 React Native Push Notification API for iOS.
 
 ## Getting started
-Install the library using either Yarn:
 
-```
+### Install
+
+```bash
 yarn add @react-native-community/push-notification-ios
 ```
 
-or npm:
+### Link
 
-```
-npm install --save @react-native-community/push-notification-ios
+There are a couple of cases for linking. Choose the appropriate one.
+
+- `react-native >= 0.60`
+
+ The package is [automatically linked](https://github.com/react-native-community/cli/blob/master/docs/autolinking.md) when building the app. All you need to do is:
+
+```bash
+cd ios && pod install
 ```
 
-You then need to link the native parts of the library for the platforms you are using. The easiest way to link the library is using the CLI tool by running this command from the root of your project:
+- `react-native <= 0.59`
 
-```
+```bash
 react-native link @react-native-community/push-notification-ios
 ```
 
-<details>
-<summary>Manually link the library</summary>
-   
-- Add the following to your Project: `node_modules/@react-native-community/push-notification-ios/ios/PushNotificationIOS.xcodeproj`
-- Add the following to Link Binary With Libraries: `libRNCPushNotificationIOS.a`
-</details>
+- upgrading to `react-native >= 0.60`
+
+ First, unlink the library. Then follow the instructions above.
+
+ ```bash
+ react-native unlink @react-native-community/push-notification-ios
+ ```
+
+- manual linking
+
+ If you don't want to use the methods above, you can always [link the library manually](./docs/manual-linking.md).
+
+### Update `AppDelegate.m`
 
 Finally, to enable support for `notification` and `register` events you need to augment your AppDelegate.
 
-#### `AppDelegate.m`
+At the top of the file:
 
-- `#import <RNCPushNotificationIOS.h>`
+```objective-c
+#import <RNCPushNotificationIOS.h>
+```
+
+Then, add the following lines:
 
 ```objective-c
 // Required to register for notifications
@@ -63,15 +86,49 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 }
 ```
 
+Also, if not already present, at the top of the file:
+
+```objective-c
+#import <UserNotifications/UserNotifications.h>
+```
+
+Inside didFinishLaunchingWithOptions or equivalent:
+
+```objective-c
+  // Define UNUserNotificationCenter
+  UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+  center.delegate = self;
+```
+
+And at the bottom (before @end):
+
+```objective-c
+  // Called when a notification is delivered to a foreground app.
+  -(void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler
+  {
+    completionHandler(UNAuthorizationOptionSound | UNAuthorizationOptionAlert | UNAuthorizationOptionBadge);
+  }
+```
+
 ## Migrating from the core `react-native` module
+
 This module was created when the PushNotificationIOS was split out from the core of React Native. To migrate to this module you need to follow the installation instructions above and then change you imports from:
 
-```javascript
+```js
 import { PushNotificationIOS } from "react-native";
 ```
 
 to:
 
-```javascript
+```js
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 ```
+
+[build-badge]: https://img.shields.io/circleci/project/github/react-native-community/react-native-push-notification-ios/master.svg?style=flat-square
+[build]: https://circleci.com/gh/react-native-community/react-native-push-notification-ios
+[version-badge]: https://img.shields.io/npm/v/@react-native-community/push-notification-ios.svg?style=flat-square
+[package]: https://www.npmjs.com/package/@react-native-community/push-notification-ios
+[license-badge]: https://img.shields.io/npm/l/@react-native-community/push-notification-ios.svg?style=flat-square
+[license]: https://opensource.org/licenses/MIT
+[lean-core-badge]: https://img.shields.io/badge/Lean%20Core-Extracted-brightgreen.svg?style=flat-square
+[lean-core-issue]: https://github.com/facebook/react-native/issues/23313
