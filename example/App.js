@@ -2,7 +2,6 @@
  * Sample React Native App
  * https://github.com/facebook/react-native
  *
- * @format
  * @flow
  */
 
@@ -15,7 +14,7 @@ import {
   View,
   DeviceEventEmitter,
 } from 'react-native';
-import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import PushNotificationIOS from '../js';
 
 class Button extends React.Component<$FlowFixMeProps> {
   render() {
@@ -34,7 +33,7 @@ type Props = {};
 type State = {
   permissions: Object,
 };
-export default class App extends Component<Props, State> {
+export class App extends Component<Props, State> {
   state = {
     permissions: {},
   };
