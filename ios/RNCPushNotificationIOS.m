@@ -315,7 +315,9 @@ RCT_EXPORT_METHOD(requestPermissions:(NSDictionary *)permissions
     if (error != NULL) {
       reject(@"-1", @"Error - Push authorization request failed.", error);
     } else {
-      [RCTSharedApplication() registerForRemoteNotifications];
+      dispatch_async(dispatch_get_main_queue(), ^(void){
+        [RCTSharedApplication() registerForRemoteNotifications];
+      });
       [UNUserNotificationCenter.currentNotificationCenter getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
         resolve(RCTPromiseResolveValueForUNNotificationSettings(settings));
       }];
