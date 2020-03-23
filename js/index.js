@@ -77,6 +77,7 @@ class PushNotificationIOS {
   _isRemote: boolean;
   _remoteNotificationCompleteCallbackCalled: boolean;
   _threadID: string;
+  _fireDate: string | Date;
 
   static FetchResult: FetchResult = {
     NewData: 'UIBackgroundFetchResultNewData',
@@ -342,6 +343,7 @@ class PushNotificationIOS {
           this._category = notifVal.category;
           this._contentAvailable = notifVal['content-available'];
           this._threadID = notifVal['thread-id'];
+          this._fireDate = nativeNotif.fireDate;
         } else {
           this._data[notifKey] = notifVal;
         }
@@ -353,6 +355,7 @@ class PushNotificationIOS {
       this._alert = nativeNotif.alertBody;
       this._data = nativeNotif.userInfo;
       this._category = nativeNotif.category;
+      this._fireDate = nativeNotif.fireDate;
     }
   }
 
