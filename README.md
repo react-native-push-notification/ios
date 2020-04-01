@@ -45,9 +45,32 @@ react-native link @react-native-community/push-notification-ios
 
  If you don't want to use the methods above, you can always [link the library manually](./docs/manual-linking.md).
 
-### Update `AppDelegate.m`
+### Add Capabilities : Background Mode - Remote Notifications
+
+Go into your MyReactProject/ios dir and open MyProject.xcworkspace workspace.
+Select the top project "MyProject" ans select the "Signing & Capabilities" tab.
+Add a 2 new Capabilities using "+" button:
+- `Background Mode` capability and tick `Remote Notifications`.
+- `Push Notifications` capability
+
+
+### Augment `AppDelegate`
 
 Finally, to enable support for `notification` and `register` events you need to augment your AppDelegate.
+
+### Update `AppDelegate.h`	
+
+At the top of the file:
+```objective-c
+#import <UserNotifications/UNUserNotificationCenter.h>
+```
+
+Then, add the 'UNUserNotificationCenterDelegate' to protocols:
+
+```objective-c
+@interface AppDelegate : UIResponder <UIApplicationDelegate, RCTBridgeDelegate, UNUserNotificationCenterDelegate>
+```
+### Update `AppDelegate.m`
 
 At the top of the file:
 
