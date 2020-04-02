@@ -548,6 +548,22 @@ getThreadID();
 
 Gets the thread ID on the notification
 
+# FAQ / Known pitfalls
+
+### Why my real iPhone device don't get any token or error.
+
+It can happend that your device has no longer a connection to the apple services so it will not receive any token.
+So try to restart your iPhone and/or put an SIM card into your device to establish a new connection to apple.
+
+#### Source:
+https://developer.apple.com/library/archive/technotes/tn2265/_index.html#//apple_ref/doc/uid/DTS40010376-CH1-TNTAG21
+
+**No Delegate Callbacks**
+
+When the first push-capable app is installed, iOS or OS X attempts to establish a persistent network connection to the push service that will be shared by all push-capable apps on the system. If neither delegate callback application:didRegisterForRemoteNotificationsWithDeviceToken: nor application:didFailToRegisterForRemoteNotificationsWithError: is called, that means that this connection has not yet been established.
+
+
+
 [build-badge]: https://img.shields.io/circleci/project/github/react-native-community/push-notification-ios/master.svg?style=flat-square
 [build]: https://circleci.com/gh/react-native-community/push-notification-ios
 [version-badge]: https://img.shields.io/npm/v/@react-native-community/push-notification-ios.svg?style=flat-square
