@@ -34,7 +34,7 @@ target 'example' do
   pod 'DoubleConversion', :podspec => "#{$node_modules_path}/react-native/third-party-podspecs/DoubleConversion.podspec"
   pod 'glog', :podspec => "#{$node_modules_path}/react-native/third-party-podspecs/glog.podspec"
   pod 'Folly', :podspec => "#{$node_modules_path}/react-native/third-party-podspecs/Folly.podspec"
-  pod 'RNCPushNotificationIOS', :podspec => "../../RNCPushNotificationIOS.podspec"
+  pod 'RNCPushNotificationIOS', :path => "../../"
 
   target 'exampleTests' do
     inherit! :search_paths

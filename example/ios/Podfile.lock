@@ -249,7 +249,7 @@ DEPENDENCIES:
   - React-RCTVibration (from `../../node_modules/react-native/Libraries/Vibration`)
   - ReactCommon/jscallinvoker (from `../../node_modules/react-native/ReactCommon`)
   - ReactCommon/turbomodule/core (from `../../node_modules/react-native/ReactCommon`)
-  - RNCPushNotificationIOS (from `../../RNCPushNotificationIOS.podspec`)
+  - RNCPushNotificationIOS (from `../../`)
   - Yoga (from `../../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -306,7 +306,7 @@ EXTERNAL SOURCES:
   ReactCommon:
     :path: "../../node_modules/react-native/ReactCommon"
   RNCPushNotificationIOS:
-    :podspec: "../../RNCPushNotificationIOS.podspec"
+    :path: "../../"
   Yoga:
     :path: "../../node_modules/react-native/ReactCommon/yoga"
 
@@ -339,6 +339,6 @@ SPEC CHECKSUMS:
   RNCPushNotificationIOS: a0b6894f4ad9b93d9dac467fdf4d055660ac8a0d
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
-PODFILE CHECKSUM: 0eec3d6f93caee9d49875394b0b3b4beac7f7548
+PODFILE CHECKSUM: 86da3041baf50e3a45b63907fdf8bb3e1a6ad95a
 
 COCOAPODS: 1.8.3
