@@ -194,28 +194,28 @@ class PushNotificationIOS {
     if (type === 'notification') {
       listener = PushNotificationEmitter.addListener(
         DEVICE_NOTIF_EVENT,
-        notifData => {
+        (notifData) => {
           handler(new PushNotificationIOS(notifData));
         },
       );
     } else if (type === 'localNotification') {
       listener = PushNotificationEmitter.addListener(
         DEVICE_LOCAL_NOTIF_EVENT,
-        notifData => {
+        (notifData) => {
           handler(new PushNotificationIOS(notifData));
         },
       );
     } else if (type === 'register') {
       listener = PushNotificationEmitter.addListener(
         NOTIF_REGISTER_EVENT,
-        registrationInfo => {
+        (registrationInfo) => {
           handler(registrationInfo.deviceToken);
         },
       );
     } else if (type === 'registrationError') {
       listener = PushNotificationEmitter.addListener(
         NOTIF_REGISTRATION_ERROR_EVENT,
-        errorInfo => {
+        (errorInfo) => {
           handler(errorInfo);
         },
       );
@@ -310,7 +310,7 @@ class PushNotificationIOS {
    */
   static getInitialNotification(): Promise<?PushNotificationIOS> {
     return RNCPushNotificationIOS.getInitialNotification().then(
-      notification => {
+      (notification) => {
         return notification && new PushNotificationIOS(notification);
       },
     );
@@ -333,7 +333,7 @@ class PushNotificationIOS {
     if (nativeNotif.remote) {
       // Extract data from Apple's `aps` dict as defined:
       // https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html
-      Object.keys(nativeNotif).forEach(notifKey => {
+      Object.keys(nativeNotif).forEach((notifKey) => {
         const notifVal = nativeNotif[notifKey];
         if (notifKey === 'aps') {
           this._alert = notifVal.alert;
