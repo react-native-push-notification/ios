@@ -108,6 +108,10 @@ class PushNotificationIOS {
    * See https://reactnative.dev/docs/pushnotificationios.html#cancelalllocalnotifications
    */
   static cancelAllLocalNotifications() {
+    invariant(
+      RNCPushNotificationIOS,
+      'PushNotificationManager is not available.',
+    );
     RNCPushNotificationIOS.cancelAllLocalNotifications();
   }
 
@@ -117,6 +121,10 @@ class PushNotificationIOS {
    * See https://reactnative.dev/docs/pushnotificationios.html#removealldeliverednotifications
    */
   static removeAllDeliveredNotifications(): void {
+    invariant(
+      RNCPushNotificationIOS,
+      'PushNotificationManager is not available.',
+    );
     RNCPushNotificationIOS.removeAllDeliveredNotifications();
   }
 
@@ -128,6 +136,10 @@ class PushNotificationIOS {
   static getDeliveredNotifications(
     callback: (notifications: Array<Object>) => void,
   ): void {
+    invariant(
+      RNCPushNotificationIOS,
+      'PushNotificationManager is not available.',
+    );
     RNCPushNotificationIOS.getDeliveredNotifications(callback);
   }
 
@@ -137,6 +149,10 @@ class PushNotificationIOS {
    * See https://reactnative.dev/docs/pushnotificationios.html#removedeliverednotifications
    */
   static removeDeliveredNotifications(identifiers: Array<string>): void {
+    invariant(
+      RNCPushNotificationIOS,
+      'PushNotificationManager is not available.',
+    );
     RNCPushNotificationIOS.removeDeliveredNotifications(identifiers);
   }
 
@@ -146,6 +162,10 @@ class PushNotificationIOS {
    * See https://reactnative.dev/docs/pushnotificationios.html#setapplicationiconbadgenumber
    */
   static setApplicationIconBadgeNumber(number: number) {
+    invariant(
+      RNCPushNotificationIOS,
+      'PushNotificationManager is not available.',
+    );
     RNCPushNotificationIOS.setApplicationIconBadgeNumber(number);
   }
 
@@ -155,6 +175,10 @@ class PushNotificationIOS {
    * See https://reactnative.dev/docs/pushnotificationios.html#getapplicationiconbadgenumber
    */
   static getApplicationIconBadgeNumber(callback: Function) {
+    invariant(
+      RNCPushNotificationIOS,
+      'PushNotificationManager is not available.',
+    );
     RNCPushNotificationIOS.getApplicationIconBadgeNumber(callback);
   }
 
@@ -164,6 +188,10 @@ class PushNotificationIOS {
    * See https://reactnative.dev/docs/pushnotificationios.html#cancellocalnotification
    */
   static cancelLocalNotifications(userInfo: Object) {
+    invariant(
+      RNCPushNotificationIOS,
+      'PushNotificationManager is not available.',
+    );
     RNCPushNotificationIOS.cancelLocalNotifications(userInfo);
   }
 
@@ -173,6 +201,10 @@ class PushNotificationIOS {
    * See https://reactnative.dev/docs/pushnotificationios.html#getscheduledlocalnotifications
    */
   static getScheduledLocalNotifications(callback: Function) {
+    invariant(
+      RNCPushNotificationIOS,
+      'PushNotificationManager is not available.',
+    );
     RNCPushNotificationIOS.getScheduledLocalNotifications(callback);
   }
 
@@ -265,20 +297,22 @@ class PushNotificationIOS {
     badge: boolean,
     sound: boolean,
   }> {
-    let requestedPermissions = {};
+    let requestedPermissions = {
+      alert: true,
+      badge: true,
+      sound: true,
+    };
     if (permissions) {
       requestedPermissions = {
         alert: !!permissions.alert,
         badge: !!permissions.badge,
         sound: !!permissions.sound,
       };
-    } else {
-      requestedPermissions = {
-        alert: true,
-        badge: true,
-        sound: true,
-      };
     }
+    invariant(
+      RNCPushNotificationIOS,
+      'PushNotificationManager is not available.',
+    );
     return RNCPushNotificationIOS.requestPermissions(requestedPermissions);
   }
 
@@ -288,6 +322,10 @@ class PushNotificationIOS {
    * See https://reactnative.dev/docs/pushnotificationios.html#abandonpermissions
    */
   static abandonPermissions() {
+    invariant(
+      RNCPushNotificationIOS,
+      'PushNotificationManager is not available.',
+    );
     RNCPushNotificationIOS.abandonPermissions();
   }
 
@@ -299,6 +337,10 @@ class PushNotificationIOS {
    */
   static checkPermissions(callback: Function) {
     invariant(typeof callback === 'function', 'Must provide a valid callback');
+    invariant(
+      RNCPushNotificationIOS,
+      'PushNotificationManager is not available.',
+    );
     RNCPushNotificationIOS.checkPermissions(callback);
   }
 
@@ -309,6 +351,10 @@ class PushNotificationIOS {
    * See https://reactnative.dev/docs/pushnotificationios.html#getinitialnotification
    */
   static getInitialNotification(): Promise<?PushNotificationIOS> {
+    invariant(
+      RNCPushNotificationIOS,
+      'PushNotificationManager is not available.',
+    );
     return RNCPushNotificationIOS.getInitialNotification().then(
       (notification) => {
         return notification && new PushNotificationIOS(notification);
@@ -372,6 +418,10 @@ class PushNotificationIOS {
     }
     this._remoteNotificationCompleteCallbackCalled = true;
 
+    invariant(
+      RNCPushNotificationIOS,
+      'PushNotificationManager is not available.',
+    );
     RNCPushNotificationIOS.onFinishRemoteNotification(
       this._notificationId,
       fetchResult,
