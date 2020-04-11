@@ -69,6 +69,14 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
  [RNCPushNotificationIOS didReceiveLocalNotification:notification];
 }
+// IOS 10+ Required for local notification tapped event
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center
+didReceiveNotificationResponse:(UNNotificationResponse *)response
+         withCompletionHandler:(void (^)(void))completionHandler
+{
+  [RNCPushNotificationIOS didReceiveNotificationResponse:response];
+  completionHandler();
+}
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
