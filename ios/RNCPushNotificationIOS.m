@@ -216,6 +216,13 @@ RCT_EXPORT_MODULE()
                                                     userInfo:RCTFormatLocalNotification(notification)];
 }
 
++ (void)didReceiveNotificationResponse:(UNNotificationResponse *)response
+API_AVAILABLE(ios(10.0)) {
+  [[NSNotificationCenter defaultCenter] postNotificationName:kLocalNotificationReceived
+                                                      object:self
+                                        userInfo:RCTFormatUNNotification(response.notification)];
+}
+
 - (void)handleLocalNotificationReceived:(NSNotification *)notification
 {
   [self sendEventWithName:@"localNotificationReceived" body:notification.userInfo];
