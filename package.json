@@ -10,6 +10,13 @@
   ],
   "homepage": "https://github.com/react-native-community/push-notification-ios#readme",
   "license": "MIT",
+  "files": [
+    "android",
+    "ios",
+    "js",
+    "index.d.ts",
+    "RNCPushNotificationIOS.podspec"
+  ],
   "scripts": {
     "start": "react-native start",
     "android": "cd example && react-native run-android",
