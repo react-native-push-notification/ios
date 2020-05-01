@@ -33,7 +33,6 @@ export const App = () => {
   const [permissions, setPermissions] = useState({});
 
   useEffect(() => {
-    PushNotificationIOS.requestPermissions();
     PushNotificationIOS.addEventListener('register', onRegistered);
     PushNotificationIOS.addEventListener(
       'registrationError',
@@ -44,6 +43,16 @@ export const App = () => {
       'localNotification',
       onLocalNotification,
     );
+
+    PushNotificationIOS.requestPermissions().then(
+      data => {
+        console.log('PushNotificationIOS.requestPermissions', data);
+      },
+      data => {
+        console.log('PushNotificationIOS.requestPermissions failed', data);
+      },
+    );
+
     return () => {
       PushNotificationIOS.removeEventListener('register', onRegistered);
       PushNotificationIOS.removeEventListener(
