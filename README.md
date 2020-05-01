@@ -48,7 +48,7 @@ react-native link @react-native-community/push-notification-ios
 ### Add Capabilities : Background Mode - Remote Notifications
 
 Go into your MyReactProject/ios dir and open MyProject.xcworkspace workspace.
-Select the top project "MyProject" ans select the "Signing & Capabilities" tab.
+Select the top project "MyProject" and select the "Signing & Capabilities" tab.
 Add a 2 new Capabilities using "+" button:
 - `Background Mode` capability and tick `Remote Notifications`.
 - `Push Notifications` capability
