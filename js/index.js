@@ -343,7 +343,7 @@ class PushNotificationIOS {
           this._category = notifVal.category;
           this._contentAvailable = notifVal['content-available'];
           this._threadID = notifVal['thread-id'];
-          this._fireDate = nativeNotif.fireDate;
+          this._fireDate = notifVal.fireDate;
         } else {
           this._data[notifKey] = notifVal;
         }
