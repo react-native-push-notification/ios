@@ -300,23 +300,26 @@ RCT_EXPORT_METHOD(requestPermissions:(NSDictionary *)permissions
   // Add a listener to make sure that startObserving has been called
   [self addListener:@"remoteNotificationsRegistered"];
   
-  UIUserNotificationType types = UIUserNotificationTypeNone;
+  UNAuthorizationOptions options = UNAuthorizationOptionNone;
   if (permissions) {
     if ([RCTConvert BOOL:permissions[@"alert"]]) {
-      types |= UIUserNotificationTypeAlert;
+      options |= UNAuthorizationOptionAlert;
     }
     if ([RCTConvert BOOL:permissions[@"badge"]]) {
-      types |= UIUserNotificationTypeBadge;
+      options |= UNAuthorizationOptionBadge;
     }
     if ([RCTConvert BOOL:permissions[@"sound"]]) {
-      types |= UIUserNotificationTypeSound;
+      options |= UNAuthorizationOptionSound;
+    }
+    if ([RCTConvert BOOL:permissions[@"critical"]]) {
+      options |= UNAuthorizationOptionCriticalAlert;
     }
   } else {
-    types = UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound;
+    options = UNAuthorizationOptionAlert | UNAuthorizationOptionBadge | UNAuthorizationOptionSound;
   }
   
   [UNUserNotificationCenter.currentNotificationCenter
-    requestAuthorizationWithOptions:types
+    requestAuthorizationWithOptions:options
     completionHandler:^(BOOL granted, NSError *_Nullable error) {
 
     if (error != NULL) {
@@ -352,11 +355,12 @@ RCT_EXPORT_METHOD(checkPermissions:(RCTResponseSenderBlock)callback)
 static inline NSDictionary *RCTPromiseResolveValueForUNNotificationSettings(UNNotificationSettings* _Nonnull settings) {
   return RCTSettingsDictForUNNotificationSettings(settings.alertSetting == UNNotificationSettingEnabled,
                                                   settings.badgeSetting == UNNotificationSettingEnabled,
-                                                  settings.soundSetting == UNNotificationSettingEnabled);
+                                                  settings.soundSetting == UNNotificationSettingEnabled,
+                                                  settings.criticalAlertSetting == UNNotificationSettingEnabled);
   }
 
-static inline NSDictionary *RCTSettingsDictForUNNotificationSettings(BOOL alert, BOOL badge, BOOL sound) {
-  return @{@"alert": @(alert), @"badge": @(badge), @"sound": @(sound)};
+static inline NSDictionary *RCTSettingsDictForUNNotificationSettings(BOOL alert, BOOL badge, BOOL sound, BOOL critical) {
+  return @{@"alert": @(alert), @"badge": @(badge), @"sound": @(sound), @"critical": @(critical)};
   }	
 
 
