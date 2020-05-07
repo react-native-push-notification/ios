@@ -75,6 +75,7 @@ Then, add the 'UNUserNotificationCenterDelegate' to protocols:
 At the top of the file:
 
 ```objective-c
+#import <UserNotifications/UserNotifications.h>
 #import <RNCPushNotificationIOS.h>
 ```
 
@@ -116,12 +117,6 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
  [RNCPushNotificationIOS didReceiveLocalNotification:notification];
 }
 
-```
-
-Also, if not already present, at the top of the file:
-
-```objective-c
-#import <UserNotifications/UserNotifications.h>
 ```
 
 And then in your AppDelegate implementation, add the following:
