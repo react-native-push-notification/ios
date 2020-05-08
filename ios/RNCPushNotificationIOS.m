@@ -343,7 +343,7 @@ RCT_EXPORT_METHOD(abandonPermissions)
 RCT_EXPORT_METHOD(checkPermissions:(RCTResponseSenderBlock)callback)
 {
   if (RCTRunningInAppExtension()) {
-    callback(@[RCTSettingsDictForUNNotificationSettings(NO, NO, NO)]);
+    callback(@[RCTSettingsDictForUNNotificationSettings(NO, NO, NO, NO)]);
     return;
   }
   
