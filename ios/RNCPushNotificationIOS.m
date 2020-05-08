@@ -315,7 +315,7 @@ RCT_EXPORT_METHOD(requestPermissions:(NSDictionary *)permissions
       options |= UNAuthorizationOptionCriticalAlert;
     }
   } else {
-    options = UNAuthorizationOptionAlert | UNAuthorizationOptionBadge | UNAuthorizationOptionSound;
+    options = UNAuthorizationOptionAlert | UNAuthorizationOptionBadge | UNAuthorizationOptionSound | UNAuthorizationOptionCriticalAlert;
   }
   
   [UNUserNotificationCenter.currentNotificationCenter
