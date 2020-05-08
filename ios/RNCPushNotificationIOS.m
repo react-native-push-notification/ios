@@ -318,8 +318,6 @@ RCT_EXPORT_METHOD(requestPermissions:(NSDictionary *)permissions
     options = UNAuthorizationOptionAlert | UNAuthorizationOptionBadge | UNAuthorizationOptionSound | UNAuthorizationOptionCriticalAlert;
   }
   
-  options |= UNAuthorizationOptionCriticalAlert;
-  
   [UNUserNotificationCenter.currentNotificationCenter
     requestAuthorizationWithOptions:options
     completionHandler:^(BOOL granted, NSError *_Nullable error) {
