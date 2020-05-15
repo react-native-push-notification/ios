@@ -127,6 +127,20 @@ static NSDictionary *RCTFormatUNNotification(UNNotification *notification)
   return formattedNotification;
 }
 
+API_AVAILABLE(ios(10.0))
+static NSDictionary *RCTFormatOpenedUNNotification(UNNotification *notification)
+{
+  NSMutableDictionary *formattedNotification = [RCTFormatUNNotification(notification) mutableCopy];
+  UNNotificationContent *content = notification.request.content;
+    
+  NSMutableDictionary *userInfo = [content.userInfo mutableCopy];
+  userInfo[@"userInteraction"] = [NSNumber numberWithInt:1];
+  
+  formattedNotification[@"userInfo"] = RCTNullIfNil(RCTJSONClean(userInfo));
+    
+  return formattedNotification;
+}
+
 #endif //TARGET_OS_TV / TARGET_OS_UIKITFORMAC
 
 RCT_EXPORT_MODULE()
@@ -222,7 +236,7 @@ RCT_EXPORT_MODULE()
 API_AVAILABLE(ios(10.0)) {
   [[NSNotificationCenter defaultCenter] postNotificationName:kLocalNotificationReceived
                                                       object:self
-                                        userInfo:RCTFormatUNNotification(response.notification)];
+                                        userInfo:RCTFormatOpenedUNNotification(response.notification)];
 }
 
 - (void)handleLocalNotificationReceived:(NSNotification *)notification
