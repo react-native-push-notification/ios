@@ -24,7 +24,7 @@ There are a couple of cases for linking. Choose the appropriate one.
  The package is [automatically linked](https://github.com/react-native-community/cli/blob/master/docs/autolinking.md) when building the app. All you need to do is:
 
 ```bash
-cd ios && pod install
+npx pod-install
 ```
 
 - `react-native <= 0.59`
