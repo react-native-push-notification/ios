@@ -86,7 +86,6 @@ export const App = () => {
   const sendLocalNotification = () => {
     PushNotificationIOS.presentLocalNotification({
       alertBody: 'Sample local notification',
-      fireDate: new Date().toISOString(),
       applicationIconBadgeNumber: 1,
     });
   };

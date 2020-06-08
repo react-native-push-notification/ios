@@ -24,7 +24,7 @@ There are a couple of cases for linking. Choose the appropriate one.
  The package is [automatically linked](https://github.com/react-native-community/cli/blob/master/docs/autolinking.md) when building the app. All you need to do is:
 
 ```bash
-cd ios && pod install
+npx pod-install
 ```
 
 - `react-native <= 0.59`
@@ -75,6 +75,7 @@ Then, add the 'UNUserNotificationCenterDelegate' to protocols:
 At the top of the file:
 
 ```objective-c
+#import <UserNotifications/UserNotifications.h>
 #import <RNCPushNotificationIOS.h>
 ```
 
@@ -116,12 +117,6 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
  [RNCPushNotificationIOS didReceiveLocalNotification:notification];
 }
 
-```
-
-Also, if not already present, at the top of the file:
-
-```objective-c
-#import <UserNotifications/UserNotifications.h>
 ```
 
 And then in your AppDelegate implementation, add the following:
