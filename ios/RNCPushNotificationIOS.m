@@ -96,7 +96,7 @@ static NSDictionary *RCTFormatLocalNotification(UILocalNotification *notificatio
   formattedLocalNotification[@"alertBody"] = RCTNullIfNil(notification.alertBody);
   formattedLocalNotification[@"applicationIconBadgeNumber"] = @(notification.applicationIconBadgeNumber);
   formattedLocalNotification[@"category"] = RCTNullIfNil(notification.category);
-  formattedLocalNotification[@"repeatInterval"] = RCTNullIfNil(notification.repeatInterval);
+  formattedLocalNotification[@"repeatInterval"] = @(notification.repeatInterval);
   formattedLocalNotification[@"soundName"] = RCTNullIfNil(notification.soundName);
   formattedLocalNotification[@"userInfo"] = RCTNullIfNil(RCTJSONClean(notification.userInfo));
   formattedLocalNotification[@"remote"] = @NO;
