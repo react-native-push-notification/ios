@@ -6,6 +6,7 @@
  */
 
 #import <React/RCTEventEmitter.h>
+#import <UserNotifications/UserNotifications.h>
 
 extern NSString *const RNCRemoteNotificationReceived;
 
