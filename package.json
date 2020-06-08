@@ -1,6 +1,6 @@
 {
   "name": "@react-native-community/push-notification-ios",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "React Native Push Notification API for iOS",
   "main": "js/index.js",
   "types": "index.d.ts",
