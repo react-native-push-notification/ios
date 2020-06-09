@@ -45,10 +45,10 @@ export const App = () => {
     );
 
     PushNotificationIOS.requestPermissions().then(
-      data => {
+      (data) => {
         console.log('PushNotificationIOS.requestPermissions', data);
       },
-      data => {
+      (data) => {
         console.log('PushNotificationIOS.requestPermissions failed', data);
       },
     );
@@ -85,6 +85,7 @@ export const App = () => {
 
   const sendLocalNotification = () => {
     PushNotificationIOS.presentLocalNotification({
+      alertTitle: 'Sample Title',
       alertBody: 'Sample local notification',
       applicationIconBadgeNumber: 1,
     });
@@ -97,7 +98,7 @@ export const App = () => {
     });
   };
 
-  const onRegistered = deviceToken => {
+  const onRegistered = (deviceToken) => {
     Alert.alert('Registered For Remote Push', `Device Token: ${deviceToken}`, [
       {
         text: 'Dismiss',
@@ -106,7 +107,7 @@ export const App = () => {
     ]);
   };
 
-  const onRegistrationError = error => {
+  const onRegistrationError = (error) => {
     Alert.alert(
       'Failed To Register For Remote Push',
       `Error (${error.code}): ${error.message}`,
@@ -119,7 +120,7 @@ export const App = () => {
     );
   };
 
-  const onRemoteNotification = notification => {
+  const onRemoteNotification = (notification) => {
     const result = `Message: ${notification.getMessage()};\n
       badge: ${notification.getBadgeCount()};\n
       sound: ${notification.getSound()};\n
@@ -134,7 +135,7 @@ export const App = () => {
     ]);
   };
 
-  const onLocalNotification = notification => {
+  const onLocalNotification = (notification) => {
     Alert.alert(
       'Local Notification Received',
       'Alert message: ' + notification.getMessage(),
@@ -148,7 +149,7 @@ export const App = () => {
   };
 
   const showPermissions = () => {
-    PushNotificationIOS.checkPermissions(permissions => {
+    PushNotificationIOS.checkPermissions((permissions) => {
       setPermissions({permissions});
     });
   };
