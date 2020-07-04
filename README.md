@@ -437,6 +437,8 @@ See what push permissions are currently enabled.
 - `alert` :boolean
 - `badge` :boolean
 - `sound` :boolean
+- `lockScreen` :boolean
+- `notificationCenter` :boolean
 
 ---
 
