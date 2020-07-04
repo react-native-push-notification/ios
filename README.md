@@ -15,11 +15,11 @@ React Native Push Notification API for iOS.
 yarn add @react-native-community/push-notification-ios
 ```
 
-### Link
+## Link
 
-There are a couple of cases for linking. Choose the appropriate one.
 
-- `react-native >= 0.60`
+
+### React Native v0.60+
 
  The package is [automatically linked](https://github.com/react-native-community/cli/blob/master/docs/autolinking.md) when building the app. All you need to do is:
 
@@ -27,7 +27,12 @@ There are a couple of cases for linking. Choose the appropriate one.
 npx pod-install
 ```
 
-- `react-native <= 0.59`
+For android, the package will be linked automatically on build.
+
+<details>
+ <summary>For React Native version 0.59 or older</summary>
+
+### React Native <= v0.59 
 
 ```bash
 react-native link @react-native-community/push-notification-ios
@@ -44,6 +49,8 @@ react-native link @react-native-community/push-notification-ios
 - manual linking
 
  If you don't want to use the methods above, you can always [link the library manually](./docs/manual-linking.md).
+ 
+</details>
 
 ### Add Capabilities : Background Mode - Remote Notifications
 
