@@ -77,6 +77,7 @@ class PushNotificationIOS {
   _isRemote: boolean;
   _remoteNotificationCompleteCallbackCalled: boolean;
   _threadID: string;
+  _fireDate: string | Date;
 
   static FetchResult: FetchResult = {
     NewData: 'UIBackgroundFetchResultNewData',
