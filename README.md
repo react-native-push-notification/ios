@@ -17,11 +17,9 @@ yarn add @react-native-community/push-notification-ios
 
 ## Link
 
-
-
 ### React Native v0.60+
 
- The package is [automatically linked](https://github.com/react-native-community/cli/blob/master/docs/autolinking.md) when building the app. All you need to do is:
+The package is [automatically linked](https://github.com/react-native-community/cli/blob/master/docs/autolinking.md) when building the app. All you need to do is:
 
 ```bash
 npx pod-install
@@ -32,7 +30,7 @@ For android, the package will be linked automatically on build.
 <details>
  <summary>For React Native version 0.59 or older</summary>
 
-### React Native <= v0.59 
+### React Native <= v0.59
 
 ```bash
 react-native link @react-native-community/push-notification-ios
@@ -40,16 +38,16 @@ react-native link @react-native-community/push-notification-ios
 
 - upgrading to `react-native >= 0.60`
 
- First, unlink the library. Then follow the instructions above.
+First, unlink the library. Then follow the instructions above.
 
- ```bash
- react-native unlink @react-native-community/push-notification-ios
- ```
+```bash
+react-native unlink @react-native-community/push-notification-ios
+```
 
 - manual linking
 
- If you don't want to use the methods above, you can always [link the library manually](./docs/manual-linking.md).
- 
+If you don't want to use the methods above, you can always [link the library manually](./docs/manual-linking.md).
+
 </details>
 
 ### Add Capabilities : Background Mode - Remote Notifications
@@ -57,17 +55,18 @@ react-native link @react-native-community/push-notification-ios
 Go into your MyReactProject/ios dir and open MyProject.xcworkspace workspace.
 Select the top project "MyProject" and select the "Signing & Capabilities" tab.
 Add a 2 new Capabilities using "+" button:
+
 - `Background Mode` capability and tick `Remote Notifications`.
 - `Push Notifications` capability
-
 
 ### Augment `AppDelegate`
 
 Finally, to enable support for `notification` and `register` events you need to augment your AppDelegate.
 
-### Update `AppDelegate.h`	
+### Update `AppDelegate.h`
 
 At the top of the file:
+
 ```objective-c
 #import <UserNotifications/UNUserNotificationCenter.h>
 ```
@@ -77,6 +76,7 @@ Then, add the 'UNUserNotificationCenterDelegate' to protocols:
 ```objective-c
 @interface AppDelegate : UIResponder <UIApplicationDelegate, RCTBridgeDelegate, UNUserNotificationCenterDelegate>
 ```
+
 ### Update `AppDelegate.m`
 
 At the top of the file:
@@ -151,15 +151,14 @@ And then in your AppDelegate implementation, add the following:
 This module was created when the PushNotificationIOS was split out from the core of React Native. To migrate to this module you need to follow the installation instructions above and then change you imports from:
 
 ```js
-import { PushNotificationIOS } from "react-native";
+import {PushNotificationIOS} from 'react-native';
 ```
 
 to:
 
 ```js
-import PushNotificationIOS from "@react-native-community/push-notification-ios";
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
 ```
-
 
 # Reference
 
@@ -520,6 +519,16 @@ getAlert();
 ```
 
 Gets the notification's main message from the `aps` object
+
+---
+
+### `getTitle()`
+
+```jsx
+getTitle();
+```
+
+Gets the notification's title from the `aps` object
 
 ---
 
