@@ -69,6 +69,7 @@ export type PushNotificationEventName = $Keys<{
 class PushNotificationIOS {
   _data: Object;
   _alert: string | Object;
+  _title: string;
   _sound: string;
   _category: string;
   _contentAvailable: ContentAvailable;
