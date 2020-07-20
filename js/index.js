@@ -384,7 +384,7 @@ class PushNotificationIOS {
         const notifVal = nativeNotif[notifKey];
         if (notifKey === 'aps') {
           this._alert = notifVal.alert;
-          this._title = notifVal.alertTitle;
+          this._title = notifVal?.alertTitle;
           this._sound = notifVal.sound;
           this._badgeCount = notifVal.badge;
           this._category = notifVal.category;
@@ -400,7 +400,7 @@ class PushNotificationIOS {
       this._badgeCount = nativeNotif.applicationIconBadgeNumber;
       this._sound = nativeNotif.soundName;
       this._alert = nativeNotif.alertBody;
-      this._title = nativeNotif.alertTitle;
+      this._title = nativeNotif?.alertTitle;
       this._data = nativeNotif.userInfo;
       this._category = nativeNotif.category;
       this._fireDate = nativeNotif.fireDate;
