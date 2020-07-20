@@ -30,6 +30,11 @@ export interface PushNotification {
   getAlert(): string | Record<string, any>;
 
   /**
+   * Gets the notification's title from the `aps` object
+   */
+  getTitle(): string;
+
+  /**
    * Gets the content-available number from the `aps` object
    */
   getContentAvailable(): number;
