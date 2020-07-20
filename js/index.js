@@ -389,6 +389,7 @@ class PushNotificationIOS {
           this._category = notifVal.category;
           this._contentAvailable = notifVal['content-available'];
           this._threadID = notifVal['thread-id'];
+          this._fireDate = notifVal.fireDate;
         } else {
           this._data[notifKey] = notifVal;
         }
@@ -401,6 +402,7 @@ class PushNotificationIOS {
       this._title = nativeNotif.alertTitle;
       this._data = nativeNotif.userInfo;
       this._category = nativeNotif.category;
+      this._fireDate = nativeNotif.fireDate;
     }
   }
 
