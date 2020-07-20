@@ -77,7 +77,6 @@ class PushNotificationIOS {
   _isRemote: boolean;
   _remoteNotificationCompleteCallbackCalled: boolean;
   _threadID: string;
-  _fireDate: string | Date;
 
   static FetchResult: FetchResult = {
     NewData: 'UIBackgroundFetchResultNewData',
@@ -384,12 +383,12 @@ class PushNotificationIOS {
         const notifVal = nativeNotif[notifKey];
         if (notifKey === 'aps') {
           this._alert = notifVal.alert;
+          this._title = notifVal.alertTitle;
           this._sound = notifVal.sound;
           this._badgeCount = notifVal.badge;
           this._category = notifVal.category;
           this._contentAvailable = notifVal['content-available'];
           this._threadID = notifVal['thread-id'];
-          this._fireDate = notifVal.fireDate;
         } else {
           this._data[notifKey] = notifVal;
         }
@@ -399,9 +398,9 @@ class PushNotificationIOS {
       this._badgeCount = nativeNotif.applicationIconBadgeNumber;
       this._sound = nativeNotif.soundName;
       this._alert = nativeNotif.alertBody;
+      this._title = nativeNotif.alertTitle;
       this._data = nativeNotif.userInfo;
       this._category = nativeNotif.category;
-      this._fireDate = nativeNotif.fireDate;
     }
   }
 
@@ -464,6 +463,14 @@ class PushNotificationIOS {
    */
   getAlert(): ?string | ?Object {
     return this._alert;
+  }
+
+  /**
+   * Gets the notification's title from the `aps` object
+   *
+   */
+  getTitle(): ?string | ?Object {
+    return this._title;
   }
 
   /**
