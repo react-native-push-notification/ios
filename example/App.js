@@ -77,6 +77,7 @@ export const App = () => {
         alert: 'Sample notification',
         badge: '+1',
         sound: 'default',
+        alertTitle: 'title',
         category: 'REACT_NATIVE',
         'content-available': 1,
       },
@@ -121,7 +122,9 @@ export const App = () => {
   };
 
   const onRemoteNotification = (notification) => {
-    const result = `Message: ${notification.getMessage()};\n
+    const result = `
+      Title:  ${notification.getTitle()};\n
+      Message: ${notification.getMessage()};\n
       badge: ${notification.getBadgeCount()};\n
       sound: ${notification.getSound()};\n
       category: ${notification.getCategory()};\n
@@ -138,7 +141,8 @@ export const App = () => {
   const onLocalNotification = (notification) => {
     Alert.alert(
       'Local Notification Received',
-      'Alert message: ' + notification.getMessage(),
+      `Alert title:  ${notification.getTitle()},
+      'Alert message:  ${notification.getMessage()}`,
       [
         {
           text: 'Dismiss',
