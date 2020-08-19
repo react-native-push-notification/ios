@@ -400,8 +400,8 @@ class PushNotificationIOS {
       // Local notifications aren't being sent down with `aps` dict.
       this._badgeCount = nativeNotif.applicationIconBadgeNumber;
       this._sound = nativeNotif.soundName;
-      this._alert = nativeNotif.alertBody;
-      this._title = nativeNotif?.alertTitle;
+      this._alert = nativeNotif.body;
+      this._title = nativeNotif?.title;
       this._data = nativeNotif.userInfo;
       this._category = nativeNotif.category;
       this._fireDate = nativeNotif.fireDate;
