@@ -141,7 +141,7 @@ export const App = () => {
       sound: ${notification.getSound()};\n
       category: ${notification.getCategory()};\n
       content-available: ${notification.getContentAvailable()};\n
-      Notification is clicked: ${isClicked}.`;
+      Notification is clicked: ${String(isClicked)}.`;
 
     if (notification.getTitle() == undefined) {
       Alert.alert('Silent push notification Received', result, [
@@ -167,7 +167,7 @@ export const App = () => {
       'Local Notification Received',
       `Alert title:  ${notification.getTitle()},
       'Alert message:  ${notification.getMessage()},
-      Notification is clicked: ${isClicked}.`,
+      Notification is clicked: ${String(isClicked)}.`,
       [
         {
           text: 'Dismiss',
