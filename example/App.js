@@ -84,6 +84,16 @@ export const App = () => {
     });
   };
 
+  const sendSilentNotification = () => {
+    DeviceEventEmitter.emit('remoteNotificationReceived', {
+      remote: true,
+      aps: {
+        category: 'REACT_NATIVE',
+        'content-available': 1,
+      }
+    });
+  };
+
   const sendLocalNotification = () => {
     PushNotificationIOS.presentLocalNotification({
       alertTitle: 'Sample Title',
@@ -122,27 +132,42 @@ export const App = () => {
   };
 
   const onRemoteNotification = (notification) => {
+    const isClicked = notification.getData().userInteraction === 1
+
     const result = `
       Title:  ${notification.getTitle()};\n
       Message: ${notification.getMessage()};\n
       badge: ${notification.getBadgeCount()};\n
       sound: ${notification.getSound()};\n
       category: ${notification.getCategory()};\n
-      content-available: ${notification.getContentAvailable()}.`;
+      content-available: ${notification.getContentAvailable()};\n
+      Notification is clicked: ${String(isClicked)}.`;
 
-    Alert.alert('Push Notification Received', result, [
-      {
-        text: 'Dismiss',
-        onPress: null,
-      },
-    ]);
+    if (notification.getTitle() == undefined) {
+      Alert.alert('Silent push notification Received', result, [
+        {
+          text: 'Send local push',
+          onPress: sendLocalNotification,
+        },
+      ]);
+    } else {
+       Alert.alert('Push Notification Received', result, [
+        {
+          text: 'Dismiss',
+          onPress: null,
+        },
+      ]);
+    }
   };
 
   const onLocalNotification = (notification) => {
+    const isClicked = notification.getData().userInteraction === 1
+
     Alert.alert(
       'Local Notification Received',
       `Alert title:  ${notification.getTitle()},
-      'Alert message:  ${notification.getMessage()}`,
+      'Alert message:  ${notification.getMessage()},
+      Notification is clicked: ${String(isClicked)}.`,
       [
         {
           text: 'Dismiss',
@@ -170,6 +195,8 @@ export const App = () => {
         onPress={scheduleLocalNotification}
         label="Schedule fake local notification"
       />
+
+      <Button onPress={sendSilentNotification} label="Send fake silent notification" />
 
       <Button
         onPress={() => PushNotificationIOS.setApplicationIconBadgeNumber(42)}

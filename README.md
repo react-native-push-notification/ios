@@ -160,6 +160,30 @@ to:
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 ```
 
+## How to determine push notification user click
+
+Receiving remote pushes has two common cases: user dismissed notification and user clicked notification. To have separate logic for each case you can use `notification.getData().userInteraction` to determine push notification user click:
+
+```js
+export const App = () => {
+  const [permissions, setPermissions] = useState({});
+
+  useEffect(() => {
+    PushNotificationIOS.addEventListener('notification', onRemoteNotification);
+  });
+
+  const onRemoteNotification = (notification) => {
+    const isClicked = notification.getData().userInteraction === 1
+
+    if (isClicked) {
+       // Navigate user to another screen
+    } else {
+       // Do something else with push notification
+    }
+  };
+}
+```
+
 # Reference
 
 ## Methods
