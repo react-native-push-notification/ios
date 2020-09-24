@@ -469,7 +469,9 @@ See what push permissions are currently enabled.
 - `sound` :boolean
 - `lockScreen` :boolean
 - `notificationCenter` :boolean
+- `authorizationStatus` :AuthorizationStatus
 
+  For a list of possible values of `authorizationStatus`, see `PushNotificationIOS.AuthorizationStatus`. For their meanings, refer to https://developer.apple.com/documentation/usernotifications/unauthorizationstatus
 ---
 
 ### `getInitialNotification()`
