@@ -8,6 +8,13 @@ export interface FetchResult {
   ResultFailed: 'UIBackgroundFetchResultFailed';
 }
 
+export interface AuthorizationStatus {
+  UNAuthorizationStatusNotDetermined: 0;
+  UNAuthorizationStatusDenied: 1;
+  UNAuthorizationStatusAuthorized: 2;
+  UNAuthorizationStatusProvisional: 3;
+}
+
 export interface PushNotification {
   /**
    * An alias for `getAlert` to get the notification's main message string
@@ -148,6 +155,9 @@ export interface PushNotificationPermissions {
   alert?: boolean;
   badge?: boolean;
   sound?: boolean;
+  lockScreen?: boolean;
+  notificationCenter?: boolean;
+  authorizationStatus?: AuthorizationStatus;
 }
 
 export type PushNotificationEventName =
@@ -168,6 +178,11 @@ export interface PushNotificationIOSStatic {
    * For a list of possible values, see `PushNotificationIOS.FetchResult`.
    */
   FetchResult: FetchResult;
+  /**
+   * Authorization status of notification settings 
+   * For a list of possible values, see `PushNotificationIOS.AuthorizationStatus`.
+   */
+  AuthorizationStatus: AuthorizationStatus;
   /**
    * Schedules the localNotification for immediate presentation.
    * details is an object containing:

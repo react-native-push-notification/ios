@@ -32,6 +32,13 @@ export type FetchResult = {
   ResultFailed: string,
 };
 
+export type AuthorizationStatus = {
+  UNAuthorizationStatusNotDetermined: Number;
+  UNAuthorizationStatusDenied: Number;
+  UNAuthorizationStatusAuthorized: Number;
+  UNAuthorizationStatusProvisional: Number;
+}
+
 /**
  * An event emitted by PushNotificationIOS.
  */
@@ -84,6 +91,13 @@ class PushNotificationIOS {
     NewData: 'UIBackgroundFetchResultNewData',
     NoData: 'UIBackgroundFetchResultNoData',
     ResultFailed: 'UIBackgroundFetchResultFailed',
+  };
+  
+  static AuthorizationStatus: AuthorizationStatus = {
+    UNAuthorizationStatusNotDetermined: 0,
+    UNAuthorizationStatusDenied: 1,
+    UNAuthorizationStatusAuthorized: 2,
+    UNAuthorizationStatusProvisional: 3,
   };
 
   /**
