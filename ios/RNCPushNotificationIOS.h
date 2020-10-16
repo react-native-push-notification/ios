@@ -22,6 +22,7 @@ typedef void (^RNCRemoteNotificationCallback)(UIBackgroundFetchResult result);
 + (void)didReceiveLocalNotification:(UILocalNotification *)notification;
 + (void)didReceiveNotificationResponse:(UNNotificationResponse *)response API_AVAILABLE(ios(10.0));
 + (void)didFailToRegisterForRemoteNotificationsWithError:(NSError *)error;
++ (void)setADelegate:(id <UNUserNotificationCenterDelegate>)delegate;
 #endif
 
 @end

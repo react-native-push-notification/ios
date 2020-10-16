@@ -134,9 +134,19 @@ And then in your AppDelegate implementation, add the following:
   ...
   // Define UNUserNotificationCenter
   UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
-  center.delegate = self;
-
-  return YES;
+  
+  // Set the delegate after we know that the user has given permission
+  [center getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
+    if (settings.authorizationStatus == UNAuthorizationStatusAuthorized) {
+      [center requestAuthorizationWithOptions:(UNAuthorizationOptionAlert + UNAuthorizationOptionSound + UNAuthorizationOptionBadge)completionHandler:^(BOOL granted, NSError * _Nullable error) {
+               if (granted) {
+                 center.delegate = self;
+                }
+       }];
+    }
+  }];
+  [RNCPushNotificationIOS setADelegate: self];
+  ...
 }
 
 //Called when a notification is delivered to a foreground app.
