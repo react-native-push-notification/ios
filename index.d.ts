@@ -157,7 +157,7 @@ export interface PushNotificationPermissions {
   sound?: boolean;
   lockScreen?: boolean;
   notificationCenter?: boolean;
-  authorizationStatus?: AuthorizationStatus;
+  authorizationStatus?: AuthorizationStatus[keyof AuthorizationStatus];
 }
 
 export type PushNotificationEventName =
