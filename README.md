@@ -398,7 +398,7 @@ Valid events are:
 ### `removeEventListener()`
 
 ```jsx
-PushNotificationIOS.removeEventListener(type, handler);
+PushNotificationIOS.removeEventListener(type);
 ```
 
 Removes the event listener. Do this in `componentWillUnmount` to prevent memory leaks
@@ -408,7 +408,6 @@ Removes the event listener. Do this in `componentWillUnmount` to prevent memory 
 | Name    | Type     | Required | Description |
 | ------- | -------- | -------- | ----------- |
 | type    | string   | Yes      | Event type. |
-| handler | function | Yes      | Listener.   |
 
 ---
 

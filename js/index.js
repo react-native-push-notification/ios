@@ -279,7 +279,6 @@ class PushNotificationIOS {
    */
   static removeEventListener(
     type: PushNotificationEventName,
-    handler: Function,
   ) {
     invariant(
       type === 'notification' ||
