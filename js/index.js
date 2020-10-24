@@ -120,8 +120,8 @@ class PushNotificationIOS {
 
   /**
    * Cancels all scheduled localNotifications.
-   *
-   * See https://reactnative.dev/docs/pushnotificationios.html#cancelalllocalnotifications
+   * @deprecated use `removeAllPendingNotificationRequests` instead
+   * - This method is deprecated in iOS 10 and will be removed from future release
    */
   static cancelAllLocalNotifications() {
     invariant(
@@ -129,6 +129,17 @@ class PushNotificationIOS {
       'PushNotificationManager is not available.',
     );
     RNCPushNotificationIOS.cancelAllLocalNotifications();
+  }
+
+  /**
+   * Removes all pending notifications
+   */
+  static removeAllPendingNotificationRequests() {
+    invariant(
+      RNCPushNotificationIOS,
+      'PushNotificationManager is not available.',
+    );
+    RNCPushNotificationIOS.removeAllPendingNotificationRequests();
   }
 
   /**

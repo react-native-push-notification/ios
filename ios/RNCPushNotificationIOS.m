@@ -391,9 +391,21 @@ RCT_EXPORT_METHOD(scheduleLocalNotification:(UILocalNotification *)notification)
   [RCTSharedApplication() scheduleLocalNotification:notification];
 }
 
+/**
+ * Method not Available in iOS11+
+ * TODO: This method will be removed in the next major version
+ */
 RCT_EXPORT_METHOD(cancelAllLocalNotifications)
 {
   [RCTSharedApplication() cancelAllLocalNotifications];
+}
+
+RCT_EXPORT_METHOD(removeAllPendingNotificationRequests)
+{
+    if ([UNUserNotificationCenter class]) {
+      UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+      [center removeAllPendingNotificationRequests];
+    }
 }
 
 RCT_EXPORT_METHOD(cancelLocalNotifications:(NSDictionary<NSString *, id> *)userInfo)
