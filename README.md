@@ -244,13 +244,13 @@ details is an object containing:
 
 ---
 
-### `cancelAllLocalNotifications()`
+### `remooveAllPendingNotificationRequests()`
 
 ```jsx
-PushNotificationIOS.cancelAllLocalNotifications();
+PushNotificationIOS.remooveAllPendingNotificationRequests();
 ```
 
-Cancels all scheduled localNotifications
+Removes all pending notification requests in the notification center.
 
 ---
 
