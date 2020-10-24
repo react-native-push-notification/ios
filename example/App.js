@@ -55,16 +55,11 @@ export const App = () => {
 
     return () => {
       PushNotificationIOS.removeEventListener('register');
-      PushNotificationIOS.removeEventListener(
-        'registrationError'
-      );
-      PushNotificationIOS.removeEventListener(
-        'notification'
-      );
-      PushNotificationIOS.removeEventListener(
-        'localNotification'
-      );
+      PushNotificationIOS.removeEventListener('registrationError');
+      PushNotificationIOS.removeEventListener('notification');
+      PushNotificationIOS.removeEventListener('localNotification');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const sendNotification = () => {
@@ -87,7 +82,7 @@ export const App = () => {
       aps: {
         category: 'REACT_NATIVE',
         'content-available': 1,
-      }
+      },
     });
   };
 
@@ -102,8 +97,12 @@ export const App = () => {
   const scheduleLocalNotification = () => {
     PushNotificationIOS.scheduleLocalNotification({
       alertBody: 'Test Local Notification',
-      fireDate: new Date().toISOString(),
+      fireDate: new Date(new Date().valueOf() + 2000).toISOString(),
     });
+  };
+
+  const removeAllPendingNotificationRequests = () => {
+    PushNotificationIOS.removeAllPendingNotificationRequests();
   };
 
   const onRegistered = (deviceToken) => {
@@ -129,7 +128,7 @@ export const App = () => {
   };
 
   const onRemoteNotification = (notification) => {
-    const isClicked = notification.getData().userInteraction === 1
+    const isClicked = notification.getData().userInteraction === 1;
 
     const result = `
       Title:  ${notification.getTitle()};\n
@@ -148,7 +147,7 @@ export const App = () => {
         },
       ]);
     } else {
-       Alert.alert('Push Notification Received', result, [
+      Alert.alert('Push Notification Received', result, [
         {
           text: 'Dismiss',
           onPress: null,
@@ -158,7 +157,7 @@ export const App = () => {
   };
 
   const onLocalNotification = (notification) => {
-    const isClicked = notification.getData().userInteraction === 1
+    const isClicked = notification.getData().userInteraction === 1;
 
     Alert.alert(
       'Local Notification Received',
@@ -192,8 +191,14 @@ export const App = () => {
         onPress={scheduleLocalNotification}
         label="Schedule fake local notification"
       />
-
-      <Button onPress={sendSilentNotification} label="Send fake silent notification" />
+      <Button
+        onPress={removeAllPendingNotificationRequests}
+        label="Remove All Pending Notification Requests"
+      />
+      <Button
+        onPress={sendSilentNotification}
+        label="Send fake silent notification"
+      />
 
       <Button
         onPress={() => PushNotificationIOS.setApplicationIconBadgeNumber(42)}

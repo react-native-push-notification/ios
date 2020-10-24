@@ -210,8 +210,14 @@ export interface PushNotificationIOSStatic {
 
   /**
    * Cancels all scheduled localNotifications
+   * @deprecated This method is deprecated in iOS 10 and will be removed from future release
    */
   cancelAllLocalNotifications(): void;
+
+  /**
+   * Removes all pending notifications
+   */
+  removeAllPendingNotificationRequests(): void;
 
   /**
    * Remove all delivered notifications from Notification Center.

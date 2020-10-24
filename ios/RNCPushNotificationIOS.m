@@ -396,6 +396,14 @@ RCT_EXPORT_METHOD(cancelAllLocalNotifications)
   [RCTSharedApplication() cancelAllLocalNotifications];
 }
 
+RCT_EXPORT_METHOD(removeAllPendingNotificationRequests)
+{
+    if ([UNUserNotificationCenter class]) {
+      UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+      [center removeAllPendingNotificationRequests];
+    }
+}
+
 RCT_EXPORT_METHOD(cancelLocalNotifications:(NSDictionary<NSString *, id> *)userInfo)
 {
   for (UILocalNotification *notification in RCTSharedApplication().scheduledLocalNotifications) {
