@@ -173,15 +173,15 @@ export const App = () => {
   });
 
   const onRemoteNotification = (notification) => {
-    const isClicked = notification.getData().userInteraction === 1
+    const isClicked = notification.getData().userInteraction === 1;
 
     if (isClicked) {
-       // Navigate user to another screen
+      // Navigate user to another screen
     } else {
-       // Do something else with push notification
+      // Do something else with push notification
     }
   };
-}
+};
 ```
 
 # Reference
@@ -405,9 +405,9 @@ Removes the event listener. Do this in `componentWillUnmount` to prevent memory 
 
 **Parameters:**
 
-| Name    | Type     | Required | Description |
-| ------- | -------- | -------- | ----------- |
-| type    | string   | Yes      | Event type. |
+| Name | Type   | Required | Description |
+| ---- | ------ | -------- | ----------- |
+| type | string | Yes      | Event type. |
 
 ---
 
@@ -471,6 +471,7 @@ See what push permissions are currently enabled.
 - `authorizationStatus` :AuthorizationStatus
 
   For a list of possible values of `authorizationStatus`, see `PushNotificationIOS.AuthorizationStatus`. For their meanings, refer to https://developer.apple.com/documentation/usernotifications/unauthorizationstatus
+
 ---
 
 ### `getInitialNotification()`
@@ -595,8 +596,8 @@ getThreadID();
 
 Gets the thread ID on the notification
 
-[build-badge]: https://img.shields.io/circleci/project/github/react-native-community/push-notification-ios/master.svg?style=flat-square
-[build]: https://circleci.com/gh/react-native-community/push-notification-ios
+[build-badge]: https://github.com/react-native-push-notification-ios/push-notification-ios/workflows/Build/badge.svg
+[build]: https://github.com/react-native-push-notification-ios/push-notification-ios/actions
 [version-badge]: https://img.shields.io/npm/v/@react-native-community/push-notification-ios.svg?style=flat-square
 [package]: https://www.npmjs.com/package/@react-native-community/push-notification-ios
 [license-badge]: https://img.shields.io/npm/l/@react-native-community/push-notification-ios.svg?style=flat-square
