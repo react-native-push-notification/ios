@@ -277,9 +277,7 @@ class PushNotificationIOS {
    *
    * See https://reactnative.dev/docs/pushnotificationios.html#removeeventlistener
    */
-  static removeEventListener(
-    type: PushNotificationEventName,
-  ) {
+  static removeEventListener(type: PushNotificationEventName) {
     invariant(
       type === 'notification' ||
         type === 'register' ||
