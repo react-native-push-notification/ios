@@ -73,6 +73,36 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
 }), UIBackgroundFetchResultNoData, integerValue)
 
 @end
+
+@implementation RCTConvert (UNNotificationRequest)
+
++ (UNNotificationRequest *)UNNotificationRequest:(id)json
+{
+    NSDictionary<NSString *, id> *details = [self NSDictionary:json];
+    
+    BOOL isSilent = [RCTConvert BOOL:details[@"isSilent"]];
+    NSString* identifier = [RCTConvert NSString:details[@"id"]];
+    NSCalendarUnit interval = [RCTConvert NSCalendarUnit:details[@"repeatInterval"]];
+    BOOL repeats = interval > 0;
+    
+    UNMutableNotificationContent* content = [[UNMutableNotificationContent alloc] init];
+    content.title= [RCTConvert NSString:details[@"title"]];
+    content.subtitle= [RCTConvert NSString:details[@"subtitle"]];
+    content.body =[RCTConvert NSString:details[@"body"]];
+    content.badge = [RCTConvert NSNumber:details[@"badge"]];
+    if (!isSilent) {
+      content.sound = [RCTConvert NSString:details[@"sound"]] ?: [UNNotificationSound defaultSound];
+    }
+
+    
+    UNTimeIntervalNotificationTrigger* trigger = repeats?  [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:interval repeats:repeats] : nil;
+
+    UNNotificationRequest* notification = [UNNotificationRequest requestWithIdentifier:identifier content:content trigger:trigger];
+    return notification;
+}
+
+@end
+
 #else
 @interface RNCPushNotificationIOS () <NativePushNotificationManagerIOS>
 @end
@@ -119,6 +149,7 @@ static NSDictionary *RCTFormatUNNotification(UNNotification *notification)
   }
   
   formattedNotification[@"title"] = RCTNullIfNil(content.title);
+  formattedNotification[@"subtitle"] = RCTNullIfNil(content.subtitle);
   formattedNotification[@"body"] = RCTNullIfNil(content.body);
   formattedNotification[@"category"] = RCTNullIfNil(content.categoryIdentifier);
   formattedNotification[@"thread-id"] = RCTNullIfNil(content.threadIdentifier);
@@ -389,6 +420,20 @@ RCT_EXPORT_METHOD(presentLocalNotification:(UILocalNotification *)notification)
 RCT_EXPORT_METHOD(scheduleLocalNotification:(UILocalNotification *)notification)
 {
   [RCTSharedApplication() scheduleLocalNotification:notification];
+}
+
+RCT_EXPORT_METHOD(addNotificationRequest:(UNNotificationRequest*)request)
+{
+    if ([UNUserNotificationCenter class]) {
+      UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+        [center addNotificationRequest:request
+                 withCompletionHandler:^(NSError* _Nullable error) {
+            if (!error) {
+                NSLog(@"notifier request success");
+                }
+            }
+        ];
+    }
 }
 
 /**

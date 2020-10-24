@@ -24,6 +24,52 @@ const NOTIF_REGISTER_EVENT = 'remoteNotificationsRegistered';
 const NOTIF_REGISTRATION_ERROR_EVENT = 'remoteNotificationRegistrationError';
 const DEVICE_LOCAL_NOTIF_EVENT = 'localNotificationReceived';
 
+export type RepeatInterval =
+  | 'year'
+  | 'hour'
+  | 'month'
+  | 'week'
+  | 'day'
+  | 'minute';
+
+export type NotificationRequest = {
+  /**
+   * identifier of the notification.
+   * Required in order to retrieve specific notification.
+   */
+  id: string,
+  /**
+   * A short description of the reason for the alert.
+   */
+  title?: string,
+  /**
+   * A secondary description of the reason for the alert.
+   */
+  subtitle?: string,
+  /**
+   * The message displayed in the notification alert.
+   */
+  body?: string,
+  /**
+   * The number to display as the app's icon badge.
+   */
+  badge?: number,
+  /**
+   * The sound to play when the notification is delivered.
+   */
+  sound?: string,
+
+  /**
+   * repeat interval
+   */
+  repeatInterval?: RepeatInterval,
+  /**
+   * isSilent
+   * sets notification to be silent
+   */
+  isSilent?: boolean,
+};
+
 export type ContentAvailable = 1 | null | void;
 
 export type FetchResult = {
@@ -77,6 +123,7 @@ class PushNotificationIOS {
   _data: Object;
   _alert: string | Object;
   _title: string;
+  _subtitle: string;
   _sound: string;
   _category: string;
   _contentAvailable: ContentAvailable;
@@ -102,8 +149,7 @@ class PushNotificationIOS {
 
   /**
    * Schedules the localNotification for immediate presentation.
-   *
-   * See https://reactnative.dev/docs/pushnotificationios.html#presentlocalnotification
+   * @deprecated use `addNotificationRequest` instead
    */
   static presentLocalNotification(details: Object) {
     RNCPushNotificationIOS.presentLocalNotification(details);
@@ -111,11 +157,17 @@ class PushNotificationIOS {
 
   /**
    * Schedules the localNotification for future presentation.
-   *
-   * See https://reactnative.dev/docs/pushnotificationios.html#schedulelocalnotification
+   * @deprecated use `addNotificationRequest` instead
    */
   static scheduleLocalNotification(details: Object) {
     RNCPushNotificationIOS.scheduleLocalNotification(details);
+  }
+
+  /**
+   * addNotificationRequest
+   */
+  static addNotificationRequest(request: NotificationRequest) {
+    RNCPushNotificationIOS.addNotificationRequest(request);
   }
 
   /**
@@ -408,6 +460,7 @@ class PushNotificationIOS {
         if (notifKey === 'aps') {
           this._alert = notifVal.alert;
           this._title = notifVal?.alertTitle;
+          this._subtitle = notifVal?.subtitle;
           this._sound = notifVal.sound;
           this._badgeCount = notifVal.badge;
           this._category = notifVal.category;
@@ -424,6 +477,7 @@ class PushNotificationIOS {
       this._sound = nativeNotif.soundName;
       this._alert = nativeNotif.body;
       this._title = nativeNotif?.title;
+      this._subtitle = nativeNotif?.subtitle;
       this._data = nativeNotif.userInfo;
       this._category = nativeNotif.category;
       this._fireDate = nativeNotif.fireDate;
@@ -497,6 +551,14 @@ class PushNotificationIOS {
    */
   getTitle(): ?string | ?Object {
     return this._title;
+  }
+
+  /**
+   * Gets the notification's subtitle from the `aps` object
+   *
+   */
+  getSubtitle(): ?string | ?Object {
+    return this._subtitle;
   }
 
   /**

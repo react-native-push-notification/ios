@@ -101,6 +101,15 @@ export const App = () => {
     });
   };
 
+  const addNotificationRequest = () => {
+    PushNotificationIOS.addNotificationRequest({
+      id: 'test',
+      title: 'title',
+      subtitle: 'subtitle',
+      body: 'body',
+    });
+  };
+
   const removeAllPendingNotificationRequests = () => {
     PushNotificationIOS.removeAllPendingNotificationRequests();
   };
@@ -132,6 +141,7 @@ export const App = () => {
 
     const result = `
       Title:  ${notification.getTitle()};\n
+      Subtitle:  ${notification.getSubtitle()};\n
       Message: ${notification.getMessage()};\n
       badge: ${notification.getBadgeCount()};\n
       sound: ${notification.getSound()};\n
@@ -162,7 +172,8 @@ export const App = () => {
     Alert.alert(
       'Local Notification Received',
       `Alert title:  ${notification.getTitle()},
-      'Alert message:  ${notification.getMessage()},
+      Alert subtitle:  ${notification.getSubtitle()},
+      Alert message:  ${notification.getMessage()},
       Notification is clicked: ${String(isClicked)}.`,
       [
         {
@@ -192,6 +203,10 @@ export const App = () => {
         label="Schedule fake local notification"
       />
       <Button
+        onPress={addNotificationRequest}
+        label="Add Notification Request"
+      />
+      <Button
         onPress={removeAllPendingNotificationRequests}
         label="Remove All Pending Notification Requests"
       />
@@ -199,7 +214,6 @@ export const App = () => {
         onPress={sendSilentNotification}
         label="Send fake silent notification"
       />
-
       <Button
         onPress={() => PushNotificationIOS.setApplicationIconBadgeNumber(42)}
         label="Set app's icon badge to 42"
