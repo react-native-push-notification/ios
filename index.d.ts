@@ -179,7 +179,7 @@ export interface PushNotificationIOSStatic {
    */
   FetchResult: FetchResult;
   /**
-   * Authorization status of notification settings 
+   * Authorization status of notification settings
    * For a list of possible values, see `PushNotificationIOS.AuthorizationStatus`.
    */
   AuthorizationStatus: AuthorizationStatus;
@@ -303,10 +303,6 @@ export interface PushNotificationIOSStatic {
    */
   removeEventListener(
     type: PushNotificationEventName,
-    handler:
-      | ((notification: PushNotification) => void)
-      | ((deviceToken: string) => void)
-      | ((error: {message: string; code: number; details: any}) => void),
   ): void;
 
   /**

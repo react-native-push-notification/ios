@@ -54,18 +54,15 @@ export const App = () => {
     );
 
     return () => {
-      PushNotificationIOS.removeEventListener('register', onRegistered);
+      PushNotificationIOS.removeEventListener('register');
       PushNotificationIOS.removeEventListener(
-        'registrationError',
-        onRegistrationError,
+        'registrationError'
       );
       PushNotificationIOS.removeEventListener(
-        'notification',
-        onRemoteNotification,
+        'notification'
       );
       PushNotificationIOS.removeEventListener(
-        'localNotification',
-        onLocalNotification,
+        'localNotification'
       );
     };
   }, []);
