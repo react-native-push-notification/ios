@@ -102,7 +102,7 @@ class PushNotificationIOS {
 
   /**
    * Schedules the localNotification for immediate presentation.
-   * 
+   *
    * See https://reactnative.dev/docs/pushnotificationios.html#presentlocalnotification
    */
   static presentLocalNotification(details: Object) {
