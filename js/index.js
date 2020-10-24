@@ -102,7 +102,7 @@ class PushNotificationIOS {
 
   /**
    * Schedules the localNotification for immediate presentation.
-   *
+   * 
    * See https://reactnative.dev/docs/pushnotificationios.html#presentlocalnotification
    */
   static presentLocalNotification(details: Object) {
@@ -120,8 +120,8 @@ class PushNotificationIOS {
 
   /**
    * Cancels all scheduled localNotifications.
-   * @deprecated This method is deprecated in iOS 10 and will be removed from future release
-   * See https://reactnative.dev/docs/pushnotificationios.html#cancelalllocalnotifications
+   * @deprecated use `removeAllPendingNotificationRequests` instead
+   * - This method is deprecated in iOS 10 and will be removed from future release
    */
   static cancelAllLocalNotifications() {
     invariant(
