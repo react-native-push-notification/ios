@@ -129,7 +129,7 @@ export const App = () => {
       {
         id: 'test',
         actions: [
-          {id: 'reply', title: 'Reply', options: {foreground: true}},
+          {id: 'open', title: 'Open', options: {foreground: true}},
           {
             id: 'ignore',
             title: 'Desruptive',
@@ -137,7 +137,7 @@ export const App = () => {
           },
           {
             id: 'text',
-            title: 'Text',
+            title: 'Text Input',
             options: {foreground: true},
             textInput: {buttonTitle: 'Send'},
           },

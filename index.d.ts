@@ -156,6 +156,10 @@ export type NotificationRequest = {
    */
   sound?: string;
   /**
+   * The category of this notification. Required for actionable notifications.
+   */
+  category?: string;
+  /**
    * The date which notification triggers.
    */
   fireDate?: Date;

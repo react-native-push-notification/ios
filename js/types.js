@@ -25,6 +25,10 @@ export type NotificationRequest = {
    */
   sound?: string,
   /**
+   * The category of this notification. Required for actionable notifications.
+   */
+  category?: string,
+  /**
    * The date which notification triggers.
    */
   fireDate?: Date,
@@ -56,6 +60,10 @@ export type NotificationAlert = {
  * Notification Category that can include specific actions
  */
 export type NotificationCategory = {
+  /**
+   * Identifier of the notification category.
+   * Notification with this category will have the specified actions.
+   */
   id: string,
   actions: NotificationAction[],
 };
@@ -65,7 +73,7 @@ export type NotificationCategory = {
  */
 export type NotificationAction = {
   /**
-   * Id of Action.
+   * Identifier of Action.
    * This value will be returned as actionIdentifier when notification is received.
    */
   id: string,
