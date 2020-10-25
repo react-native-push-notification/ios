@@ -41,9 +41,13 @@ RCT_ENUM_CONVERTER(NSCalendarUnit,
 
 @interface RNCPushNotificationIOS ()
 @property (nonatomic, strong) NSMutableDictionary *remoteNotificationCallbacks;
-@property (nonatomic, strong) UNUserNotificationCenter *center;
+
 @end
 
+/**
+ * Type deprecated in iOS 10.0
+ * TODO: This method will be removed in the next major version
+ */
 @implementation RCTConvert (UILocalNotification)
 
 + (UILocalNotification *)UILocalNotification:(id)json
@@ -83,8 +87,7 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
     
     BOOL isSilent = [RCTConvert BOOL:details[@"isSilent"]];
     NSString* identifier = [RCTConvert NSString:details[@"id"]];
-    NSCalendarUnit interval = [RCTConvert NSCalendarUnit:details[@"repeatInterval"]];
-    BOOL repeats = interval > 0;
+    
     
     UNMutableNotificationContent* content = [[UNMutableNotificationContent alloc] init];
     content.title= [RCTConvert NSString:details[@"title"]];
@@ -95,8 +98,15 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
     if (!isSilent) {
       content.sound = [RCTConvert NSString:details[@"sound"]] ? [UNNotificationSound soundNamed:[RCTConvert NSString:details[@"sound"]]] : [UNNotificationSound defaultSound];
     }
+
+    NSDate* fireDate = [RCTConvert NSDate:details[@"fireDate"]];
+    BOOL repeats = [RCTConvert BOOL:details[@"repeats"]];
+    NSDateComponents *triggerDate = fireDate ? [[NSCalendar currentCalendar] components:NSCalendarUnitYear +
+                                     NSCalendarUnitMonth + NSCalendarUnitDay +
+                                     NSCalendarUnitHour + NSCalendarUnitMinute +
+                                                NSCalendarUnitSecond + NSCalendarUnitTimeZone fromDate:fireDate] : nil;
     
-    UNTimeIntervalNotificationTrigger* trigger = repeats?  [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:interval repeats:repeats] : nil;
+    UNCalendarNotificationTrigger* trigger = triggerDate ? [UNCalendarNotificationTrigger triggerWithDateMatchingComponents:triggerDate repeats:repeats] : nil;
 
     UNNotificationRequest* notification = [UNNotificationRequest requestWithIdentifier:identifier content:content trigger:trigger];
     return notification;

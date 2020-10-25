@@ -108,6 +108,8 @@ export const App = () => {
       subtitle: 'subtitle',
       body: 'body',
       category: 'test',
+      fireDate: new Date(new Date().valueOf() + 2000),
+      repeats: true,
     });
   };
 

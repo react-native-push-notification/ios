@@ -24,14 +24,6 @@ const NOTIF_REGISTER_EVENT = 'remoteNotificationsRegistered';
 const NOTIF_REGISTRATION_ERROR_EVENT = 'remoteNotificationRegistrationError';
 const DEVICE_LOCAL_NOTIF_EVENT = 'localNotificationReceived';
 
-export type RepeatInterval =
-  | 'year'
-  | 'hour'
-  | 'month'
-  | 'week'
-  | 'day'
-  | 'minute';
-
 export type NotificationRequest = {
   /**
    * identifier of the notification.
@@ -58,11 +50,14 @@ export type NotificationRequest = {
    * The sound to play when the notification is delivered.
    */
   sound?: string,
-
   /**
-   * The time that must elapse from the current time before the trigger fires.
+   * The date which notification triggers.
    */
-  repeatInterval?: RepeatInterval,
+  fireDate?: Date,
+  /**
+   * Sets notification to repeat daily.
+   */
+  repeats?: boolean,
   /**
    * Sets notification to be silent
    */
@@ -196,7 +191,12 @@ class PushNotificationIOS {
    * Fires immedietely if firedate or repeatInterval is not set.
    */
   static addNotificationRequest(request: NotificationRequest) {
-    RNCPushNotificationIOS.addNotificationRequest(request);
+    const handledRequest =
+      request.fireDate instanceof Date
+        ? {...request, fireDate: request.fireDate.toISOString()}
+        : request;
+
+    RNCPushNotificationIOS.addNotificationRequest(handledRequest);
   }
 
   /**
