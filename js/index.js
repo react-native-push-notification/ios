@@ -153,6 +153,14 @@ class PushNotificationIOS {
   _contentAvailable: ContentAvailable;
   _badgeCount: number;
   _notificationId: string;
+  /**
+   * The id of action the user has taken taken.
+   */
+  _actionIdentifier: ?string;
+  /**
+   * The text user has input if user responded with a text action.
+   */
+  _userText: ?string;
   _isRemote: boolean;
   _remoteNotificationCompleteCallbackCalled: boolean;
   _threadID: string;
@@ -500,11 +508,14 @@ class PushNotificationIOS {
       this._notificationId = nativeNotif.notificationId;
     }
 
+    this._actionIdentifier = nativeNotif.actionIdentifier;
+    this._userText = nativeNotif.userText;
     if (nativeNotif.remote) {
       // Extract data from Apple's `aps` dict as defined:
       // https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html
       Object.keys(nativeNotif).forEach((notifKey) => {
         const notifVal = nativeNotif[notifKey];
+
         if (notifKey === 'aps') {
           this._alert = notifVal.alert;
           this._title = notifVal?.alertTitle;
@@ -651,6 +662,20 @@ class PushNotificationIOS {
    */
   getThreadID(): ?string {
     return this._threadID;
+  }
+
+  /**
+   * Get's the action id of the notification action user has taken.
+   */
+  getActionIdentifier(): ?string {
+    return this._actionIdentifier;
+  }
+
+  /**
+   * Gets the text user has inputed if user has taken the text action response.
+   */
+  getUserText(): ?string {
+    return this._userText;
   }
 }
 

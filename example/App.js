@@ -220,6 +220,8 @@ export const App = () => {
       `Alert title:  ${notification.getTitle()},
       Alert subtitle:  ${notification.getSubtitle()},
       Alert message:  ${notification.getMessage()},
+      Action Id:  ${notification.getActionIdentifier()},
+      User Text:  ${notification.getUserText()},
       Notification is clicked: ${String(isClicked)}.`,
       [
         {

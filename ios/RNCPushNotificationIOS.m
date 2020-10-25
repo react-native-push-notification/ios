@@ -236,43 +236,45 @@ static NSDictionary *RCTFormatUNNotification(UNNotification *notification)
 
 static NSDictionary *RCTFormatUNNotificationRequest(UNNotificationRequest *request)
 {
-    NSMutableDictionary *formattedNotification = [NSMutableDictionary dictionary];
+    NSMutableDictionary *formattedRequest = [NSMutableDictionary dictionary];
     
-    formattedNotification[@"id"] = RCTNullIfNil(request.identifier);
+    formattedRequest[@"id"] = RCTNullIfNil(request.identifier);
     
     UNNotificationContent *content = request.content;
-    formattedNotification[@"title"] = RCTNullIfNil(content.title);
-    formattedNotification[@"subtitle"] = RCTNullIfNil(content.subtitle);
-    formattedNotification[@"body"] = RCTNullIfNil(content.body);
-    formattedNotification[@"category"] = RCTNullIfNil(content.categoryIdentifier);
-    formattedNotification[@"thread-id"] = RCTNullIfNil(content.threadIdentifier);
-    formattedNotification[@"userInfo"] = RCTNullIfNil(RCTJSONClean(content.userInfo));
+    formattedRequest[@"title"] = RCTNullIfNil(content.title);
+    formattedRequest[@"subtitle"] = RCTNullIfNil(content.subtitle);
+    formattedRequest[@"body"] = RCTNullIfNil(content.body);
+    formattedRequest[@"category"] = RCTNullIfNil(content.categoryIdentifier);
+    formattedRequest[@"thread-id"] = RCTNullIfNil(content.threadIdentifier);
+    formattedRequest[@"userInfo"] = RCTNullIfNil(RCTJSONClean(content.userInfo));
     
     if (request.trigger) {
         UNCalendarNotificationTrigger* trigger = (UNCalendarNotificationTrigger*)request.trigger;
         NSDateFormatter *formatter = [NSDateFormatter new];
         [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"];
         NSString *dateString = [formatter stringFromDate:trigger.nextTriggerDate];
-        formattedNotification[@"date"] = dateString;
+        formattedRequest[@"date"] = dateString;
     }
 
-    return formattedNotification;
+    return formattedRequest;
 }
 
 API_AVAILABLE(ios(10.0))
-static NSDictionary *RCTFormatOpenedUNNotification(UNNotificationResponse *response)
+static NSDictionary *RCTFormatOpenedUNNotification(UNTextInputNotificationResponse *response)
 {
   UNNotification* notification = response.notification;
-  NSMutableDictionary *formattedNotification = [RCTFormatUNNotification(notification) mutableCopy];
+  NSMutableDictionary *formattedResponse = [RCTFormatUNNotification(notification) mutableCopy];
   UNNotificationContent *content = notification.request.content;
     
   NSMutableDictionary *userInfo = [content.userInfo mutableCopy];
   userInfo[@"userInteraction"] = [NSNumber numberWithInt:1];
   userInfo[@"actionIdentifier"] = response.actionIdentifier;
 
-  formattedNotification[@"userInfo"] = RCTNullIfNil(RCTJSONClean(userInfo));
+  formattedResponse[@"userInfo"] = RCTNullIfNil(RCTJSONClean(userInfo));
+  formattedResponse[@"actionIdentifier"] = RCTNullIfNil(response.actionIdentifier);
+  formattedResponse[@"userText"] = RCTNullIfNil(response.userText);
     
-  return formattedNotification;
+  return formattedResponse;
 }
 
 #endif //TARGET_OS_TV / TARGET_OS_UIKITFORMAC
