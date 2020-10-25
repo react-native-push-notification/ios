@@ -7,6 +7,10 @@
 
 React Native Push Notification API for iOS.
 
+| Notification                                                                                                                  | With Action                                                                                                                   | With TextInput Action                                                                                                         |
+| ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| <img src="https://user-images.githubusercontent.com/6936373/97115527-77c6ee80-173a-11eb-8440-049590a25f31.jpeg" width="320"/> | <img src="https://user-images.githubusercontent.com/6936373/97115526-772e5800-173a-11eb-8b51-c5263bced07a.jpeg" width="320"/> | <img src="https://user-images.githubusercontent.com/6936373/97115522-74cbfe00-173a-11eb-9644-fc1d5e634d6b.jpeg" width="320"/> |
+
 ## Getting started
 
 ### Install
@@ -116,14 +120,7 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
          withCompletionHandler:(void (^)(void))completionHandler
 {
   [RNCPushNotificationIOS didReceiveNotificationResponse:response];
-  completionHandler();
 }
-// IOS 4-10 Required for the localNotification event.
-- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
-{
- [RNCPushNotificationIOS didReceiveLocalNotification:notification];
-}
-
 ```
 
 And then in your AppDelegate implementation, add the following:
@@ -184,6 +181,57 @@ export const App = () => {
 };
 ```
 
+## How to perform different action based on user selected action.
+
+```js
+export const App = () => {
+  const [permissions, setPermissions] = useState({});
+
+  /**
+   * By calling this function, notification with category `userAction` will have action buttons
+   */
+  const setNotificationCategories = () => {
+    PushNotificationIOS.setNotificationCategories([
+      {
+        id: 'userAction',
+        actions: [
+          {id: 'open', title: 'Open', options: {foreground: true}},
+          {
+            id: 'ignore',
+            title: 'Desruptive',
+            options: {foreground: true, destructive: true},
+          },
+          {
+            id: 'text',
+            title: 'Text Input',
+            options: {foreground: true},
+            textInput: {buttonTitle: 'Send'},
+          },
+        ],
+      },
+    ]);
+  };
+
+  useEffect(() => {
+    PushNotificationIOS.addEventListener('notification', onRemoteNotification);
+  });
+
+  const onRemoteNotification = (notification) => {
+    const actionIdentifier = notification.getActionIdentifier();
+
+    if (actionIdentifier === 'open') {
+      // Perform action based on open action
+    }
+
+    if (actionIdentifier === 'text') {
+      // Text that of user input.
+      const userText = notification.getUserText();
+      // Perform action based on textinput action
+    }
+  };
+};
+```
+
 # Reference
 
 ## Methods
@@ -194,6 +242,7 @@ export const App = () => {
 PushNotificationIOS.presentLocalNotification(details);
 ```
 
+_Deprecated_ - use `addNotificationRequest` instead.
 Schedules the localNotification for immediate presentation.
 
 **Parameters:**
@@ -221,6 +270,7 @@ details is an object containing:
 PushNotificationIOS.scheduleLocalNotification(details);
 ```
 
+_Deprecated_ - use `addNotificationRequest` instead.
 Schedules the localNotification for future presentation.
 
 **Parameters:**
@@ -241,6 +291,71 @@ details is an object containing:
 - `userInfo` : An object containing additional notification data (optional).
 - `applicationIconBadgeNumber` The number to display as the app's icon badge. Setting the number to 0 removes the icon badge (optional).
 - `repeatInterval` : The interval to repeat as a string. Possible values: `minute`, `hour`, `day`, `week`, `month`, `year` (optional).
+
+---
+
+### `addNotificationRequest()`
+
+```jsx
+PushNotificationIOS.addNotificationRequest(request);
+```
+
+Sends notificationRequest to notification center at specified firedate.
+Fires immediately if firedate is not set.
+
+**Parameters:**
+
+| Name    | Type   | Required | Description |
+| ------- | ------ | -------- | ----------- |
+| request | object | Yes      | See below.  |
+
+request is an object containing:
+
+- `id`: Identifier of the notification. Required in order to be able to retrieve specific notification. (required)
+- `title`: A short description of the reason for the alert.
+- `subtitle`: A secondary description of the reason for the alert.
+- `body` : The message displayed in the notification alert.
+- `badge` The number to display as the app's icon badge. Setting the number to 0 removes the icon badge.
+- `fireDate` : The date and time when the system should deliver the notification.
+- `repeats` : Sets notification to repeat daily. Must be used with fireDate.
+- `sound` : The sound played when the notification is fired.
+- `category` : The category of this notification, required for actionable notifications.
+- `isSilent` : If true, the notification will appear without sound.
+- `userInfo` : An object containing additional notification data.
+
+---
+
+### `setNotificationCategories()`
+
+```jsx
+PushNotificationIOS.setNotificationCategories(categories);
+```
+
+Sets category for the notification center.
+Allows you to add specific actions for notification with specific category.
+
+**Parameters:**
+
+| Name       | Type     | Required | Description |
+| ---------- | -------- | -------- | ----------- |
+| categories | object[] | Yes      | See below.  |
+
+`category` is an object containing:
+
+- `id`: Identifier of the notification category. Notification with this category will have the specified actions. (required)
+- `actions`: An array of notification actions to be attached to the notification of category id.
+
+`action` is an object containing:
+
+- `id`: Identifier of Action. This value will be returned as actionIdentifier when notification is received.
+- `title`: Text to be shown on notification action button.
+- `options`: Options for notification action.
+  - `foreground`: If `true`, action will be displayed on notification.
+  - `destructive`: If `true`, action will be displayed as destructive notification.
+  - `authenticationRequired`: If `true`, action will only be displayed for authenticated user.
+- `textInput`: Option for textInput action. If textInput prop exists, then user action will automatically become a text input action. The text user inputs will be in the userText field of the received notification.
+  - `buttonTitle`: Text to be shown on button when user finishes text input. Default is "Send" or its equivalent word in user's language setting.
+  - `placeholder`: Placeholder for text input for text input action.
 
 ---
 

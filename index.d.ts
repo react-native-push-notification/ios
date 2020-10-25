@@ -15,11 +15,67 @@ export interface AuthorizationStatus {
   UNAuthorizationStatusProvisional: 3;
 }
 
+/**
+ * Alert Object that can be included in the aps `alert` object
+ */
+export type NotificationAlert = {
+  title?: string;
+  subtitle?: string;
+  body?: string;
+};
+
+/**
+ * Notification Category that can include specific actions
+ */
+export type NotificationCategory = {
+  id: string;
+  actions: NotificationAction[];
+};
+
+/**
+ * Notification Action that can be added to specific categories
+ */
+export type NotificationAction = {
+  /**
+   * Id of Action.
+   * This value will be returned as actionIdentifier when notification is received.
+   */
+  id: string;
+  /**
+   * Text to be shown on notification action button.
+   */
+  title: string;
+  /**
+   * Option for notification action.
+   */
+  options?: {
+    foreground?: boolean;
+    destructive?: boolean;
+    authenticationRequired?: boolean;
+  };
+  /**
+   * Option for textInput action.
+   * If textInput prop exists, then user action will automatically become a text input action.
+   * The text user inputs will be in the userText field of the received notification.
+   */
+  textInput?: {
+    /**
+     * Text to be shown on button when user finishes text input.
+     * Default is "Send" or its equivalent word in user's language setting.
+     */
+    buttonTitle?: string;
+    /**
+     * Placeholder for text input for text input action.
+     */
+    placeholder?: string;
+  };
+};
+
 export interface PushNotification {
   /**
    * An alias for `getAlert` to get the notification's main message string
    */
-  getMessage(): string | Record<string, any>;
+  getMessage(): string | NotificationAlert;
 
   /**
    * Gets the sound string from the `aps` object
@@ -34,7 +90,7 @@ export interface PushNotification {
   /**
    * Gets the notification's main message from the `aps` object
    */
-  getAlert(): string | Record<string, any>;
+  getAlert(): string | NotificationAlert;
 
   /**
    * Gets the notification's title from the `aps` object
@@ -57,12 +113,75 @@ export interface PushNotification {
   getData(): Record<string, any>;
 
   /**
+   * Get's the action id of the notification action user has taken.
+   */
+  getActionIdentifier(): string | undefined;
+
+  /**
+   * Gets the text user has inputed if user has taken the text action response.
+   */
+  getUserText(): string | undefined;
+
+  /**
    * iOS Only
    * Signifies remote notification handling is complete
    */
   finish(result: string): void;
 }
 
+export type NotificationRequest = {
+  /**
+   * identifier of the notification.
+   * Required in order to retrieve specific notification.
+   */
+  id: string;
+  /**
+   * A short description of the reason for the alert.
+   */
+  title?: string;
+  /**
+   * A secondary description of the reason for the alert.
+   */
+  subtitle?: string;
+  /**
+   * The message displayed in the notification alert.
+   */
+  body?: string;
+  /**
+   * The number to display as the app's icon badge.
+   */
+  badge?: number;
+  /**
+   * The sound to play when the notification is delivered.
+   */
+  sound?: string;
+  /**
+   * The category of this notification. Required for actionable notifications.
+   */
+  category?: string;
+  /**
+   * The date which notification triggers.
+   */
+  fireDate?: Date;
+  /**
+   * Sets notification to repeat daily.
+   * Must be used with fireDate.
+   */
+  repeats?: boolean;
+  /**
+   * Sets notification to be silent
+   */
+  isSilent?: boolean;
+  /**
+   * Optional data to be added to the notification
+   */
+  userInfo?: Record<string, any>;
+};
+
+/**
+ * @deprecated see `NotificationRequest`
+ * - This type will be removed in the next major version
+ */
 export interface PresentLocalNotificationDetails {
   /**
    * The "action" displayed beneath an actionable notification. Defaults to "view";
@@ -98,6 +217,10 @@ export interface PresentLocalNotificationDetails {
   userInfo?: Record<string, any>;
 }
 
+/**
+ * @deprecated see `NotificationRequest`
+ * - This type will be removed in the next major version
+ */
 export interface ScheduleLocalNotificationDetails {
   /**
    * The "action" displayed beneath an actionable notification. Defaults to "view";
@@ -145,8 +268,11 @@ export interface ScheduleLocalNotificationDetails {
 export type DeliveredNotification = {
   identifier: string;
   title: string;
+  subtitle: string;
   body: string;
   category?: string;
+  actionIdentifier?: string;
+  userText?: string;
   userInfo?: Record<string, any>;
   'thread-id'?: string;
 };
@@ -168,9 +294,6 @@ export type PushNotificationEventName =
 
 /**
  * Handle push notifications for your app, including permission handling and icon badge number.
- * @see https://reactnative.dev/docs/pushnotificationios.html#content
- *
- * //FIXME: BGR: The documentation seems completely off compared to the actual js implementation. I could never get the example to run
  */
 export interface PushNotificationIOSStatic {
   /**
@@ -184,6 +307,7 @@ export interface PushNotificationIOSStatic {
    */
   AuthorizationStatus: AuthorizationStatus;
   /**
+   * @deprecated use `addNotificationRequest`
    * Schedules the localNotification for immediate presentation.
    * details is an object containing:
    * alertBody : The message displayed in the notification alert.
@@ -196,6 +320,7 @@ export interface PushNotificationIOSStatic {
   presentLocalNotification(details: PresentLocalNotificationDetails): void;
 
   /**
+   * @deprecated use `addNotificationRequest`
    * Schedules the localNotification for future presentation.
    * details is an object containing:
    * fireDate : The date and time when the system should deliver the notification.
@@ -207,6 +332,12 @@ export interface PushNotificationIOSStatic {
    * applicationIconBadgeNumber (optional) : The number to display as the app's icon badge. Setting the number to 0 removes the icon badge.
    */
   scheduleLocalNotification(details: ScheduleLocalNotificationDetails): void;
+
+  /**
+   * Sends notificationRequest to notification center at specified firedate.
+   * Fires immediately if firedate is not set.
+   */
+  addNotificationRequest(request: NotificationRequest): void;
 
   /**
    * Cancels all scheduled localNotifications
@@ -254,16 +385,27 @@ export interface PushNotificationIOSStatic {
   getApplicationIconBadgeNumber(callback: (badge: number) => void): void;
 
   /**
-   * Cancel local notifications.
-   * Optionally restricts the set of canceled notifications to those notifications whose userInfo fields match the corresponding fields in the userInfo argument.
+   * @deprecated use `removeAllPendingNotificationRequests`
+   * - This method will be removed in the next major version
+   * - Cancel local notifications.
+   * - Optionally restricts the set of canceled notifications to those notifications whose userInfo fields match the corresponding fields in the userInfo argument.
    */
   cancelLocalNotifications(userInfo: Record<string, any>): void;
 
   /**
-   * Gets the local notifications that are currently scheduled.
+   * @deprecated use `getPendingNotificationRequests`
+   * - This method will be removed in the next major version
+   * - Gets the local notifications that are currently scheduled.
    */
   getScheduledLocalNotifications(
     callback: (notifications: ScheduleLocalNotificationDetails[]) => void,
+  ): void;
+
+  /**
+   * - Gets all pending notification requests that are currently scheduled.
+   */
+  getPendingNotificationRequests(
+    callback: (notifications: NotificationRequest[]) => void,
   ): void;
 
   /**
@@ -308,9 +450,7 @@ export interface PushNotificationIOSStatic {
    * Removes the event listener. Do this in `componentWillUnmount` to prevent
    * memory leaks
    */
-  removeEventListener(
-    type: PushNotificationEventName,
-  ): void;
+  removeEventListener(type: PushNotificationEventName): void;
 
   /**
    * Requests all notification permissions from iOS, prompting the user's
@@ -349,6 +489,12 @@ export interface PushNotificationIOSStatic {
    * object if the app was launched by a push notification, or `null` otherwise.
    */
   getInitialNotification(): Promise<PushNotification | null>;
+
+  /**
+   * Sets notification category to notification center.
+   * Used to set specific actions for notifications that contains specified category
+   */
+  setNotificationCategories(categories: NotificationCategory[]): void;
 }
 
 declare const PushNotificationIOS: PushNotificationIOSStatic;
