@@ -95,16 +95,19 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
     content.body =[RCTConvert NSString:details[@"body"]];
     content.badge = [RCTConvert NSNumber:details[@"badge"]];
     content.categoryIdentifier = [RCTConvert NSString:details[@"category"]];
+    content.userInfo = [RCTConvert NSDictionary:details[@"userInfo"]];
     if (!isSilent) {
       content.sound = [RCTConvert NSString:details[@"sound"]] ? [UNNotificationSound soundNamed:[RCTConvert NSString:details[@"sound"]]] : [UNNotificationSound defaultSound];
     }
 
     NSDate* fireDate = [RCTConvert NSDate:details[@"fireDate"]];
     BOOL repeats = [RCTConvert BOOL:details[@"repeats"]];
-    NSDateComponents *triggerDate = fireDate ? [[NSCalendar currentCalendar] components:NSCalendarUnitYear +
-                                     NSCalendarUnitMonth + NSCalendarUnitDay +
-                                     NSCalendarUnitHour + NSCalendarUnitMinute +
-                                                NSCalendarUnitSecond + NSCalendarUnitTimeZone fromDate:fireDate] : nil;
+    NSDateComponents *triggerDate = fireDate ? [[NSCalendar currentCalendar]
+                                                components:NSCalendarUnitYear +
+                                                NSCalendarUnitMonth + NSCalendarUnitDay +
+                                                NSCalendarUnitHour + NSCalendarUnitMinute +
+                                                NSCalendarUnitSecond + NSCalendarUnitTimeZone
+                                                fromDate:fireDate] : nil;
     
     UNCalendarNotificationTrigger* trigger = triggerDate ? [UNCalendarNotificationTrigger triggerWithDateMatchingComponents:triggerDate repeats:repeats] : nil;
 
@@ -181,6 +184,10 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
 
 #if !TARGET_OS_TV && !TARGET_OS_UIKITFORMAC
 
+/**
+ * Type deprecated in iOS 10.0
+ * TODO: This method will be removed in the next major version
+ */
 static NSDictionary *RCTFormatLocalNotification(UILocalNotification *notification)
 {
   NSMutableDictionary *formattedLocalNotification = [NSMutableDictionary dictionary];
@@ -225,6 +232,31 @@ static NSDictionary *RCTFormatUNNotification(UNNotification *notification)
   formattedNotification[@"userInfo"] = RCTNullIfNil(RCTJSONClean(content.userInfo));
   
   return formattedNotification;
+}
+
+static NSDictionary *RCTFormatUNNotificationRequest(UNNotificationRequest *request)
+{
+    NSMutableDictionary *formattedNotification = [NSMutableDictionary dictionary];
+    
+    formattedNotification[@"id"] = RCTNullIfNil(request.identifier);
+    
+    UNNotificationContent *content = request.content;
+    formattedNotification[@"title"] = RCTNullIfNil(content.title);
+    formattedNotification[@"subtitle"] = RCTNullIfNil(content.subtitle);
+    formattedNotification[@"body"] = RCTNullIfNil(content.body);
+    formattedNotification[@"category"] = RCTNullIfNil(content.categoryIdentifier);
+    formattedNotification[@"thread-id"] = RCTNullIfNil(content.threadIdentifier);
+    formattedNotification[@"userInfo"] = RCTNullIfNil(RCTJSONClean(content.userInfo));
+    
+    if (request.trigger) {
+        UNCalendarNotificationTrigger* trigger = (UNCalendarNotificationTrigger*)request.trigger;
+        NSDateFormatter *formatter = [NSDateFormatter new];
+        [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"];
+        NSString *dateString = [formatter stringFromDate:trigger.nextTriggerDate];
+        formattedNotification[@"date"] = dateString;
+    }
+
+    return formattedNotification;
 }
 
 API_AVAILABLE(ios(10.0))
@@ -418,19 +450,19 @@ RCT_EXPORT_METHOD(requestPermissions:(NSDictionary *)permissions
   // Add a listener to make sure that startObserving has been called
   [self addListener:@"remoteNotificationsRegistered"];
   
-  UIUserNotificationType types = UIUserNotificationTypeNone;
+  UNAuthorizationOptions types = UNAuthorizationOptionNone;
   if (permissions) {
     if ([RCTConvert BOOL:permissions[@"alert"]]) {
-      types |= UIUserNotificationTypeAlert;
+      types |= UNAuthorizationOptionAlert;
     }
     if ([RCTConvert BOOL:permissions[@"badge"]]) {
-      types |= UIUserNotificationTypeBadge;
+      types |= UNAuthorizationOptionBadge;
     }
     if ([RCTConvert BOOL:permissions[@"sound"]]) {
-      types |= UIUserNotificationTypeSound;
+      types |= UNAuthorizationOptionSound;
     }
   } else {
-    types = UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound;
+    types = UNAuthorizationOptionAlert | UNAuthorizationOptionBadge | UNAuthorizationOptionSound;
   }
   
   [UNUserNotificationCenter.currentNotificationCenter
@@ -597,6 +629,19 @@ RCT_EXPORT_METHOD(getScheduledLocalNotifications:(RCTResponseSenderBlock)callbac
     [formattedScheduledLocalNotifications addObject:RCTFormatLocalNotification(notification)];
   }
   callback(@[formattedScheduledLocalNotifications]);
+}
+
+RCT_EXPORT_METHOD(getPendingNotificationRequests: (RCTResponseSenderBlock)callback)
+{
+    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+    [center getPendingNotificationRequestsWithCompletionHandler:^(NSArray<UNNotificationRequest *> *_Nonnull requests) {
+      NSMutableArray<NSDictionary *> *formattedRequests = [NSMutableArray new];
+      
+      for (UNNotification *request in requests) {
+        [formattedRequests addObject:RCTFormatUNNotificationRequest(request)];
+      }
+      callback(@[formattedRequests]);
+    }];
 }
 
 RCT_EXPORT_METHOD(removeAllDeliveredNotifications)

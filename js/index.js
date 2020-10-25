@@ -56,6 +56,7 @@ export type NotificationRequest = {
   fireDate?: Date,
   /**
    * Sets notification to repeat daily.
+   * Must be used with fireDate.
    */
   repeats?: boolean,
   /**
@@ -313,8 +314,7 @@ class PushNotificationIOS {
 
   /**
    * Gets the local notifications that are currently scheduled.
-   *
-   * See https://reactnative.dev/docs/pushnotificationios.html#getscheduledlocalnotifications
+   * @deprecated - use `getPendingNotificationRequests`
    */
   static getScheduledLocalNotifications(callback: Function) {
     invariant(
@@ -322,6 +322,17 @@ class PushNotificationIOS {
       'PushNotificationManager is not available.',
     );
     RNCPushNotificationIOS.getScheduledLocalNotifications(callback);
+  }
+
+  /**
+   * Gets the pending local notification requests.
+   */
+  static getPendingNotificationRequests(callback: (requests: any[]) => void) {
+    invariant(
+      RNCPushNotificationIOS,
+      'PushNotificationManager is not available.',
+    );
+    RNCPushNotificationIOS.getPendingNotificationRequests(callback);
   }
 
   /**

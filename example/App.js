@@ -113,6 +113,17 @@ export const App = () => {
     });
   };
 
+  const getPendingNotificationRequests = () => {
+    PushNotificationIOS.getPendingNotificationRequests((requests) => {
+      Alert.alert('Push Notification Received', JSON.stringify(requests), [
+        {
+          text: 'Dismiss',
+          onPress: null,
+        },
+      ]);
+    });
+  };
+
   const setNotificationCategories = async () => {
     PushNotificationIOS.setNotificationCategories([
       {
@@ -260,6 +271,10 @@ export const App = () => {
       <Button
         onPress={() => PushNotificationIOS.setApplicationIconBadgeNumber(0)}
         label="Clear app's icon badge"
+      />
+      <Button
+        onPress={getPendingNotificationRequests}
+        label="Get Pending Notification Requests"
       />
       <View>
         <Button onPress={showPermissions} label="Show enabled permissions" />
