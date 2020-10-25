@@ -12,7 +12,12 @@
 
 import {NativeEventEmitter, NativeModules} from 'react-native';
 import invariant from 'invariant';
-
+import {
+  NotificationAlert,
+  NotificationRequest,
+  NotificationCategory,
+  NotificationAction,
+} from './types';
 const {RNCPushNotificationIOS} = NativeModules;
 
 const PushNotificationEmitter = new NativeEventEmitter(RNCPushNotificationIOS);
@@ -24,49 +29,11 @@ const NOTIF_REGISTER_EVENT = 'remoteNotificationsRegistered';
 const NOTIF_REGISTRATION_ERROR_EVENT = 'remoteNotificationRegistrationError';
 const DEVICE_LOCAL_NOTIF_EVENT = 'localNotificationReceived';
 
-export type NotificationRequest = {
-  /**
-   * identifier of the notification.
-   * Required in order to retrieve specific notification.
-   */
-  id: string,
-  /**
-   * A short description of the reason for the alert.
-   */
-  title?: string,
-  /**
-   * A secondary description of the reason for the alert.
-   */
-  subtitle?: string,
-  /**
-   * The message displayed in the notification alert.
-   */
-  body?: string,
-  /**
-   * The number to display as the app's icon badge.
-   */
-  badge?: number,
-  /**
-   * The sound to play when the notification is delivered.
-   */
-  sound?: string,
-  /**
-   * The date which notification triggers.
-   */
-  fireDate?: Date,
-  /**
-   * Sets notification to repeat daily.
-   * Must be used with fireDate.
-   */
-  repeats?: boolean,
-  /**
-   * Sets notification to be silent
-   */
-  isSilent?: boolean,
-  /**
-   * Optional data to be added to the notification
-   */
-  userInfo?: Object,
+export {
+  NotificationAlert,
+  NotificationRequest,
+  NotificationCategory,
+  NotificationAction,
 };
 
 export type ContentAvailable = 1 | null | void;
@@ -111,31 +78,6 @@ export type PushNotificationEventName = $Keys<{
   registrationError: string,
 }>;
 
-type Alert = {
-  title?: string,
-  subtitle?: string,
-  body?: string,
-};
-
-type NotificationCategory = {
-  id: string,
-  actions: NotificationAction[],
-};
-
-type NotificationAction = {
-  id: string,
-  title: string,
-  options?: {
-    foreground?: boolean,
-    destructive?: boolean,
-    authenticationRequired?: boolean,
-  },
-  textInput?: {
-    buttonTitle?: string,
-    placeholder?: string,
-  },
-};
-
 /**
  *
  * Handle push notifications for your app, including permission handling and
@@ -145,7 +87,7 @@ type NotificationAction = {
  */
 class PushNotificationIOS {
   _data: Object;
-  _alert: string | Alert;
+  _alert: string | NotificationAlert;
   _title: string;
   _subtitle: string;
   _sound: string;
@@ -196,8 +138,8 @@ class PushNotificationIOS {
   }
 
   /**
-   * Sends notificationRequest to notification center.
-   * Fires immedietely if firedate or repeatInterval is not set.
+   * Sends notificationRequest to notification center at specified firedate.
+   * Fires immediately if firedate is not set.
    */
   static addNotificationRequest(request: NotificationRequest) {
     const handledRequest =
@@ -335,7 +277,9 @@ class PushNotificationIOS {
   /**
    * Gets the pending local notification requests.
    */
-  static getPendingNotificationRequests(callback: (requests: any[]) => void) {
+  static getPendingNotificationRequests(
+    callback: (requests: NotificationRequest[]) => void,
+  ) {
     invariant(
       RNCPushNotificationIOS,
       'PushNotificationManager is not available.',

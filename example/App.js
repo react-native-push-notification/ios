@@ -139,7 +139,7 @@ export const App = () => {
             id: 'text',
             title: 'Text',
             options: {foreground: true},
-            textInput: {buttonTitle: 'Send', placeholder: 'placeholder'},
+            textInput: {buttonTitle: 'Send'},
           },
         ],
       },
