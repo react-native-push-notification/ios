@@ -131,6 +131,16 @@ export const App = () => {
         ],
       },
     ]);
+    Alert.alert(
+      'setNotificationCategories',
+      `Set notification category complete`,
+      [
+        {
+          text: 'Dismiss',
+          onPress: null,
+        },
+      ],
+    );
   };
 
   const removeAllPendingNotificationRequests = () => {

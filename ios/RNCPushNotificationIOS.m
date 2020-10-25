@@ -148,13 +148,13 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
 {
     NSDictionary<NSString *, id> *details = [self NSDictionary:json];
     
+    NSString* identifier = [RCTConvert NSString:details[@"id"]];
     NSMutableArray* actions = [NSMutableArray new];
         for (NSDictionary* action in [RCTConvert NSArray:details[@"actions"]]) {
             [actions addObject:[RCTConvert UNNotificationAction:action]];
         }
     
-    
-    UNNotificationCategory* category = [UNNotificationCategory categoryWithIdentifier:@"category" actions:actions intentIdentifiers:@[] options:UNNotificationCategoryOptionNone];
+    UNNotificationCategory* category = [UNNotificationCategory categoryWithIdentifier:identifier actions:actions intentIdentifiers:@[] options:UNNotificationCategoryOptionNone];
     
     return category;
 }
