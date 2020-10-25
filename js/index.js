@@ -60,14 +60,17 @@ export type NotificationRequest = {
   sound?: string,
 
   /**
-   * repeat interval
+   * The time that must elapse from the current time before the trigger fires.
    */
   repeatInterval?: RepeatInterval,
   /**
-   * isSilent
-   * sets notification to be silent
+   * Sets notification to be silent
    */
   isSilent?: boolean,
+  /**
+   * Optional data to be added to the notification
+   */
+  userInfo?: Object,
 };
 
 export type ContentAvailable = 1 | null | void;
@@ -112,6 +115,31 @@ export type PushNotificationEventName = $Keys<{
   registrationError: string,
 }>;
 
+type Alert = {
+  title?: string,
+  subtitle?: string,
+  body?: string,
+};
+
+type NotificationCategory = {
+  id: string,
+  actions: NotificationAction[],
+};
+
+type NotificationAction = {
+  id: string,
+  title: string,
+  options?: {
+    foreground?: boolean,
+    destructive?: boolean,
+    authenticationRequired?: boolean,
+  },
+  textInput?: {
+    buttonTitle?: string,
+    placeholder?: string,
+  },
+};
+
 /**
  *
  * Handle push notifications for your app, including permission handling and
@@ -121,7 +149,7 @@ export type PushNotificationEventName = $Keys<{
  */
 class PushNotificationIOS {
   _data: Object;
-  _alert: string | Object;
+  _alert: string | Alert;
   _title: string;
   _subtitle: string;
   _sound: string;
@@ -164,10 +192,19 @@ class PushNotificationIOS {
   }
 
   /**
-   * addNotificationRequest
+   * Sends notificationRequest to notification center.
+   * Fires immedietely if firedate or repeatInterval is not set.
    */
   static addNotificationRequest(request: NotificationRequest) {
     RNCPushNotificationIOS.addNotificationRequest(request);
+  }
+
+  /**
+   * Sets notification category to notification center.
+   * Used to set specific actions for notifications that contains specified category
+   */
+  static setNotificationCategories(categories: NotificationCategory[]) {
+    RNCPushNotificationIOS.setNotificationCategories(categories);
   }
 
   /**
@@ -514,7 +551,9 @@ class PushNotificationIOS {
    * An alias for `getAlert` to get the notification's main message string
    */
   getMessage(): ?string | ?Object {
-    // alias because "alert" is an ambiguous name
+    if (typeof this._alert === 'object') {
+      return this._alert?.body;
+    }
     return this._alert;
   }
 
@@ -550,6 +589,9 @@ class PushNotificationIOS {
    *
    */
   getTitle(): ?string | ?Object {
+    if (typeof this._alert === 'object') {
+      return this._alert?.title;
+    }
     return this._title;
   }
 
@@ -558,6 +600,9 @@ class PushNotificationIOS {
    *
    */
   getSubtitle(): ?string | ?Object {
+    if (typeof this._alert === 'object') {
+      return this._alert?.subtitle;
+    }
     return this._subtitle;
   }
 

@@ -66,12 +66,12 @@ export const App = () => {
     DeviceEventEmitter.emit('remoteNotificationReceived', {
       remote: true,
       aps: {
-        alert: 'Sample notification',
-        badge: '+1',
+        alert: {title: 'title', subtitle: 'subtitle', body: 'body'},
+        badge: 1,
         sound: 'default',
-        alertTitle: 'title',
         category: 'REACT_NATIVE',
         'content-available': 1,
+        'mutable-content': 1,
       },
     });
   };
@@ -107,7 +107,30 @@ export const App = () => {
       title: 'title',
       subtitle: 'subtitle',
       body: 'body',
+      category: 'test',
     });
+  };
+
+  const setNotificationCategories = async () => {
+    PushNotificationIOS.setNotificationCategories([
+      {
+        id: 'test',
+        actions: [
+          {id: 'reply', title: 'Reply', options: {foreground: true}},
+          {
+            id: 'ignore',
+            title: 'Desruptive',
+            options: {foreground: true, destructive: true},
+          },
+          {
+            id: 'text',
+            title: 'Text',
+            options: {foreground: true},
+            textInput: {buttonTitle: 'Send', placeholder: 'placeholder'},
+          },
+        ],
+      },
+    ]);
   };
 
   const removeAllPendingNotificationRequests = () => {
@@ -205,6 +228,10 @@ export const App = () => {
       <Button
         onPress={addNotificationRequest}
         label="Add Notification Request"
+      />
+      <Button
+        onPress={setNotificationCategories}
+        label="Set notification categories"
       />
       <Button
         onPress={removeAllPendingNotificationRequests}
