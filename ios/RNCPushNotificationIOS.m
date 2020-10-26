@@ -184,11 +184,11 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
 #else
 @interface RNCPushNotificationIOS () <NativePushNotificationManagerIOS>
 @end
-#endif //TARGET_OS_TV / TARGET_OS_UIKITFORMAC
+#endif //TARGET_OS_TV
 
 @implementation RNCPushNotificationIOS
 
-#if !TARGET_OS_TV && !TARGET_OS_UIKITFORMAC
+#if !TARGET_OS_TV
 
 /**
  * Type deprecated in iOS 10.0
@@ -288,7 +288,7 @@ static NSDictionary *RCTFormatOpenedUNNotification(UNNotificationResponse *respo
   return formattedResponse;
 }
 
-#endif //TARGET_OS_TV / TARGET_OS_UIKITFORMAC
+#endif //TARGET_OS_TV
 
 RCT_EXPORT_MODULE()
 
@@ -297,7 +297,7 @@ RCT_EXPORT_MODULE()
   return dispatch_get_main_queue();
 }
 
-#if !TARGET_OS_TV && !TARGET_OS_UIKITFORMAC
+#if !TARGET_OS_TV
 - (void)startObserving
 {
   [[NSNotificationCenter defaultCenter] addObserver:self
@@ -688,7 +688,7 @@ RCT_EXPORT_METHOD(getDeliveredNotifications:(RCTResponseSenderBlock)callback)
   }
 }
 
-#else //TARGET_OS_TV / TARGET_OS_UIKITFORMAC
+#else //TARGET_OS_TV
 
 RCT_EXPORT_METHOD(onFinishRemoteNotification:(NSString *)notificationId fetchResult:(NSString *)fetchResult)
 {
@@ -774,6 +774,6 @@ RCT_EXPORT_METHOD(getDeliveredNotifications:(RCTResponseSenderBlock)callback)
   return @[];
 }
 
-#endif //TARGET_OS_TV / TARGET_OS_UIKITFORMAC
+#endif //TARGET_OS_TV
 
 @end
