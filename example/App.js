@@ -55,15 +55,9 @@ export const App = () => {
 
     return () => {
       PushNotificationIOS.removeEventListener('register');
-      PushNotificationIOS.removeEventListener(
-        'registrationError'
-      );
-      PushNotificationIOS.removeEventListener(
-        'notification'
-      );
-      PushNotificationIOS.removeEventListener(
-        'localNotification'
-      );
+      PushNotificationIOS.removeEventListener('registrationError');
+      PushNotificationIOS.removeEventListener('notification');
+      PushNotificationIOS.removeEventListener('localNotification');
     };
   }, []);
 
@@ -87,7 +81,7 @@ export const App = () => {
       aps: {
         category: 'REACT_NATIVE',
         'content-available': 1,
-      }
+      },
     });
   };
 
@@ -129,7 +123,7 @@ export const App = () => {
   };
 
   const onRemoteNotification = (notification) => {
-    const isClicked = notification.getData().userInteraction === 1
+    const isClicked = notification.getData().userInteraction === 1;
 
     const result = `
       Title:  ${notification.getTitle()};\n
@@ -148,7 +142,7 @@ export const App = () => {
         },
       ]);
     } else {
-       Alert.alert('Push Notification Received', result, [
+      Alert.alert('Push Notification Received', result, [
         {
           text: 'Dismiss',
           onPress: null,
@@ -158,8 +152,7 @@ export const App = () => {
   };
 
   const onLocalNotification = (notification) => {
-    const isClicked = notification.getData().userInteraction === 1
-
+    const isClicked = notification.getData().userInteraction === 1;
     Alert.alert(
       'Local Notification Received',
       `Alert title:  ${notification.getTitle()},
@@ -193,7 +186,10 @@ export const App = () => {
         label="Schedule fake local notification"
       />
 
-      <Button onPress={sendSilentNotification} label="Send fake silent notification" />
+      <Button
+        onPress={sendSilentNotification}
+        label="Send fake silent notification"
+      />
 
       <Button
         onPress={() => PushNotificationIOS.setApplicationIconBadgeNumber(42)}
