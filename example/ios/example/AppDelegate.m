@@ -74,17 +74,10 @@ static void InitializeFlipper(UIApplication *application) {
          withCompletionHandler:
              (void (^)(UNNotificationPresentationOptions options))
                  completionHandler {
-  completionHandler(UNAuthorizationOptionSound | UNAuthorizationOptionAlert |
-                    UNAuthorizationOptionBadge);
+  completionHandler(UNNotificationPresentationOptionSound | UNNotificationPresentationOptionBadge |
+                    UNNotificationPresentationOptionAlert);
 }
 
-// Required to register for notifications
-- (void)application:(UIApplication *)application
-    didRegisterUserNotificationSettings:
-        (UIUserNotificationSettings *)notificationSettings {
-  [RNCPushNotificationIOS
-      didRegisterUserNotificationSettings:notificationSettings];
-}
 // Required for the register event.
 - (void)application:(UIApplication *)application
     didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
@@ -106,17 +99,11 @@ static void InitializeFlipper(UIApplication *application) {
   [RNCPushNotificationIOS
       didFailToRegisterForRemoteNotificationsWithError:error];
 }
-// Required for the localNotification event.
-- (void)application:(UIApplication *)application
-    didReceiveLocalNotification:(UILocalNotification *)notification {
-  [RNCPushNotificationIOS didReceiveLocalNotification:notification];
-}
-// IOS 10+ Required for local notification tapped event
+// Required for local notification tapped event
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center
     didReceiveNotificationResponse:(UNNotificationResponse *)response
              withCompletionHandler:(void (^)(void))completionHandler {
   [RNCPushNotificationIOS didReceiveNotificationResponse:response];
-  completionHandler();
 }
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge {

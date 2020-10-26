@@ -12,7 +12,12 @@
 
 import {NativeEventEmitter, NativeModules} from 'react-native';
 import invariant from 'invariant';
-
+import {
+  NotificationAlert,
+  NotificationRequest,
+  NotificationCategory,
+  NotificationAction,
+} from './types';
 const {RNCPushNotificationIOS} = NativeModules;
 
 const PushNotificationEmitter = new NativeEventEmitter(RNCPushNotificationIOS);
@@ -23,6 +28,13 @@ const DEVICE_NOTIF_EVENT = 'remoteNotificationReceived';
 const NOTIF_REGISTER_EVENT = 'remoteNotificationsRegistered';
 const NOTIF_REGISTRATION_ERROR_EVENT = 'remoteNotificationRegistrationError';
 const DEVICE_LOCAL_NOTIF_EVENT = 'localNotificationReceived';
+
+export {
+  NotificationAlert,
+  NotificationRequest,
+  NotificationCategory,
+  NotificationAction,
+};
 
 export type ContentAvailable = 1 | null | void;
 
@@ -75,13 +87,22 @@ export type PushNotificationEventName = $Keys<{
  */
 class PushNotificationIOS {
   _data: Object;
-  _alert: string | Object;
+  _alert: string | NotificationAlert;
   _title: string;
+  _subtitle: string;
   _sound: string;
   _category: string;
   _contentAvailable: ContentAvailable;
   _badgeCount: number;
   _notificationId: string;
+  /**
+   * The id of action the user has taken taken.
+   */
+  _actionIdentifier: ?string;
+  /**
+   * The text user has input if user responded with a text action.
+   */
+  _userText: ?string;
   _isRemote: boolean;
   _remoteNotificationCompleteCallbackCalled: boolean;
   _threadID: string;
@@ -102,8 +123,7 @@ class PushNotificationIOS {
 
   /**
    * Schedules the localNotification for immediate presentation.
-   *
-   * See https://reactnative.dev/docs/pushnotificationios.html#presentlocalnotification
+   * @deprecated use `addNotificationRequest` instead
    */
   static presentLocalNotification(details: Object) {
     RNCPushNotificationIOS.presentLocalNotification(details);
@@ -111,17 +131,37 @@ class PushNotificationIOS {
 
   /**
    * Schedules the localNotification for future presentation.
-   *
-   * See https://reactnative.dev/docs/pushnotificationios.html#schedulelocalnotification
+   * @deprecated use `addNotificationRequest` instead
    */
   static scheduleLocalNotification(details: Object) {
     RNCPushNotificationIOS.scheduleLocalNotification(details);
   }
 
   /**
+   * Sends notificationRequest to notification center at specified firedate.
+   * Fires immediately if firedate is not set.
+   */
+  static addNotificationRequest(request: NotificationRequest) {
+    const handledRequest =
+      request.fireDate instanceof Date
+        ? {...request, fireDate: request.fireDate.toISOString()}
+        : request;
+
+    RNCPushNotificationIOS.addNotificationRequest(handledRequest);
+  }
+
+  /**
+   * Sets notification category to notification center.
+   * Used to set specific actions for notifications that contains specified category
+   */
+  static setNotificationCategories(categories: NotificationCategory[]) {
+    RNCPushNotificationIOS.setNotificationCategories(categories);
+  }
+
+  /**
    * Cancels all scheduled localNotifications.
-   *
-   * See https://reactnative.dev/docs/pushnotificationios.html#cancelalllocalnotifications
+   * @deprecated use `removeAllPendingNotificationRequests` instead
+   * - This method is deprecated in iOS 10 and will be removed from future release
    */
   static cancelAllLocalNotifications() {
     invariant(
@@ -129,6 +169,17 @@ class PushNotificationIOS {
       'PushNotificationManager is not available.',
     );
     RNCPushNotificationIOS.cancelAllLocalNotifications();
+  }
+
+  /**
+   * Removes all pending notifications
+   */
+  static removeAllPendingNotificationRequests() {
+    invariant(
+      RNCPushNotificationIOS,
+      'PushNotificationManager is not available.',
+    );
+    RNCPushNotificationIOS.removeAllPendingNotificationRequests();
   }
 
   /**
@@ -213,8 +264,7 @@ class PushNotificationIOS {
 
   /**
    * Gets the local notifications that are currently scheduled.
-   *
-   * See https://reactnative.dev/docs/pushnotificationios.html#getscheduledlocalnotifications
+   * @deprecated - use `getPendingNotificationRequests`
    */
   static getScheduledLocalNotifications(callback: Function) {
     invariant(
@@ -222,6 +272,19 @@ class PushNotificationIOS {
       'PushNotificationManager is not available.',
     );
     RNCPushNotificationIOS.getScheduledLocalNotifications(callback);
+  }
+
+  /**
+   * Gets the pending local notification requests.
+   */
+  static getPendingNotificationRequests(
+    callback: (requests: NotificationRequest[]) => void,
+  ) {
+    invariant(
+      RNCPushNotificationIOS,
+      'PushNotificationManager is not available.',
+    );
+    RNCPushNotificationIOS.getPendingNotificationRequests(callback);
   }
 
   /**
@@ -389,14 +452,18 @@ class PushNotificationIOS {
       this._notificationId = nativeNotif.notificationId;
     }
 
+    this._actionIdentifier = nativeNotif.actionIdentifier;
+    this._userText = nativeNotif.userText;
     if (nativeNotif.remote) {
       // Extract data from Apple's `aps` dict as defined:
       // https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html
       Object.keys(nativeNotif).forEach((notifKey) => {
         const notifVal = nativeNotif[notifKey];
+
         if (notifKey === 'aps') {
           this._alert = notifVal.alert;
           this._title = notifVal?.alertTitle;
+          this._subtitle = notifVal?.subtitle;
           this._sound = notifVal.sound;
           this._badgeCount = notifVal.badge;
           this._category = notifVal.category;
@@ -413,6 +480,8 @@ class PushNotificationIOS {
       this._sound = nativeNotif.soundName;
       this._alert = nativeNotif.body;
       this._title = nativeNotif?.title;
+      this._subtitle = nativeNotif?.subtitle;
+      this._threadID = nativeNotif['thread-id'];
       this._data = nativeNotif.userInfo;
       this._category = nativeNotif.category;
       this._fireDate = nativeNotif.fireDate;
@@ -449,7 +518,9 @@ class PushNotificationIOS {
    * An alias for `getAlert` to get the notification's main message string
    */
   getMessage(): ?string | ?Object {
-    // alias because "alert" is an ambiguous name
+    if (typeof this._alert === 'object') {
+      return this._alert?.body;
+    }
     return this._alert;
   }
 
@@ -485,7 +556,21 @@ class PushNotificationIOS {
    *
    */
   getTitle(): ?string | ?Object {
+    if (typeof this._alert === 'object') {
+      return this._alert?.title;
+    }
     return this._title;
+  }
+
+  /**
+   * Gets the notification's subtitle from the `aps` object
+   *
+   */
+  getSubtitle(): ?string | ?Object {
+    if (typeof this._alert === 'object') {
+      return this._alert?.subtitle;
+    }
+    return this._subtitle;
   }
 
   /**
@@ -522,6 +607,20 @@ class PushNotificationIOS {
    */
   getThreadID(): ?string {
     return this._threadID;
+  }
+
+  /**
+   * Get's the action id of the notification action user has taken.
+   */
+  getActionIdentifier(): ?string {
+    return this._actionIdentifier;
+  }
+
+  /**
+   * Gets the text user has inputed if user has taken the text action response.
+   */
+  getUserText(): ?string {
+    return this._userText;
   }
 }
 
