@@ -260,7 +260,7 @@ static NSDictionary *RCTFormatUNNotificationRequest(UNNotificationRequest *reque
 }
 
 API_AVAILABLE(ios(10.0))
-static NSDictionary *RCTFormatOpenedUNNotification(UNTextInputNotificationResponse *response)
+static NSDictionary *RCTFormatOpenedUNNotification(UNNotificationResponse *response)
 {
   UNNotification* notification = response.notification;
   NSMutableDictionary *formattedResponse = [RCTFormatUNNotification(notification) mutableCopy];
@@ -269,10 +269,15 @@ static NSDictionary *RCTFormatOpenedUNNotification(UNTextInputNotificationRespon
   NSMutableDictionary *userInfo = [content.userInfo mutableCopy];
   userInfo[@"userInteraction"] = [NSNumber numberWithInt:1];
   userInfo[@"actionIdentifier"] = response.actionIdentifier;
+  
 
   formattedResponse[@"userInfo"] = RCTNullIfNil(RCTJSONClean(userInfo));
   formattedResponse[@"actionIdentifier"] = RCTNullIfNil(response.actionIdentifier);
-  formattedResponse[@"userText"] = RCTNullIfNil(response.userText);
+    
+  NSString* userText = [response isKindOfClass:[UNTextInputNotificationResponse class]] ? ((UNTextInputNotificationResponse *)response).userText : nil;
+  if (userText) {
+    formattedResponse[@"userText"] = RCTNullIfNil(userText);
+  }
     
   return formattedResponse;
 }
