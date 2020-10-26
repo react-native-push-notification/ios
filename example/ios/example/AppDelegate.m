@@ -104,7 +104,6 @@ static void InitializeFlipper(UIApplication *application) {
     didReceiveNotificationResponse:(UNNotificationResponse *)response
              withCompletionHandler:(void (^)(void))completionHandler {
   [RNCPushNotificationIOS didReceiveNotificationResponse:response];
-  completionHandler();
 }
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge {
