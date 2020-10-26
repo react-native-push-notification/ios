@@ -108,6 +108,7 @@ export const App = () => {
       subtitle: 'subtitle',
       body: 'body',
       category: 'test',
+      threadId: 'thread-id',
       fireDate: new Date(new Date().valueOf() + 2000),
       repeats: true,
     });
@@ -220,6 +221,7 @@ export const App = () => {
       `Alert title:  ${notification.getTitle()},
       Alert subtitle:  ${notification.getSubtitle()},
       Alert message:  ${notification.getMessage()},
+      Thread Id:  ${notification.getThreadID()},
       Action Id:  ${notification.getActionIdentifier()},
       User Text:  ${notification.getUserText()},
       Notification is clicked: ${String(isClicked)}.`,

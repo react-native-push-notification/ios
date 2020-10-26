@@ -95,6 +95,12 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
     content.body =[RCTConvert NSString:details[@"body"]];
     content.badge = [RCTConvert NSNumber:details[@"badge"]];
     content.categoryIdentifier = [RCTConvert NSString:details[@"category"]];
+
+    NSString* threadIdentifier = [RCTConvert NSString:details[@"threadId"]];
+    if (threadIdentifier){
+        content.threadIdentifier = threadIdentifier;
+    }
+
     content.userInfo = [RCTConvert NSDictionary:details[@"userInfo"]];
     if (!isSilent) {
       content.sound = [RCTConvert NSString:details[@"sound"]] ? [UNNotificationSound soundNamed:[RCTConvert NSString:details[@"sound"]]] : [UNNotificationSound defaultSound];
