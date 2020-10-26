@@ -74,8 +74,8 @@ static void InitializeFlipper(UIApplication *application) {
          withCompletionHandler:
              (void (^)(UNNotificationPresentationOptions options))
                  completionHandler {
-  completionHandler(UNAuthorizationOptionSound | UNAuthorizationOptionAlert |
-                    UNAuthorizationOptionBadge);
+  completionHandler(UNNotificationPresentationOptionSound | UNNotificationPresentationOptionBadge |
+                    UNNotificationPresentationOptionAlert);
 }
 
 // Required for the register event.
