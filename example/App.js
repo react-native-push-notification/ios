@@ -266,6 +266,7 @@ export const App = () => {
         onPress={sendSilentNotification}
         label="Send fake silent notification"
       />
+
       <Button
         onPress={() => PushNotificationIOS.setApplicationIconBadgeNumber(42)}
         label="Set app's icon badge to 42"
