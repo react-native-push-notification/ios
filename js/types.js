@@ -29,6 +29,10 @@ export type NotificationRequest = {
    */
   category?: string,
   /**
+   * The thread identifier of this notification.
+   */
+  threadId?: string,
+  /**
    * The date which notification triggers.
    */
   fireDate?: Date,

@@ -481,6 +481,7 @@ class PushNotificationIOS {
       this._alert = nativeNotif.body;
       this._title = nativeNotif?.title;
       this._subtitle = nativeNotif?.subtitle;
+      this._threadID = nativeNotif['thread-id'];
       this._data = nativeNotif.userInfo;
       this._category = nativeNotif.category;
       this._fireDate = nativeNotif.fireDate;
