@@ -94,6 +94,15 @@ export const App = () => {
     });
   };
 
+  const sendLocalNotificationWithSound = () => {
+    PushNotificationIOS.presentLocalNotification({
+      alertTitle: 'Sample Title',
+      alertBody: 'Sample local notification with custom sound',
+      soundName: 'customSound.wav',
+      applicationIconBadgeNumber: 1,
+    });
+  };
+
   const scheduleLocalNotification = () => {
     PushNotificationIOS.scheduleLocalNotification({
       alertBody: 'Test Local Notification',
@@ -243,10 +252,13 @@ export const App = () => {
   return (
     <View style={styles.container}>
       <Button onPress={sendNotification} label="Send fake notification" />
-
       <Button
         onPress={sendLocalNotification}
         label="Send fake local notification"
+      />
+      <Button
+        onPress={sendLocalNotificationWithSound}
+        label="Send fake local notification with custom sound"
       />
       <Button
         onPress={scheduleLocalNotification}
