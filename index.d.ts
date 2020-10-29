@@ -153,6 +153,8 @@ export type NotificationRequest = {
   badge?: number;
   /**
    * The sound to play when the notification is delivered.
+   * The file should be added in the ios project from Xcode, on your target, so that it is bundled in the final app.
+   * For more details see the example app.
    */
   sound?: string;
   /**

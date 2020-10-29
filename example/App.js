@@ -95,11 +95,13 @@ export const App = () => {
   };
 
   const sendLocalNotificationWithSound = () => {
-    PushNotificationIOS.presentLocalNotification({
-      alertTitle: 'Sample Title',
-      alertBody: 'Sample local notification with custom sound',
-      soundName: 'customSound.wav',
-      applicationIconBadgeNumber: 1,
+    PushNotificationIOS.addNotificationRequest({
+      id: 'notificationWithSound',
+      title: 'Sample Title',
+      subtitle: 'Sample Subtitle',
+      body: 'Sample local notification with custom sound',
+      sound: 'customSound.wav',
+      badge: 1,
     });
   };
 
