@@ -18,6 +18,8 @@
 		2DCD954D1E0B4F2C00145EB5 /* exampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* exampleTests.m */; };
 		5432F7EB7F7F4537A837621A /* libPods-example-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D244570B607F65944D330F5 /* libPods-example-tvOS.a */; };
 		7DA60D6A41F36271428AE19D /* libPods-example-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 94208395677DFCD97160A544 /* libPods-example-tvOSTests.a */; };
+		8A400557254A2B29000AA3A9 /* customSound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8A400556254A2B29000AA3A9 /* customSound.wav */; };
+		8A400558254A2B29000AA3A9 /* customSound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8A400556254A2B29000AA3A9 /* customSound.wav */; };
 		C5465B0C2DA5FC8811C8600F /* libPods-example-exampleTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA19CB7647AA9CD05007354A /* libPods-example-exampleTests.a */; };
 		E4D225D649DF4A69CD1D47AA /* libPods-example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6363838C2C9AC1ED8E8695DB /* libPods-example.a */; };
 /* End PBXBuildFile section */
@@ -60,6 +62,7 @@
 		6F67B95AB047EFB4CDC1E4AC /* Pods-example-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-example-tvOS.release.xcconfig"; path = "Target Support Files/Pods-example-tvOS/Pods-example-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		736DC2F0EF0CECD14EBBE3AF /* Pods-example-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-example-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-example-tvOSTests/Pods-example-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		88185B6F69F96250716C8945 /* Pods-example-exampleTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-example-exampleTests.debug.xcconfig"; path = "Target Support Files/Pods-example-exampleTests/Pods-example-exampleTests.debug.xcconfig"; sourceTree = "<group>"; };
+		8A400556254A2B29000AA3A9 /* customSound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = customSound.wav; path = example/customSound.wav; sourceTree = "<group>"; };
 		94208395677DFCD97160A544 /* libPods-example-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-example-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9A1258F906FAEF290E80800D /* Pods-example-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-example-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-example-tvOS/Pods-example-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		AA19CB7647AA9CD05007354A /* libPods-example-exampleTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-example-exampleTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -125,6 +128,7 @@
 		13B07FAE1A68108700A75B9A /* example */ = {
 			isa = PBXGroup;
 			children = (
+				8A400556254A2B29000AA3A9 /* customSound.wav */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -223,8 +227,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "example" */;
 			buildPhases = (
-				D154B55232D78AA91BE854C3 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
+				D154B55232D78AA91BE854C3 /* [CP] Check Pods Manifest.lock */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
@@ -337,6 +341,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A400557254A2B29000AA3A9 /* customSound.wav in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 			);
@@ -347,6 +352,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */,
+				8A400558254A2B29000AA3A9 /* customSound.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
