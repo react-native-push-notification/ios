@@ -611,6 +611,7 @@ RCT_EXPORT_METHOD(cancelLocalNotifications:(NSDictionary<NSString *, id> *)userI
   }
 }
 
+
 RCT_EXPORT_METHOD(getInitialNotification:(RCTPromiseResolveBlock)resolve
                   reject:(__unused RCTPromiseRejectBlock)reject)
 {
@@ -625,11 +626,6 @@ RCT_EXPORT_METHOD(getInitialNotification:(RCTPromiseResolveBlock)resolve
     initialNotification[@"remote"] = @YES;
     resolve(initialNotification);
   } else if (initialLocalNotification) {
-    NSMutableDictionary *userInfo = [content.userInfo mutableCopy];
-    NSMutableDictionary *localInfo = [initialLocalNotification.userInfo mutableCopy];
-    localInfo[@"userInteraction"] = [NSNumber numberWithInt:1];
-    initialLocalNotification.userInfo = localInfo;
-    initialLocalNotification[@"userInteraction"] = [NSNumber numberWithInt:1];
     resolve(RCTFormatLocalNotification(initialLocalNotification));
   } else {
     resolve((id)kCFNull);
