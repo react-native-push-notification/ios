@@ -5,7 +5,8 @@
  * @flow
  */
 
-import React, {useState, useEffect} from 'react';
+import * as React from 'react';
+import {useState, useEffect} from 'react';
 import {
   Alert,
   StyleSheet,
@@ -16,20 +17,26 @@ import {
 } from 'react-native';
 import PushNotificationIOS from '../js';
 
-class Button extends React.Component<$FlowFixMeProps> {
-  render() {
-    return (
-      <TouchableHighlight
-        underlayColor={'white'}
-        style={styles.button}
-        onPress={this.props.onPress}>
-        <Text style={styles.buttonLabel}>{this.props.label}</Text>
-      </TouchableHighlight>
-    );
-  }
-}
+type ButtonProps = {|
+  onPress: () => void | Promise<void>,
+  label: string,
+|};
 
-export const App = () => {
+const Button: React.StatelessFunctionalComponent<ButtonProps> = ({
+  onPress,
+  label,
+}) => {
+  return (
+    <TouchableHighlight
+      underlayColor={'white'}
+      style={styles.button}
+      onPress={onPress}>
+      <Text style={styles.buttonLabel}>{label}</Text>
+    </TouchableHighlight>
+  );
+};
+
+export const App = (): React.Node => {
   const [permissions, setPermissions] = useState({});
 
   useEffect(() => {

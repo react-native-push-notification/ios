@@ -1,4 +1,8 @@
-export type NotificationRequest = {
+/**
+ * @flow
+ */
+
+export type NotificationRequest = {|
   /**
    * identifier of the notification.
    * Required in order to retrieve specific notification.
@@ -49,33 +53,33 @@ export type NotificationRequest = {
    * Optional data to be added to the notification
    */
   userInfo?: Object,
-};
+|};
 
 /**
  * Alert Object that can be included in the aps `alert` object
  */
-export type NotificationAlert = {
+export type NotificationAlert = {|
   title?: string,
   subtitle?: string,
   body?: string,
-};
+|};
 
 /**
  * Notification Category that can include specific actions
  */
-export type NotificationCategory = {
+export type NotificationCategory = {|
   /**
    * Identifier of the notification category.
    * Notification with this category will have the specified actions.
    */
   id: string,
   actions: NotificationAction[],
-};
+|};
 
 /**
  * Notification Action that can be added to specific categories
  */
-export type NotificationAction = {
+export type NotificationAction = {|
   /**
    * Identifier of Action.
    * This value will be returned as actionIdentifier when notification is received.
@@ -109,4 +113,4 @@ export type NotificationAction = {
      */
     placeholder?: string,
   },
-};
+|};

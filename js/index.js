@@ -12,7 +12,7 @@
 
 import {NativeEventEmitter, NativeModules} from 'react-native';
 import invariant from 'invariant';
-import {
+import type {
   NotificationAlert,
   NotificationRequest,
   NotificationCategory,
@@ -29,7 +29,7 @@ const NOTIF_REGISTER_EVENT = 'remoteNotificationsRegistered';
 const NOTIF_REGISTRATION_ERROR_EVENT = 'remoteNotificationRegistrationError';
 const DEVICE_LOCAL_NOTIF_EVENT = 'localNotificationReceived';
 
-export {
+export type {
   NotificationAlert,
   NotificationRequest,
   NotificationCategory,
