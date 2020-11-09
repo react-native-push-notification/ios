@@ -621,9 +621,15 @@ RCT_EXPORT_METHOD(getInitialNotification:(RCTPromiseResolveBlock)resolve
   self.bridge.launchOptions[UIApplicationLaunchOptionsLocalNotificationKey];
   
   if (initialNotification) {
+    initialNotification[@"userInteraction"] = [NSNumber numberWithInt:1];
     initialNotification[@"remote"] = @YES;
     resolve(initialNotification);
   } else if (initialLocalNotification) {
+    NSMutableDictionary *userInfo = [content.userInfo mutableCopy];
+    NSMutableDictionary *localInfo = [initialLocalNotification.userInfo mutableCopy];
+    localInfo[@"userInteraction"] = [NSNumber numberWithInt:1];
+    initialLocalNotification.userInfo = localInfo;
+    initialLocalNotification[@"userInteraction"] = [NSNumber numberWithInt:1];
     resolve(RCTFormatLocalNotification(initialLocalNotification));
   } else {
     resolve((id)kCFNull);
