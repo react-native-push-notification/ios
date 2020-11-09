@@ -628,7 +628,6 @@ RCT_EXPORT_METHOD(getInitialNotification:(RCTPromiseResolveBlock)resolve
     NSMutableDictionary *localInfo = [initialLocalNotification.userInfo mutableCopy];
     localInfo[@"userInteraction"] = [NSNumber numberWithInt:1];
     initialLocalNotification.userInfo = localInfo;
-    initialLocalNotification[@"userInteraction"] = [NSNumber numberWithInt:1];
     resolve(RCTFormatLocalNotification(initialLocalNotification));
   } else {
     resolve((id)kCFNull);
