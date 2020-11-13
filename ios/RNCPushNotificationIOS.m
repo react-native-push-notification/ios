@@ -425,14 +425,18 @@ API_AVAILABLE(ios(10.0)) {
   [self sendEventWithName:@"remoteNotificationRegistrationError" body:errorDetails];
 }
 
-RCT_EXPORT_METHOD(onFinishRemoteNotification:(NSString *)notificationId fetchResult:(UIBackgroundFetchResult)result) {
-  RNCRemoteNotificationCallback completionHandler = self.remoteNotificationCallbacks[notificationId];
-  if (!completionHandler) {
-    RCTLogError(@"There is no completion handler with notification id: %@", notificationId);
-    return;
-  }
-  completionHandler(result);
-  [self.remoteNotificationCallbacks removeObjectForKey:notificationId];
+RCT_EXPORT_METHOD(onFinishRemoteNotification:(NSString *)notificationId fetchResult:(UIBackgroundFetchResult)result)
+{
+  dispatch_async(dispatch_get_main_queue(), ^{
+    RNCRemoteNotificationCallback completionHandler = self.remoteNotificationCallbacks[notificationId];
+    if (!completionHandler) {
+      RCTLogError(@"There is no completion handler with notification id: %@", notificationId);
+      return;
+    }
+
+    completionHandler(result);
+    [self.remoteNotificationCallbacks removeObjectForKey:notificationId];
+  });
 }
 
 /**
