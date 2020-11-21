@@ -233,6 +233,8 @@ static NSDictionary *RCTFormatUNNotification(UNNotification *notification)
   formattedNotification[@"title"] = RCTNullIfNil(content.title);
   formattedNotification[@"subtitle"] = RCTNullIfNil(content.subtitle);
   formattedNotification[@"body"] = RCTNullIfNil(content.body);
+  formattedNotification[@"badge"] = RCTNullIfNil(content.badge);
+  formattedNotification[@"sound"] = RCTNullIfNil(content.sound);
   formattedNotification[@"category"] = RCTNullIfNil(content.categoryIdentifier);
   formattedNotification[@"thread-id"] = RCTNullIfNil(content.threadIdentifier);
   formattedNotification[@"userInfo"] = RCTNullIfNil(RCTJSONClean(content.userInfo));
@@ -250,6 +252,8 @@ static NSDictionary *RCTFormatUNNotificationRequest(UNNotificationRequest *reque
     formattedRequest[@"title"] = RCTNullIfNil(content.title);
     formattedRequest[@"subtitle"] = RCTNullIfNil(content.subtitle);
     formattedRequest[@"body"] = RCTNullIfNil(content.body);
+    formattedRequest[@"badge"] = RCTNullIfNil(content.badge);
+    formattedRequest[@"sound"] = RCTNullIfNil(content.sound);
     formattedRequest[@"category"] = RCTNullIfNil(content.categoryIdentifier);
     formattedRequest[@"thread-id"] = RCTNullIfNil(content.threadIdentifier);
     formattedRequest[@"userInfo"] = RCTNullIfNil(RCTJSONClean(content.userInfo));
