@@ -292,7 +292,7 @@ PODS:
     - React-cxxreact (= 0.62.2)
     - React-jsi (= 0.62.2)
     - ReactCommon/callinvoker (= 0.62.2)
-  - RNCPushNotificationIOS (1.6.1):
+  - RNCPushNotificationIOS (1.7.3):
     - React-Core
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
@@ -453,10 +453,10 @@ SPEC CHECKSUMS:
   React-RCTText: fae545b10cfdb3d247c36c56f61a94cfd6dba41d
   React-RCTVibration: 4356114dbcba4ce66991096e51a66e61eda51256
   ReactCommon: ed4e11d27609d571e7eee8b65548efc191116eb3
-  RNCPushNotificationIOS: 346c804c13fb99e644c996d1af5175a35452b2cb
+  RNCPushNotificationIOS: edeeea93b7210d2f918fc0e46e1a2a189b5fdacc
   Yoga: 3ebccbdd559724312790e7742142d062476b698e
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: fe0bcbd52826c4d7c0dd4aa1c136e663b1ff0615
+PODFILE CHECKSUM: 70c8414db776ae8b9962698cb46664179dc541b7
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.10.0
