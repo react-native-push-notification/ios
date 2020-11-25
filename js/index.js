@@ -183,6 +183,17 @@ class PushNotificationIOS {
   }
 
   /**
+   * Removes pending notifications with given identifier strings.
+   */
+  static removePendingNotificationRequests(identifiers: string[]) {
+    invariant(
+      RNCPushNotificationIOS,
+      'PushNotificationManager is not available.',
+    );
+    RNCPushNotificationIOS.removePendingNotificationRequests(identifiers);
+  }
+
+  /**
    * Remove all delivered notifications from Notification Center.
    *
    * See https://reactnative.dev/docs/pushnotificationios.html#removealldeliverednotifications
@@ -251,7 +262,7 @@ class PushNotificationIOS {
 
   /**
    * Cancel local notifications.
-   *
+   * @deprecated - use `removePendingNotifications`
    * See https://reactnative.dev/docs/pushnotificationios.html#cancellocalnotification
    */
   static cancelLocalNotifications(userInfo: Object) {

@@ -354,6 +354,22 @@ Allows you to add specific actions for notification with specific category.
 
 ---
 
+### `removePendingNotificationRequests()`
+
+```jsx
+PushNotificationIOS.removeDeliveredNotifications(identifiers);
+```
+
+Removes the specified pending notifications from Notification Center
+
+**Parameters:**
+
+| Name        | Type  | Required | Description                        |
+| ----------- | ----- | -------- | ---------------------------------- |
+| identifiers | string[] | Yes      | Array of notification identifiers. |
+
+---
+
 ### `removeAllPendingNotificationRequests()`
 
 ```jsx
@@ -405,13 +421,13 @@ A delivered notification is an object containing:
 PushNotificationIOS.removeDeliveredNotifications(identifiers);
 ```
 
-Removes the specified notifications from Notification Center
+Removes the specified delivered notifications from Notification Center
 
 **Parameters:**
 
 | Name        | Type  | Required | Description                        |
 | ----------- | ----- | -------- | ---------------------------------- |
-| identifiers | array | Yes      | Array of notification identifiers. |
+| identifiers | string[] | Yes      | Array of notification identifiers. |
 
 ---
 

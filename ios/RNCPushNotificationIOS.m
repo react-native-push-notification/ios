@@ -319,8 +319,16 @@ RCT_EXPORT_METHOD(cancelAllLocalNotifications)
 RCT_EXPORT_METHOD(removeAllPendingNotificationRequests)
 {
     if ([UNUserNotificationCenter class]) {
-      UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
-      [center removeAllPendingNotificationRequests];
+        UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+        [center removeAllPendingNotificationRequests];
+    }
+}
+
+RCT_EXPORT_METHOD(removePendingNotificationRequests:(NSArray<NSString *> *)identifiers)
+{
+    if ([UNUserNotificationCenter class]) {
+        UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+        [center removePendingNotificationRequestsWithIdentifiers:identifiers];
     }
 }
 
