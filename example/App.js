@@ -239,6 +239,8 @@ export const App = (): React.Node => {
       `Alert title:  ${notification.getTitle()},
       Alert subtitle:  ${notification.getSubtitle()},
       Alert message:  ${notification.getMessage()},
+      Badge: ${notification.getBadgeCount()},
+      Sound: ${notification.getSound()},
       Thread Id:  ${notification.getThreadID()},
       Action Id:  ${notification.getActionIdentifier()},
       User Text:  ${notification.getUserText()},
