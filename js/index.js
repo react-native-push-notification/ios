@@ -476,8 +476,11 @@ class PushNotificationIOS {
       });
     } else {
       // Local notifications aren't being sent down with `aps` dict.
-      this._badgeCount = nativeNotif.applicationIconBadgeNumber;
-      this._sound = nativeNotif.soundName;
+      // TODO: remove applicationIconBadgeNumber on next major version
+      this._badgeCount =
+        nativeNotif.badge || nativeNotif.applicationIconBadgeNumber;
+      // TODO: remove soundName on next major version
+      this._sound = nativeNotif.sound || nativeNotif.soundName;
       this._alert = nativeNotif.body;
       this._title = nativeNotif?.title;
       this._subtitle = nativeNotif?.subtitle;
