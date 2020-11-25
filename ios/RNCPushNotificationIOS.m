@@ -168,13 +168,8 @@ API_AVAILABLE(ios(10.0)) {
   [self sendEventWithName:@"remoteNotificationRegistrationError" body:errorDetails];
 }
 
-RCT_EXPORT_METHOD(onFinishRemoteNotification:(NSString *)notificationId fetchResult:(UIBackgroundFetchResult)result) {
-  RNCRemoteNotificationCallback completionHandler = self.remoteNotificationCallbacks[notificationId];
-  if (!completionHandler) {
-    RCTLogError(@"There is no completion handler with notification id: %@", notificationId);
-    return;
-  }
-  completionHandler(result);
+RCT_EXPORT_METHOD(onFinishRemoteNotification:(NSString *)notificationId fetchResult:(UIBackgroundFetchResult)result)
+{
   [self.remoteNotificationCallbacks removeObjectForKey:notificationId];
 }
 
