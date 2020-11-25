@@ -132,6 +132,41 @@ export const App = (): React.Node => {
     });
   };
 
+  const addMultipleRequests = () => {
+    PushNotificationIOS.addNotificationRequest({
+      id: 'test-1',
+      title: 'First',
+      subtitle: 'subtitle',
+      body: 'First Notification out of 3',
+      category: 'test',
+      threadId: 'thread-id',
+      fireDate: new Date(new Date().valueOf() + 10000),
+      repeats: true,
+    });
+
+    PushNotificationIOS.addNotificationRequest({
+      id: 'test-2',
+      title: 'Second',
+      subtitle: 'subtitle',
+      body: 'Second Notification out of 3',
+      category: 'test',
+      threadId: 'thread-id',
+      fireDate: new Date(new Date().valueOf() + 12000),
+      repeats: true,
+    });
+
+    PushNotificationIOS.addNotificationRequest({
+      id: 'test-3',
+      title: 'Third',
+      subtitle: 'subtitle',
+      body: 'Third Notification out of 3',
+      category: 'test',
+      threadId: 'thread-id',
+      fireDate: new Date(new Date().valueOf() + 14000),
+      repeats: true,
+    });
+  };
+
   const getPendingNotificationRequests = () => {
     PushNotificationIOS.getPendingNotificationRequests((requests) => {
       Alert.alert('Push Notification Received', JSON.stringify(requests), [
@@ -177,6 +212,10 @@ export const App = (): React.Node => {
 
   const removeAllPendingNotificationRequests = () => {
     PushNotificationIOS.removeAllPendingNotificationRequests();
+  };
+
+  const removePendingNotificationRequests = () => {
+    PushNotificationIOS.removePendingNotificationRequests(['test-1', 'test-2']);
   };
 
   const onRegistered = (deviceToken) => {
@@ -280,8 +319,16 @@ export const App = (): React.Node => {
         label="Add Notification Request"
       />
       <Button
+        onPress={addMultipleRequests}
+        label="Add Multiple Notification Requests"
+      />
+      <Button
         onPress={setNotificationCategories}
         label="Set notification categories"
+      />
+      <Button
+        onPress={removePendingNotificationRequests}
+        label="Remove Partial Pending Notification Requests"
       />
       <Button
         onPress={removeAllPendingNotificationRequests}

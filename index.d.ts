@@ -362,6 +362,11 @@ export interface PushNotificationIOSStatic {
   removeAllPendingNotificationRequests(): void;
 
   /**
+   * Removes specified pending notifications from Notification Center.
+   */
+  removePendingNotificationRequests(identifiers: string[]): void;
+
+  /**
    * Remove all delivered notifications from Notification Center.
    *
    * See https://reactnative.dev/docs/pushnotificationios.html#removealldeliverednotifications
