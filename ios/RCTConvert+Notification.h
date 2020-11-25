@@ -40,7 +40,7 @@
 @end
 
 
-@interface RCTConvert (UNNorificationResponse)
+@interface RCTConvert (UNNotificationResponse)
 + (NSDictionary *)RCTFormatUNNotificationResponse:(UNNotificationResponse *)response;
 @end
 
