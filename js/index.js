@@ -146,8 +146,12 @@ class PushNotificationIOS {
       request.fireDate instanceof Date
         ? {...request, fireDate: request.fireDate.toISOString()}
         : request;
+    const finalRequest = {
+      ...handledRequest,
+      repeatsComponent: request.repeatsComponent || {},
+    };
 
-    RNCPushNotificationIOS.addNotificationRequest(handledRequest);
+    RNCPushNotificationIOS.addNotificationRequest(finalRequest);
   }
 
   /**
