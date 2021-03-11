@@ -49,7 +49,7 @@ export type NotificationRequest = {|
    * Define what components should be used in the fireDate during repeats.
    * Must be used with repeats and fireDate.
    */
-  dateRepeatsComponent?: {
+  repeatsComponent?: {
     month?: boolean,
     day?: boolean,
     hour?: boolean,
