@@ -7,6 +7,10 @@
 
 React Native Push Notification API for iOS.
 
+| Notification                                                                                                                  | With Action                                                                                                                   | With TextInput Action                                                                                                         |
+| ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| <img src="https://user-images.githubusercontent.com/6936373/97115527-77c6ee80-173a-11eb-8440-049590a25f31.jpeg" width="320"/> | <img src="https://user-images.githubusercontent.com/6936373/97115526-772e5800-173a-11eb-8b51-c5263bced07a.jpeg" width="320"/> | <img src="https://user-images.githubusercontent.com/6936373/97115522-74cbfe00-173a-11eb-9644-fc1d5e634d6b.jpeg" width="320"/> |
+
 ## Getting started
 
 ### Install
@@ -15,19 +19,22 @@ React Native Push Notification API for iOS.
 yarn add @react-native-community/push-notification-ios
 ```
 
-### Link
+## Link
 
-There are a couple of cases for linking. Choose the appropriate one.
+### React Native v0.60+
 
-- `react-native >= 0.60`
-
- The package is [automatically linked](https://github.com/react-native-community/cli/blob/master/docs/autolinking.md) when building the app. All you need to do is:
+The package is [automatically linked](https://github.com/react-native-community/cli/blob/master/docs/autolinking.md) when building the app. All you need to do is:
 
 ```bash
-cd ios && pod install
+npx pod-install
 ```
 
-- `react-native <= 0.59`
+For android, the package will be linked automatically on build.
+
+<details>
+ <summary>For React Native version 0.59 or older</summary>
+
+### React Native <= v0.59
 
 ```bash
 react-native link @react-native-community/push-notification-ios
@@ -35,32 +42,35 @@ react-native link @react-native-community/push-notification-ios
 
 - upgrading to `react-native >= 0.60`
 
- First, unlink the library. Then follow the instructions above.
+First, unlink the library. Then follow the instructions above.
 
- ```bash
- react-native unlink @react-native-community/push-notification-ios
- ```
+```bash
+react-native unlink @react-native-community/push-notification-ios
+```
 
 - manual linking
 
- If you don't want to use the methods above, you can always [link the library manually](./docs/manual-linking.md).
+If you don't want to use the methods above, you can always [link the library manually](./docs/manual-linking.md).
+
+</details>
 
 ### Add Capabilities : Background Mode - Remote Notifications
 
 Go into your MyReactProject/ios dir and open MyProject.xcworkspace workspace.
 Select the top project "MyProject" and select the "Signing & Capabilities" tab.
 Add a 2 new Capabilities using "+" button:
+
 - `Background Mode` capability and tick `Remote Notifications`.
 - `Push Notifications` capability
-
 
 ### Augment `AppDelegate`
 
 Finally, to enable support for `notification` and `register` events you need to augment your AppDelegate.
 
-### Update `AppDelegate.h`	
+### Update `AppDelegate.h`
 
 At the top of the file:
+
 ```objective-c
 #import <UserNotifications/UNUserNotificationCenter.h>
 ```
@@ -70,6 +80,7 @@ Then, add the 'UNUserNotificationCenterDelegate' to protocols:
 ```objective-c
 @interface AppDelegate : UIResponder <UIApplicationDelegate, RCTBridgeDelegate, UNUserNotificationCenterDelegate>
 ```
+
 ### Update `AppDelegate.m`
 
 At the top of the file:
@@ -82,11 +93,6 @@ At the top of the file:
 Then, add the following lines:
 
 ```objective-c
-// Required to register for notifications
-- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
-{
- [RNCPushNotificationIOS didRegisterUserNotificationSettings:notificationSettings];
-}
 // Required for the register event.
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
@@ -103,20 +109,13 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
  [RNCPushNotificationIOS didFailToRegisterForRemoteNotificationsWithError:error];
 }
-// IOS 10+ Required for localNotification event
+// Required for localNotification event
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center
 didReceiveNotificationResponse:(UNNotificationResponse *)response
          withCompletionHandler:(void (^)(void))completionHandler
 {
   [RNCPushNotificationIOS didReceiveNotificationResponse:response];
-  completionHandler();
 }
-// IOS 4-10 Required for the localNotification event.
-- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
-{
- [RNCPushNotificationIOS didReceiveLocalNotification:notification];
-}
-
 ```
 
 And then in your AppDelegate implementation, add the following:
@@ -135,7 +134,7 @@ And then in your AppDelegate implementation, add the following:
 //Called when a notification is delivered to a foreground app.
 -(void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler
 {
-  completionHandler(UNAuthorizationOptionSound | UNAuthorizationOptionAlert | UNAuthorizationOptionBadge);
+  completionHandler(UNNotificationPresentationOptionSound | UNNotificationPresentationOptionAlert | UNNotificationPresentationOptionBadge);
 }
 ```
 
@@ -144,15 +143,89 @@ And then in your AppDelegate implementation, add the following:
 This module was created when the PushNotificationIOS was split out from the core of React Native. To migrate to this module you need to follow the installation instructions above and then change you imports from:
 
 ```js
-import { PushNotificationIOS } from "react-native";
+import {PushNotificationIOS} from 'react-native';
 ```
 
 to:
 
 ```js
-import PushNotificationIOS from "@react-native-community/push-notification-ios";
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
 ```
 
+## How to determine push notification user click
+
+Receiving remote pushes has two common cases: user dismissed notification and user clicked notification. To have separate logic for each case you can use `notification.getData().userInteraction` to determine push notification user click:
+
+```js
+export const App = () => {
+  const [permissions, setPermissions] = useState({});
+
+  useEffect(() => {
+    PushNotificationIOS.addEventListener('notification', onRemoteNotification);
+  });
+
+  const onRemoteNotification = (notification) => {
+    const isClicked = notification.getData().userInteraction === 1;
+
+    if (isClicked) {
+      // Navigate user to another screen
+    } else {
+      // Do something else with push notification
+    }
+  };
+};
+```
+
+## How to perform different action based on user selected action.
+
+```js
+export const App = () => {
+  const [permissions, setPermissions] = useState({});
+
+  /**
+   * By calling this function, notification with category `userAction` will have action buttons
+   */
+  const setNotificationCategories = () => {
+    PushNotificationIOS.setNotificationCategories([
+      {
+        id: 'userAction',
+        actions: [
+          {id: 'open', title: 'Open', options: {foreground: true}},
+          {
+            id: 'ignore',
+            title: 'Desruptive',
+            options: {foreground: true, destructive: true},
+          },
+          {
+            id: 'text',
+            title: 'Text Input',
+            options: {foreground: true},
+            textInput: {buttonTitle: 'Send'},
+          },
+        ],
+      },
+    ]);
+  };
+
+  useEffect(() => {
+    PushNotificationIOS.addEventListener('notification', onRemoteNotification);
+  });
+
+  const onRemoteNotification = (notification) => {
+    const actionIdentifier = notification.getActionIdentifier();
+
+    if (actionIdentifier === 'open') {
+      // Perform action based on open action
+    }
+
+    if (actionIdentifier === 'text') {
+      // Text that of user input.
+      const userText = notification.getUserText();
+      // Perform action based on textinput action
+    }
+  };
+};
+```
 
 # Reference
 
@@ -164,6 +237,7 @@ import PushNotificationIOS from "@react-native-community/push-notification-ios";
 PushNotificationIOS.presentLocalNotification(details);
 ```
 
+_Deprecated_ - use `addNotificationRequest` instead.
 Schedules the localNotification for immediate presentation.
 
 **Parameters:**
@@ -191,6 +265,7 @@ details is an object containing:
 PushNotificationIOS.scheduleLocalNotification(details);
 ```
 
+_Deprecated_ - use `addNotificationRequest` instead.
 Schedules the localNotification for future presentation.
 
 **Parameters:**
@@ -214,13 +289,94 @@ details is an object containing:
 
 ---
 
-### `cancelAllLocalNotifications()`
+### `addNotificationRequest()`
 
 ```jsx
-PushNotificationIOS.cancelAllLocalNotifications();
+PushNotificationIOS.addNotificationRequest(request);
 ```
 
-Cancels all scheduled localNotifications
+Sends notificationRequest to notification center at specified firedate.
+Fires immediately if firedate is not set.
+
+**Parameters:**
+
+| Name    | Type   | Required | Description |
+| ------- | ------ | -------- | ----------- |
+| request | object | Yes      | See below.  |
+
+request is an object containing:
+
+- `id`: Identifier of the notification. Required in order to be able to retrieve specific notification. (required)
+- `title`: A short description of the reason for the alert.
+- `subtitle`: A secondary description of the reason for the alert.
+- `body` : The message displayed in the notification alert.
+- `badge` The number to display as the app's icon badge. Setting the number to 0 removes the icon badge.
+- `fireDate` : The date and time when the system should deliver the notification.
+- `repeats` : Sets notification to repeat daily. Must be used with fireDate.
+- `sound` : The sound played when the notification is fired.
+- `category` : The category of this notification, required for actionable notifications.
+- `isSilent` : If true, the notification will appear without sound.
+- `userInfo` : An object containing additional notification data.
+
+---
+
+### `setNotificationCategories()`
+
+```jsx
+PushNotificationIOS.setNotificationCategories(categories);
+```
+
+Sets category for the notification center.
+Allows you to add specific actions for notification with specific category.
+
+**Parameters:**
+
+| Name       | Type     | Required | Description |
+| ---------- | -------- | -------- | ----------- |
+| categories | object[] | Yes      | See below.  |
+
+`category` is an object containing:
+
+- `id`: Identifier of the notification category. Notification with this category will have the specified actions. (required)
+- `actions`: An array of notification actions to be attached to the notification of category id.
+
+`action` is an object containing:
+
+- `id`: Identifier of Action. This value will be returned as actionIdentifier when notification is received.
+- `title`: Text to be shown on notification action button.
+- `options`: Options for notification action.
+  - `foreground`: If `true`, action will be displayed on notification.
+  - `destructive`: If `true`, action will be displayed as destructive notification.
+  - `authenticationRequired`: If `true`, action will only be displayed for authenticated user.
+- `textInput`: Option for textInput action. If textInput prop exists, then user action will automatically become a text input action. The text user inputs will be in the userText field of the received notification.
+  - `buttonTitle`: Text to be shown on button when user finishes text input. Default is "Send" or its equivalent word in user's language setting.
+  - `placeholder`: Placeholder for text input for text input action.
+
+---
+
+### `removePendingNotificationRequests()`
+
+```jsx
+PushNotificationIOS.removeDeliveredNotifications(identifiers);
+```
+
+Removes the specified pending notifications from Notification Center
+
+**Parameters:**
+
+| Name        | Type  | Required | Description                        |
+| ----------- | ----- | -------- | ---------------------------------- |
+| identifiers | string[] | Yes      | Array of notification identifiers. |
+
+---
+
+### `removeAllPendingNotificationRequests()`
+
+```jsx
+PushNotificationIOS.removeAllPendingNotificationRequests();
+```
+
+Removes all pending notification requests in the notification center.
 
 ---
 
@@ -265,13 +421,13 @@ A delivered notification is an object containing:
 PushNotificationIOS.removeDeliveredNotifications(identifiers);
 ```
 
-Removes the specified notifications from Notification Center
+Removes the specified delivered notifications from Notification Center
 
 **Parameters:**
 
 | Name        | Type  | Required | Description                        |
 | ----------- | ----- | -------- | ---------------------------------- |
-| identifiers | array | Yes      | Array of notification identifiers. |
+| identifiers | string[] | Yes      | Array of notification identifiers. |
 
 ---
 
@@ -368,17 +524,16 @@ Valid events are:
 ### `removeEventListener()`
 
 ```jsx
-PushNotificationIOS.removeEventListener(type, handler);
+PushNotificationIOS.removeEventListener(type);
 ```
 
 Removes the event listener. Do this in `componentWillUnmount` to prevent memory leaks
 
 **Parameters:**
 
-| Name    | Type     | Required | Description |
-| ------- | -------- | -------- | ----------- |
-| type    | string   | Yes      | Event type. |
-| handler | function | Yes      | Listener.   |
+| Name | Type   | Required | Description |
+| ---- | ------ | -------- | ----------- |
+| type | string | Yes      | Event type. |
 
 ---
 
@@ -437,6 +592,11 @@ See what push permissions are currently enabled.
 - `alert` :boolean
 - `badge` :boolean
 - `sound` :boolean
+- `lockScreen` :boolean
+- `notificationCenter` :boolean
+- `authorizationStatus` :AuthorizationStatus
+
+  For a list of possible values of `authorizationStatus`, see `PushNotificationIOS.AuthorizationStatus`. For their meanings, refer to https://developer.apple.com/documentation/usernotifications/unauthorizationstatus
 
 ---
 
@@ -514,6 +674,16 @@ Gets the notification's main message from the `aps` object
 
 ---
 
+### `getTitle()`
+
+```jsx
+getTitle();
+```
+
+Gets the notification's title from the `aps` object
+
+---
+
 ### `getContentAvailable()`
 
 ```jsx
@@ -552,8 +722,8 @@ getThreadID();
 
 Gets the thread ID on the notification
 
-[build-badge]: https://img.shields.io/circleci/project/github/react-native-community/push-notification-ios/master.svg?style=flat-square
-[build]: https://circleci.com/gh/react-native-community/push-notification-ios
+[build-badge]: https://github.com/react-native-push-notification-ios/push-notification-ios/workflows/Build/badge.svg
+[build]: https://github.com/react-native-push-notification-ios/push-notification-ios/actions
 [version-badge]: https://img.shields.io/npm/v/@react-native-community/push-notification-ios.svg?style=flat-square
 [package]: https://www.npmjs.com/package/@react-native-community/push-notification-ios
 [license-badge]: https://img.shields.io/npm/l/@react-native-community/push-notification-ios.svg?style=flat-square

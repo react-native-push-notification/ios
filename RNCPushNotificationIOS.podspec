@@ -16,8 +16,8 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/react-native-community/push-notification-ios", :tag => "v#{s.version}" }
   s.source_files = "ios/*.{h,m}"
 
-  s.platform     = :ios, "9.0"
+  s.platform     = :ios, "10.0"
 
-  s.dependency "React"
+  s.dependency "React-Core"
 
 end
