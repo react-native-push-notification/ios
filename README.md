@@ -357,7 +357,7 @@ Allows you to add specific actions for notification with specific category.
 ### `removePendingNotificationRequests()`
 
 ```jsx
-PushNotificationIOS.removeDeliveredNotifications(identifiers);
+PushNotificationIOS.removePendingNotificationRequests(identifiers);
 ```
 
 Removes the specified pending notifications from Notification Center
