@@ -175,6 +175,10 @@ export type NotificationRequest = {
    */
   repeats?: boolean;
   /**
+   * The interval to repeat as a string. Possible values: minute, hour, day, week, month, year.
+   */
+  repeatInterval?: 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';
+  /**
    * Sets notification to be silent
    */
   isSilent?: boolean;

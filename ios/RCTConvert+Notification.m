@@ -62,14 +62,14 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
 + (NSDictionary *)RCTFormatLocalNotification:(UILocalNotification *)notification
 {
     NSMutableDictionary *formattedLocalNotification = [NSMutableDictionary dictionary];
-  
+
     if (notification.fireDate) {
         NSDateFormatter *formatter = [NSDateFormatter new];
         [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"];
         NSString *fireDateString = [formatter stringFromDate:notification.fireDate];
         formattedLocalNotification[@"fireDate"] = fireDateString;
     }
-  
+
     formattedLocalNotification[@"alertAction"] = RCTNullIfNil(notification.alertAction);
     formattedLocalNotification[@"alertTitle"] = RCTNullIfNil(notification.alertTitle);
     formattedLocalNotification[@"alertBody"] = RCTNullIfNil(notification.alertBody);
@@ -93,11 +93,11 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
 + (UNNotificationRequest *)UNNotificationRequest:(id)json
 {
     NSDictionary<NSString *, id> *details = [self NSDictionary:json];
-    
+
     BOOL isSilent = [RCTConvert BOOL:details[@"isSilent"]];
     NSString* identifier = [RCTConvert NSString:details[@"id"]];
-    
-    
+
+
     UNMutableNotificationContent* content = [[UNMutableNotificationContent alloc] init];
     content.title= [RCTConvert NSString:details[@"title"]];
     content.subtitle= [RCTConvert NSString:details[@"subtitle"]];
@@ -117,13 +117,53 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
 
     NSDate* fireDate = [RCTConvert NSDate:details[@"fireDate"]];
     BOOL repeats = [RCTConvert BOOL:details[@"repeats"]];
-    NSDateComponents *triggerDate = fireDate ? [[NSCalendar currentCalendar]
-                                                components:NSCalendarUnitYear +
-                                                NSCalendarUnitMonth + NSCalendarUnitDay +
-                                                NSCalendarUnitHour + NSCalendarUnitMinute +
-                                                NSCalendarUnitSecond + NSCalendarUnitTimeZone
-                                                fromDate:fireDate] : nil;
+    NSString* repeatInterval = [RCTConvert NSString:details[@"repeatInterval"]];
+
+    NSDateComponents *triggerDate = nil;
     
+    if (repeats && fireDate) {
+      if ([repeatInterval isEqualToString:@"year"]) {
+        triggerDate = [[NSCalendar currentCalendar]
+                       components:
+                       NSCalendarUnitMonth + NSCalendarUnitDay +
+                       NSCalendarUnitHour + NSCalendarUnitMinute +
+                       NSCalendarUnitSecond + NSCalendarUnitTimeZone
+                       fromDate:fireDate];
+      } else if ([repeatInterval isEqualToString:@"month"]) {
+        triggerDate = fireDate ? [[NSCalendar currentCalendar]
+                                  components: NSCalendarUnitDay +
+                                  NSCalendarUnitHour + NSCalendarUnitMinute +
+                                  NSCalendarUnitSecond + NSCalendarUnitTimeZone
+                                  fromDate:fireDate] : nil;
+        
+      } else if ([repeatInterval isEqualToString:@"week"]) {
+        triggerDate = fireDate ? [[NSCalendar currentCalendar]
+                                  components: NSCalendarUnitWeekday +
+                                  NSCalendarUnitHour + NSCalendarUnitMinute +
+                                  NSCalendarUnitSecond + NSCalendarUnitTimeZone
+                                  fromDate:fireDate] : nil;
+        
+      } else if ([repeatInterval isEqualToString:@"hour"]) {
+        
+        triggerDate = fireDate ? [[NSCalendar currentCalendar]
+                                  components: NSCalendarUnitMinute +
+                                  NSCalendarUnitSecond + NSCalendarUnitTimeZone
+                                  fromDate:fireDate] : nil;
+        
+      } else if ([repeatInterval isEqualToString:@"minute"]) {
+        
+        triggerDate = fireDate ? [[NSCalendar currentCalendar]
+                                  components: NSCalendarUnitSecond + NSCalendarUnitTimeZone
+                                  fromDate:fireDate] : nil;
+      } else { //Default to "day" if repeatInterval not specifed or invalid
+        triggerDate = fireDate ? [[NSCalendar currentCalendar]
+                                  components:
+                                  NSCalendarUnitHour + NSCalendarUnitMinute +
+                                  NSCalendarUnitSecond + NSCalendarUnitTimeZone
+                                  fromDate:fireDate] : nil;
+      }
+    }
+
     UNCalendarNotificationTrigger* trigger = triggerDate ? [UNCalendarNotificationTrigger triggerWithDateMatchingComponents:triggerDate repeats:repeats] : nil;
 
     UNNotificationRequest* notification = [UNNotificationRequest requestWithIdentifier:identifier content:content trigger:trigger];
@@ -136,9 +176,9 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
 + (NSDictionary *)RCTFormatUNNotificationRequest:(UNNotificationRequest*)request
 {
     NSMutableDictionary *formattedRequest = [NSMutableDictionary dictionary];
-    
+
     formattedRequest[@"id"] = RCTNullIfNil(request.identifier);
-    
+
     UNNotificationContent *content = request.content;
     formattedRequest[@"title"] = RCTNullIfNil(content.title);
     formattedRequest[@"subtitle"] = RCTNullIfNil(content.subtitle);
@@ -148,7 +188,7 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
     formattedRequest[@"category"] = RCTNullIfNil(content.categoryIdentifier);
     formattedRequest[@"thread-id"] = RCTNullIfNil(content.threadIdentifier);
     formattedRequest[@"userInfo"] = RCTNullIfNil(RCTJSONClean(content.userInfo));
-    
+
     if (request.trigger) {
         UNCalendarNotificationTrigger* trigger = (UNCalendarNotificationTrigger*)request.trigger;
         NSDateFormatter *formatter = [NSDateFormatter new];
@@ -195,11 +235,11 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
     NSDictionary<NSString *, id> *details = [self NSDictionary:json];
     NSString* identifier = [RCTConvert NSString:details[@"id"]];
     NSString* title = [RCTConvert NSString:details[@"title"]];
-    
-    
+
+
     UNNotificationActionOptions options = [RCTConvert UNNotificationActionOptions:details[@"options"]];
     UNNotificationAction* action = details[@"textInput"] ? [UNTextInputNotificationAction actionWithIdentifier:identifier title:title options:options textInputButtonTitle:details[@"textInput"][@"buttonTitle"] textInputPlaceholder:details[@"textInput"][@"placeholder"]] : [UNNotificationAction actionWithIdentifier:identifier title:title options:options];
-    
+
     return action;
 }
 
@@ -213,15 +253,15 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
 + (UNNotificationCategory *)UNNotificationCategory:(id)json
 {
     NSDictionary<NSString *, id> *details = [self NSDictionary:json];
-    
+
     NSString* identifier = [RCTConvert NSString:details[@"id"]];
     NSMutableArray* actions = [NSMutableArray new];
         for (NSDictionary* action in [RCTConvert NSArray:details[@"actions"]]) {
             [actions addObject:[RCTConvert UNNotificationAction:action]];
         }
-    
+
     UNNotificationCategory* category = [UNNotificationCategory categoryWithIdentifier:identifier actions:actions intentIdentifiers:@[] options:UNNotificationCategoryOptionNone];
-    
+
     return category;
 }
 
@@ -237,21 +277,21 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
     UNNotification* notification = response.notification;
     NSMutableDictionary *formattedResponse = [[RCTConvert RCTFormatUNNotification:notification] mutableCopy];
     UNNotificationContent *content = notification.request.content;
-      
+
     NSMutableDictionary *userInfo = [content.userInfo mutableCopy];
     userInfo[@"userInteraction"] = [NSNumber numberWithInt:1];
     userInfo[@"actionIdentifier"] = response.actionIdentifier;
-    
+
     formattedResponse[@"badge"] = RCTNullIfNil(content.badge);
     formattedResponse[@"sound"] = RCTNullIfNil(content.sound);
     formattedResponse[@"userInfo"] = RCTNullIfNil(RCTJSONClean(userInfo));
     formattedResponse[@"actionIdentifier"] = RCTNullIfNil(response.actionIdentifier);
-      
+
     NSString* userText = [response isKindOfClass:[UNTextInputNotificationResponse class]] ? ((UNTextInputNotificationResponse *)response).userText : nil;
     if (userText) {
       formattedResponse[@"userText"] = RCTNullIfNil(userText);
     }
-      
+
     return formattedResponse;
 }
 @end
@@ -265,16 +305,16 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
 {
     NSMutableDictionary *formattedNotification = [NSMutableDictionary dictionary];
     UNNotificationContent *content = notification.request.content;
-  
+
     formattedNotification[@"identifier"] = notification.request.identifier;
-  
+
     if (notification.date) {
       NSDateFormatter *formatter = [NSDateFormatter new];
       [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"];
       NSString *dateString = [formatter stringFromDate:notification.date];
       formattedNotification[@"date"] = dateString;
     }
-  
+
     formattedNotification[@"title"] = RCTNullIfNil(content.title);
     formattedNotification[@"subtitle"] = RCTNullIfNil(content.subtitle);
     formattedNotification[@"body"] = RCTNullIfNil(content.body);
@@ -283,7 +323,7 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
     formattedNotification[@"category"] = RCTNullIfNil(content.categoryIdentifier);
     formattedNotification[@"thread-id"] = RCTNullIfNil(content.threadIdentifier);
     formattedNotification[@"userInfo"] = RCTNullIfNil(RCTJSONClean(content.userInfo));
-  
+
     return formattedNotification;
 }
 

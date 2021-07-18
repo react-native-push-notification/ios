@@ -312,7 +312,8 @@ request is an object containing:
 - `body` : The message displayed in the notification alert.
 - `badge` The number to display as the app's icon badge. Setting the number to 0 removes the icon badge.
 - `fireDate` : The date and time when the system should deliver the notification.
-- `repeats` : Sets notification to repeat daily. Must be used with fireDate.
+- `repeats` : Sets notification to repeat (default daily). Must be used with fireDate. Use repeatInterval to modify repeat behaviour.
+- `repeatInterval`: The interval to repeat as a string. Possible values: `minute`, `hour`, `day`, `week`, `month`, `year` (optional). Default `day` if `repeats` is true. 
 - `sound` : The sound played when the notification is fired.
 - `category` : The category of this notification, required for actionable notifications.
 - `isSilent` : If true, the notification will appear without sound.
