@@ -116,12 +116,19 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
     }
 
     NSDate* fireDate = [RCTConvert NSDate:details[@"fireDate"]];
-    BOOL repeats = [RCTConvert BOOL:details[@"repeats"]];
     NSString* repeatInterval = [RCTConvert NSString:details[@"repeatInterval"]];
 
+    //For backward compatability with existing request interface.
+    //If repeats param is set to true and no repeatInterval set then use "day" as the default
+    BOOL repeatsParam = [RCTConvert BOOL:details[@"repeats"]];
+    if (repeatsParam && repeatInterval.length == 0) {
+        repeatInterval = @"day";
+    }
+
+    BOOL repeats = TRUE;
     NSDateComponents *triggerDate = nil;
-    
-    if (repeats && fireDate) {
+
+    if (fireDate) {
       if ([repeatInterval isEqualToString:@"year"]) {
         triggerDate = [[NSCalendar currentCalendar]
                        components:
@@ -135,32 +142,35 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
                                   NSCalendarUnitHour + NSCalendarUnitMinute +
                                   NSCalendarUnitSecond + NSCalendarUnitTimeZone
                                   fromDate:fireDate] : nil;
-        
       } else if ([repeatInterval isEqualToString:@"week"]) {
         triggerDate = fireDate ? [[NSCalendar currentCalendar]
                                   components: NSCalendarUnitWeekday +
                                   NSCalendarUnitHour + NSCalendarUnitMinute +
                                   NSCalendarUnitSecond + NSCalendarUnitTimeZone
                                   fromDate:fireDate] : nil;
-        
-      } else if ([repeatInterval isEqualToString:@"hour"]) {
-        
-        triggerDate = fireDate ? [[NSCalendar currentCalendar]
-                                  components: NSCalendarUnitMinute +
-                                  NSCalendarUnitSecond + NSCalendarUnitTimeZone
-                                  fromDate:fireDate] : nil;
-        
-      } else if ([repeatInterval isEqualToString:@"minute"]) {
-        
-        triggerDate = fireDate ? [[NSCalendar currentCalendar]
-                                  components: NSCalendarUnitSecond + NSCalendarUnitTimeZone
-                                  fromDate:fireDate] : nil;
-      } else { //Default to "day" if repeatInterval not specifed or invalid
+      } else if ([repeatInterval isEqualToString:@"day"]) {
         triggerDate = fireDate ? [[NSCalendar currentCalendar]
                                   components:
                                   NSCalendarUnitHour + NSCalendarUnitMinute +
                                   NSCalendarUnitSecond + NSCalendarUnitTimeZone
                                   fromDate:fireDate] : nil;
+      } else if ([repeatInterval isEqualToString:@"hour"]) {
+        triggerDate = fireDate ? [[NSCalendar currentCalendar]
+                                  components: NSCalendarUnitMinute +
+                                  NSCalendarUnitSecond + NSCalendarUnitTimeZone
+                                  fromDate:fireDate] : nil;
+      } else if ([repeatInterval isEqualToString:@"minute"]) {
+        triggerDate = fireDate ? [[NSCalendar currentCalendar]
+                                  components: NSCalendarUnitSecond + NSCalendarUnitTimeZone
+                                  fromDate:fireDate] : nil;
+      } else { //If no valid repeat interval, set repeats to false and create non-repeating trigger date
+          repeats = FALSE;
+          triggerDate = [[NSCalendar currentCalendar]
+                         components: NSCalendarUnitYear +
+                         NSCalendarUnitMonth + NSCalendarUnitDay +
+                         NSCalendarUnitHour + NSCalendarUnitMinute +
+                         NSCalendarUnitSecond + NSCalendarUnitTimeZone
+                         fromDate:fireDate];
       }
     }
 
