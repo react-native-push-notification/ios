@@ -110,7 +110,7 @@ RCT_EXPORT_MODULE()
               fetchCompletionHandler:(RNCRemoteNotificationCallback)completionHandler
 {
   NSDictionary *userInfo = @{@"notification": notification, @"completionHandler": completionHandler};
-  NSLog(@"NOTIFICATION: RNCPushNotification didReceiveRemoteNotification called")
+  NSLog(@"NOTIFICATION: RNCPushNotification didReceiveRemoteNotification called");
   [[NSNotificationCenter defaultCenter] postNotificationName:RCTRemoteNotificationReceived
                                                       object:self
                                                     userInfo:userInfo];
@@ -142,9 +142,9 @@ API_AVAILABLE(ios(10.0)) {
   NSString *notificationId = [[NSUUID UUID] UUIDString];
   remoteNotification[@"notificationId"] = notificationId;
   remoteNotification[@"remote"] = @YES;
-  NSLog(@"NOTIFICATION: RNCPushNotification handleRemoteNotificationReceived called")
+  NSLog(@"NOTIFICATION: RNCPushNotification handleRemoteNotificationReceived called");
   if (completionHandler) {
-    NSLog(@"NOTIFICATION: has completion handler")
+    NSLog(@"NOTIFICATION: has completion handler");
     if (!self.remoteNotificationCallbacks) {
       // Lazy initialization
       self.remoteNotificationCallbacks = [NSMutableDictionary dictionary];
@@ -173,11 +173,11 @@ API_AVAILABLE(ios(10.0)) {
 
 RCT_EXPORT_METHOD(onFinishRemoteNotification:(NSString *)notificationId fetchResult:(UIBackgroundFetchResult)result)
 {
-  NSLog(@"NOTIFICATION: RNCPushNotification onFinishRemoteNotification called")
+  NSLog(@"NOTIFICATION: RNCPushNotification onFinishRemoteNotification called");
   if (self.remoteNotificationCallbacks) {
-    NSLog(@"NOTIFICATION: RNCPushNotification has callbacks")
-    RNCRemoteNotificationCallback completionHandler = self.remoteNotificationCallbacks[notificationId]
-    completionHandler(result)
+    NSLog(@"NOTIFICATION: RNCPushNotification has callbacks");
+    RNCRemoteNotificationCallback completionHandler = self.remoteNotificationCallbacks[notificationId];
+    completionHandler(result);
     [self.remoteNotificationCallbacks removeObjectForKey:notificationId];
   }
 }
