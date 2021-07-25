@@ -172,6 +172,9 @@ export const App = () => {
     } else {
       // Do something else with push notification
     }
+    // Use the appropriate result based on what you needed to do for this notification
+    const result = PushNotificationIOS.FetchResult.NoData;
+    notification.finish(result);
   };
 };
 ```
@@ -223,6 +226,9 @@ export const App = () => {
       const userText = notification.getUserText();
       // Perform action based on textinput action
     }
+    // Use the appropriate result based on what you needed to do for this notification
+    const result = PushNotificationIOS.FetchResult.NoData;
+    notification.finish(result);
   };
 };
 ```
