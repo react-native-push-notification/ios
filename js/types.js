@@ -54,6 +54,10 @@ export type NotificationRequest = {|
    */
   isCritical?: boolean,
   /**
+   * The volume for the critical alert’s sound. Set this to a value between 0.0 (silent) and 1.0 (full volume).
+   */
+  criticalSoundVolume?: number,
+  /**
    * Optional data to be added to the notification
    */
   userInfo?: Object,
