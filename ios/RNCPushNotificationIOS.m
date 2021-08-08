@@ -212,8 +212,10 @@ RCT_EXPORT_METHOD(requestPermissions:(NSDictionary *)permissions
     if ([RCTConvert BOOL:permissions[@"sound"]]) {
       types |= UNAuthorizationOptionSound;
     }
-    if ([RCTConvert BOOL:permissions[@"critical"]]) {
-      types |= UNAuthorizationOptionCriticalAlert;
+    if (@available(iOS 12, *)) {
+        if ([RCTConvert BOOL:permissions[@"critical"]]) {
+            types |= UNAuthorizationOptionCriticalAlert;
+        }
     }
   } else {
     types = UNAuthorizationOptionAlert | UNAuthorizationOptionBadge | UNAuthorizationOptionSound;
