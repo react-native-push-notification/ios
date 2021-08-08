@@ -15,6 +15,14 @@ React Native Push Notification API for iOS.
 
 ### Install
 
+Using npm:
+
+```bash
+npm i @react-native-community/push-notification-ios --save
+```
+
+or using Yarn:
+
 ```bash
 yarn add @react-native-community/push-notification-ios
 ```

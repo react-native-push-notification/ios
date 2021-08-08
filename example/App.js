@@ -11,7 +11,7 @@ import {
   Alert,
   StyleSheet,
   Text,
-  TouchableHighlight,
+  Pressable,
   View,
   DeviceEventEmitter,
 } from 'react-native';
@@ -27,12 +27,10 @@ const Button: React.StatelessFunctionalComponent<ButtonProps> = ({
   label,
 }) => {
   return (
-    <TouchableHighlight
-      underlayColor={'white'}
-      style={styles.button}
-      onPress={onPress}>
+    /** $FlowFixMe */
+    <Pressable style={styles.button} onPress={onPress}>
       <Text style={styles.buttonLabel}>{label}</Text>
-    </TouchableHighlight>
+    </Pressable>
   );
 };
 
