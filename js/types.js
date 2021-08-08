@@ -50,6 +50,10 @@ export type NotificationRequest = {|
    */
   isSilent?: boolean,
   /**
+   * Sets notification to be critical
+   */
+  isCritical?: boolean,
+  /**
    * Optional data to be added to the notification
    */
   userInfo?: Object,
