@@ -15,6 +15,7 @@ import {
   ScrollView,
   View,
   DeviceEventEmitter,
+  SafeAreaView,
 } from 'react-native';
 import PushNotificationIOS from '../js';
 
@@ -133,6 +134,9 @@ export const App = (): React.Node => {
       threadId: 'thread-id',
       fireDate: new Date(new Date().valueOf() + 2000),
       repeats: true,
+      userInfo: {
+        image: 'https://www.github.com/Naturalclar.png',
+      },
     });
   };
 
@@ -318,70 +322,83 @@ export const App = (): React.Node => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Button onPress={sendNotification} label="Send fake notification" />
-      <Button
-        onPress={sendLocalNotification}
-        label="Send fake local notification"
-      />
-      <Button
-        onPress={sendLocalNotificationWithSound}
-        label="Send fake local notification with custom sound"
-      />
-      <Button
-        onPress={scheduleLocalNotification}
-        label="Schedule fake local notification"
-      />
-      <Button
-        onPress={addNotificationRequest}
-        label="Add Notification Request"
-      />
-      <Button
-        onPress={addCriticalNotificationRequest}
-        label="Add Critical Notification Request (only works with Critical Notification entitlement)"
-      />
-      <Button
-        onPress={addMultipleRequests}
-        label="Add Multiple Notification Requests"
-      />
-      <Button
-        onPress={setNotificationCategories}
-        label="Set notification categories"
-      />
-      <Button
-        onPress={removePendingNotificationRequests}
-        label="Remove Partial Pending Notification Requests"
-      />
-      <Button
-        onPress={removeAllPendingNotificationRequests}
-        label="Remove All Pending Notification Requests"
-      />
-      <Button
-        onPress={sendSilentNotification}
-        label="Send fake silent notification"
-      />
+    <View style={[styles.flex, styles.background]}>
+      <SafeAreaView style={styles.flex}>
+        <ScrollView contentContainerStyle={styles.container}>
+          <Button onPress={sendNotification} label="Send fake notification" />
+          <Button
+            onPress={sendLocalNotification}
+            label="Send fake local notification"
+          />
+          <Button
+            onPress={sendLocalNotificationWithSound}
+            label="Send fake local notification with custom sound"
+          />
+          <Button
+            onPress={scheduleLocalNotification}
+            label="Schedule fake local notification"
+          />
+          <Button
+            onPress={addNotificationRequest}
+            label="Add Notification Request"
+          />
+          <Button
+            onPress={addCriticalNotificationRequest}
+            label="Add Critical Notification Request (only works with Critical Notification entitlement)"
+          />
+          <Button
+            onPress={addMultipleRequests}
+            label="Add Multiple Notification Requests"
+          />
+          <Button
+            onPress={setNotificationCategories}
+            label="Set notification categories"
+          />
+          <Button
+            onPress={removePendingNotificationRequests}
+            label="Remove Partial Pending Notification Requests"
+          />
+          <Button
+            onPress={removeAllPendingNotificationRequests}
+            label="Remove All Pending Notification Requests"
+          />
+          <Button
+            onPress={sendSilentNotification}
+            label="Send fake silent notification"
+          />
 
-      <Button
-        onPress={() => PushNotificationIOS.setApplicationIconBadgeNumber(42)}
-        label="Set app's icon badge to 42"
-      />
-      <Button
-        onPress={() => PushNotificationIOS.setApplicationIconBadgeNumber(0)}
-        label="Clear app's icon badge"
-      />
-      <Button
-        onPress={getPendingNotificationRequests}
-        label="Get Pending Notification Requests"
-      />
-      <View>
-        <Button onPress={showPermissions} label="Show enabled permissions" />
-        <Text>{JSON.stringify(permissions)}</Text>
-      </View>
-    </ScrollView>
+          <Button
+            onPress={() =>
+              PushNotificationIOS.setApplicationIconBadgeNumber(42)
+            }
+            label="Set app's icon badge to 42"
+          />
+          <Button
+            onPress={() => PushNotificationIOS.setApplicationIconBadgeNumber(0)}
+            label="Clear app's icon badge"
+          />
+          <Button
+            onPress={getPendingNotificationRequests}
+            label="Get Pending Notification Requests"
+          />
+          <View>
+            <Button
+              onPress={showPermissions}
+              label="Show enabled permissions"
+            />
+            <Text>{JSON.stringify(permissions)}</Text>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  background: {
+    backgroundColor: '#F5FCFF',
+  },
+  flex: {flex: 1},
   container: {
     flexGrow: 1,
     backgroundColor: '#F5FCFF',
