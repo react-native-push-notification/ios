@@ -234,6 +234,9 @@ export const App = () => {
   };
 };
 ```
+## How to recieve rich notification in remote
+
+Follow these [article](https://firebase.google.com/docs/cloud-messaging/ios/send-image) to create rich notification for your own 
 
 # Reference
 
@@ -292,6 +295,7 @@ details is an object containing:
 - `isSilent` : If true, the notification will appear without sound (optional).
 - `category` : The category of this notification, required for actionable notifications (optional).
 - `userInfo` : An object containing additional notification data (optional).
+  - `image` : It's useful if you need to diplay rich notification (optional).  
 - `applicationIconBadgeNumber` The number to display as the app's icon badge. Setting the number to 0 removes the icon badge (optional).
 - `repeatInterval` : The interval to repeat as a string. Possible values: `minute`, `hour`, `day`, `week`, `month`, `year` (optional).
 

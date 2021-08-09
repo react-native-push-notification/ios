@@ -7,7 +7,6 @@
 
 #import "RNCPushNotificationIOS.h"
 #import "RCTConvert+Notification.h"
-
 #import <React/RCTBridge.h>
 #import <React/RCTConvert.h>
 #import <React/RCTEventDispatcher.h>
@@ -290,13 +289,77 @@ RCT_EXPORT_METHOD(scheduleLocalNotification:(UILocalNotification *)notification)
 RCT_EXPORT_METHOD(addNotificationRequest:(UNNotificationRequest*)request)
 {
     UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
-    [center addNotificationRequest:request
-                withCompletionHandler:^(NSError* _Nullable error) {
-        if (!error) {
-            NSLog(@"notifier request success");
+    NSString *imageUrl = request.content.userInfo[@"image"];
+    NSMutableDictionary *fcmInfo = request.content.userInfo[@"fcm_options"];
+    if(fcmInfo != nil && fcmInfo[@"image"] != nil) {
+        imageUrl = fcmInfo[@"image"];
+    }
+    if(imageUrl != nil) {
+        NSURL *attachmentURL = [NSURL URLWithString:imageUrl];
+        [self loadAttachmentForUrl:attachmentURL completionHandler:^(UNNotificationAttachment *attachment) {
+            if (attachment) {
+                UNMutableNotificationContent *bestAttemptRequest = [request.content mutableCopy];
+                [bestAttemptRequest setAttachments: [NSArray arrayWithObject:attachment]];
+                UNNotificationRequest* notification = [UNNotificationRequest requestWithIdentifier:request.identifier content:bestAttemptRequest trigger:request.trigger];
+                [center addNotificationRequest:notification
+                            withCompletionHandler:^(NSError* _Nullable error) {
+                    if (!error) {
+                        NSLog(@"image notifier request success");
+                        }
+                    }
+                ];
             }
-        }
-    ];
+        }];
+    } else {
+        [center addNotificationRequest:request
+                 withCompletionHandler:^(NSError* _Nullable error) {
+            if (!error) {
+                NSLog(@"notifier request success");
+                }
+            }
+        ];
+    }
+    
+}
+
+- (void)loadAttachmentForUrl:(NSURL *)attachmentURL
+           completionHandler:(void (^)(UNNotificationAttachment *))completionHandler {
+  __block UNNotificationAttachment *attachment = nil;
+
+  NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+
+  [[session
+      downloadTaskWithURL:attachmentURL
+        completionHandler:^(NSURL *temporaryFileLocation, NSURLResponse *response, NSError *error) {
+          if (error != nil) {
+            NSLog( @"Failed to download image given URL %@, error: %@\n", attachmentURL, error);
+            completionHandler(attachment);
+            return;
+          }
+
+          NSFileManager *fileManager = [NSFileManager defaultManager];
+          NSString *fileExtension =
+              [NSString stringWithFormat:@".%@", [response.suggestedFilename pathExtension]];
+          NSURL *localURL = [NSURL
+              fileURLWithPath:[temporaryFileLocation.path stringByAppendingString:fileExtension]];
+          [fileManager moveItemAtURL:temporaryFileLocation toURL:localURL error:&error];
+          if (error) {
+            NSLog( @"Failed to move the image file to local location: %@, error: %@\n", localURL, error);
+            completionHandler(attachment);
+            return;
+          }
+
+          attachment = [UNNotificationAttachment attachmentWithIdentifier:@""
+                                                                      URL:localURL
+                                                                  options:nil
+                                                                    error:&error];
+          if (error) {
+              NSLog(@"Failed to create attachment with URL %@, error: %@\n", localURL, error);
+            completionHandler(attachment);
+            return;
+          }
+          completionHandler(attachment);
+        }] resume];
 }
 
 RCT_EXPORT_METHOD(setNotificationCategories:(NSArray*)categories)
