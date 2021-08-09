@@ -15,6 +15,14 @@ React Native Push Notification API for iOS.
 
 ### Install
 
+Using npm:
+
+```bash
+npm i @react-native-community/push-notification-ios --save
+```
+
+or using Yarn:
+
 ```bash
 yarn add @react-native-community/push-notification-ios
 ```
@@ -320,6 +328,8 @@ request is an object containing:
 - `sound` : The sound played when the notification is fired.
 - `category` : The category of this notification, required for actionable notifications.
 - `isSilent` : If true, the notification will appear without sound.
+- `isCritical` : If true, the notification sound be played even when the device is locked, muted, or has Do Not Disturb enabled.
+- `criticalSoundVolume` : A number between 0 and 1 for volume of critical notification. Default volume will be used if not specified.
 - `userInfo` : An object containing additional notification data.
 
 ---
@@ -552,6 +562,9 @@ Requests notification permissions from iOS, prompting the user's dialog box. By 
 - `alert`
 - `badge`
 - `sound`
+- `critical`
+
+`critical` requires special entitlement that could be requested here: https://developer.apple.com/contact/request/notifications-critical-alerts-entitlement/
 
 If a map is provided to the method, only the permissions with truthy values will be requested.
 
@@ -559,9 +572,9 @@ This method returns a promise that will resolve when the user accepts, rejects, 
 
 **Parameters:**
 
-| Name        | Type  | Required | Description            |
-| ----------- | ----- | -------- | ---------------------- |
-| permissions | array | No       | alert, badge, or sound |
+| Name        | Type  | Required | Description                     |
+| ----------- | ----- | -------- | ------------------------------- |
+| permissions | array | No       | alert, badge, sound or critical |
 
 ---
 
@@ -596,6 +609,7 @@ See what push permissions are currently enabled.
 - `alert` :boolean
 - `badge` :boolean
 - `sound` :boolean
+- `critical` :boolean
 - `lockScreen` :boolean
 - `notificationCenter` :boolean
 - `authorizationStatus` :AuthorizationStatus

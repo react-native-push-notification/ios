@@ -11,7 +11,8 @@ import {
   Alert,
   StyleSheet,
   Text,
-  TouchableHighlight,
+  Pressable,
+  ScrollView,
   View,
   DeviceEventEmitter,
 } from 'react-native';
@@ -27,12 +28,10 @@ const Button: React.StatelessFunctionalComponent<ButtonProps> = ({
   label,
 }) => {
   return (
-    <TouchableHighlight
-      underlayColor={'white'}
-      style={styles.button}
-      onPress={onPress}>
+    /** $FlowFixMe */
+    <Pressable style={styles.button} onPress={onPress}>
       <Text style={styles.buttonLabel}>{label}</Text>
-    </TouchableHighlight>
+    </Pressable>
   );
 };
 
@@ -51,7 +50,12 @@ export const App = (): React.Node => {
       onLocalNotification,
     );
 
-    PushNotificationIOS.requestPermissions().then(
+    PushNotificationIOS.requestPermissions({
+      alert: true,
+      badge: true,
+      sound: true,
+      critical: true,
+    }).then(
       (data) => {
         console.log('PushNotificationIOS.requestPermissions', data);
       },
@@ -127,6 +131,20 @@ export const App = (): React.Node => {
       body: 'body',
       category: 'test',
       threadId: 'thread-id',
+      fireDate: new Date(new Date().valueOf() + 2000),
+      repeats: true,
+    });
+  };
+
+  const addCriticalNotificationRequest = () => {
+    PushNotificationIOS.addNotificationRequest({
+      id: 'critical',
+      title: 'Critical Alert',
+      subtitle: 'subtitle',
+      body: 'This is a critical alert',
+      category: 'test',
+      threadId: 'thread-id',
+      isCritical: true,
       fireDate: new Date(new Date().valueOf() + 2000),
       repeats: true,
     });
@@ -300,7 +318,7 @@ export const App = (): React.Node => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Button onPress={sendNotification} label="Send fake notification" />
       <Button
         onPress={sendLocalNotification}
@@ -317,6 +335,10 @@ export const App = (): React.Node => {
       <Button
         onPress={addNotificationRequest}
         label="Add Notification Request"
+      />
+      <Button
+        onPress={addCriticalNotificationRequest}
+        label="Add Critical Notification Request (only works with Critical Notification entitlement)"
       />
       <Button
         onPress={addMultipleRequests}
@@ -355,15 +377,13 @@ export const App = (): React.Node => {
         <Button onPress={showPermissions} label="Show enabled permissions" />
         <Text>{JSON.stringify(permissions)}</Text>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexGrow: 1,
     backgroundColor: '#F5FCFF',
   },
   button: {

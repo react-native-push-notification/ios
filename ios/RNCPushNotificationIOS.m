@@ -211,6 +211,11 @@ RCT_EXPORT_METHOD(requestPermissions:(NSDictionary *)permissions
     if ([RCTConvert BOOL:permissions[@"sound"]]) {
       types |= UNAuthorizationOptionSound;
     }
+    if (@available(iOS 12, *)) {
+        if ([RCTConvert BOOL:permissions[@"critical"]]) {
+            types |= UNAuthorizationOptionCriticalAlert;
+        }
+    }
   } else {
     types = UNAuthorizationOptionAlert | UNAuthorizationOptionBadge | UNAuthorizationOptionSound;
   }
@@ -240,7 +245,7 @@ RCT_EXPORT_METHOD(abandonPermissions)
 RCT_EXPORT_METHOD(checkPermissions:(RCTResponseSenderBlock)callback)
 {
   if (RCTRunningInAppExtension()) {
-    callback(@[RCTSettingsDictForUNNotificationSettings(NO, NO, NO, NO, NO, UNAuthorizationStatusNotDetermined)]);
+    callback(@[RCTSettingsDictForUNNotificationSettings(NO, NO, NO, NO, NO, NO, UNAuthorizationStatusNotDetermined)]);
     return;
   }
   
@@ -253,13 +258,14 @@ static inline NSDictionary *RCTPromiseResolveValueForUNNotificationSettings(UNNo
   return RCTSettingsDictForUNNotificationSettings(settings.alertSetting == UNNotificationSettingEnabled,
                                                   settings.badgeSetting == UNNotificationSettingEnabled,
                                                   settings.soundSetting == UNNotificationSettingEnabled,
+                                                  settings.criticalAlertSetting == UNNotificationSettingEnabled,
                                                   settings.lockScreenSetting == UNNotificationSettingEnabled,
                                                   settings.notificationCenterSetting == UNNotificationSettingEnabled,
                                                   settings.authorizationStatus);
   }
 
-static inline NSDictionary *RCTSettingsDictForUNNotificationSettings(BOOL alert, BOOL badge, BOOL sound, BOOL lockScreen, BOOL notificationCenter, UNAuthorizationStatus authorizationStatus) {
-  return @{@"alert": @(alert), @"badge": @(badge), @"sound": @(sound), @"lockScreen": @(lockScreen), @"notificationCenter": @(notificationCenter), @"authorizationStatus": @(authorizationStatus)};
+static inline NSDictionary *RCTSettingsDictForUNNotificationSettings(BOOL alert, BOOL badge, BOOL sound, BOOL critical, BOOL lockScreen, BOOL notificationCenter, UNAuthorizationStatus authorizationStatus) {
+  return @{@"alert": @(alert), @"badge": @(badge), @"sound": @(sound), @"critical": @(critical), @"lockScreen": @(lockScreen), @"notificationCenter": @(notificationCenter), @"authorizationStatus": @(authorizationStatus)};
   }
 
 /**

@@ -95,6 +95,8 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
     NSDictionary<NSString *, id> *details = [self NSDictionary:json];
     
     BOOL isSilent = [RCTConvert BOOL:details[@"isSilent"]];
+    BOOL isCritical = [RCTConvert BOOL:details[@"isCritical"]];
+    float criticalSoundVolume = [RCTConvert float:details[@"criticalSoundVolume"]];
     NSString* identifier = [RCTConvert NSString:details[@"id"]];
     
     
@@ -112,7 +114,15 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
 
     content.userInfo = [RCTConvert NSDictionary:details[@"userInfo"]];
     if (!isSilent) {
-      content.sound = [RCTConvert NSString:details[@"sound"]] ? [UNNotificationSound soundNamed:[RCTConvert NSString:details[@"sound"]]] : [UNNotificationSound defaultSound];
+        if (isCritical) {
+            if (criticalSoundVolume) {
+                content.sound = [RCTConvert NSString:details[@"sound"]] ? [UNNotificationSound criticalSoundNamed:[RCTConvert NSString:details[@"sound"]] withAudioVolume:criticalSoundVolume] : [UNNotificationSound defaultCriticalSoundWithAudioVolume:criticalSoundVolume];
+            } else {
+                content.sound = [RCTConvert NSString:details[@"sound"]] ? [UNNotificationSound criticalSoundNamed:[RCTConvert NSString:details[@"sound"]]] : [UNNotificationSound defaultCriticalSound];
+            }
+        } else {
+            content.sound = [RCTConvert NSString:details[@"sound"]] ? [UNNotificationSound soundNamed:[RCTConvert NSString:details[@"sound"]]] : [UNNotificationSound defaultSound];
+        }
     }
 
     NSDate* fireDate = [RCTConvert NSDate:details[@"fireDate"]];
