@@ -95,6 +95,8 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
     NSDictionary<NSString *, id> *details = [self NSDictionary:json];
 
     BOOL isSilent = [RCTConvert BOOL:details[@"isSilent"]];
+    BOOL isCritical = [RCTConvert BOOL:details[@"isCritical"]];
+    float criticalSoundVolume = [RCTConvert float:details[@"criticalSoundVolume"]];
     NSString* identifier = [RCTConvert NSString:details[@"id"]];
 
     UNMutableNotificationContent* content = [[UNMutableNotificationContent alloc] init];
@@ -119,7 +121,7 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
 
     content.userInfo = [RCTConvert NSDictionary:details[@"userInfo"]];
     if (!isSilent) {
-      content.sound = [RCTConvert NSString:details[@"sound"]]
+      
         ? [UNNotificationSound soundNamed:[RCTConvert NSString:details[@"sound"]]]
         : [UNNotificationSound defaultSound];
     }

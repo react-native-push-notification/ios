@@ -383,10 +383,12 @@ class PushNotificationIOS {
     alert?: boolean,
     badge?: boolean,
     sound?: boolean,
+    critical?: boolean,
   }): Promise<{
     alert: boolean,
     badge: boolean,
     sound: boolean,
+    critical: boolean,
   }> {
     let requestedPermissions = {
       alert: true,
@@ -398,6 +400,7 @@ class PushNotificationIOS {
         alert: !!permissions.alert,
         badge: !!permissions.badge,
         sound: !!permissions.sound,
+        critical: !!permissions.critical,
       };
     }
     invariant(

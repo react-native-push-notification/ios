@@ -11,9 +11,11 @@ import {
   Alert,
   StyleSheet,
   Text,
-  TouchableHighlight,
+  Pressable,
+  ScrollView,
   View,
   DeviceEventEmitter,
+  SafeAreaView,
 } from 'react-native';
 import PushNotificationIOS from '../js';
 
@@ -27,12 +29,10 @@ const Button: React.StatelessFunctionalComponent<ButtonProps> = ({
   label,
 }) => {
   return (
-    <TouchableHighlight
-      underlayColor={'white'}
-      style={styles.button}
-      onPress={onPress}>
+    /** $FlowFixMe */
+    <Pressable style={styles.button} onPress={onPress}>
       <Text style={styles.buttonLabel}>{label}</Text>
-    </TouchableHighlight>
+    </Pressable>
   );
 };
 
@@ -51,7 +51,12 @@ export const App = (): React.Node => {
       onLocalNotification,
     );
 
-    PushNotificationIOS.requestPermissions().then(
+    PushNotificationIOS.requestPermissions({
+      alert: true,
+      badge: true,
+      sound: true,
+      critical: true,
+    }).then(
       (data) => {
         console.log('PushNotificationIOS.requestPermissions', data);
       },
@@ -127,6 +132,23 @@ export const App = (): React.Node => {
       body: 'body',
       category: 'test',
       threadId: 'thread-id',
+      fireDate: new Date(new Date().valueOf() + 2000),
+      repeats: true,
+      userInfo: {
+        image: 'https://www.github.com/Naturalclar.png',
+      },
+    });
+  };
+
+  const addCriticalNotificationRequest = () => {
+    PushNotificationIOS.addNotificationRequest({
+      id: 'critical',
+      title: 'Critical Alert',
+      subtitle: 'subtitle',
+      body: 'This is a critical alert',
+      category: 'test',
+      threadId: 'thread-id',
+      isCritical: true,
       fireDate: new Date(new Date().valueOf() + 2000),
       repeats: true,
     });
@@ -300,70 +322,85 @@ export const App = (): React.Node => {
   };
 
   return (
-    <View style={styles.container}>
-      <Button onPress={sendNotification} label="Send fake notification" />
-      <Button
-        onPress={sendLocalNotification}
-        label="Send fake local notification"
-      />
-      <Button
-        onPress={sendLocalNotificationWithSound}
-        label="Send fake local notification with custom sound"
-      />
-      <Button
-        onPress={scheduleLocalNotification}
-        label="Schedule fake local notification"
-      />
-      <Button
-        onPress={addNotificationRequest}
-        label="Add Notification Request"
-      />
-      <Button
-        onPress={addMultipleRequests}
-        label="Add Multiple Notification Requests"
-      />
-      <Button
-        onPress={setNotificationCategories}
-        label="Set notification categories"
-      />
-      <Button
-        onPress={removePendingNotificationRequests}
-        label="Remove Partial Pending Notification Requests"
-      />
-      <Button
-        onPress={removeAllPendingNotificationRequests}
-        label="Remove All Pending Notification Requests"
-      />
-      <Button
-        onPress={sendSilentNotification}
-        label="Send fake silent notification"
-      />
+    <View style={[styles.flex, styles.background]}>
+      <SafeAreaView style={styles.flex}>
+        <ScrollView contentContainerStyle={styles.container}>
+          <Button onPress={sendNotification} label="Send fake notification" />
+          <Button
+            onPress={sendLocalNotification}
+            label="Send fake local notification"
+          />
+          <Button
+            onPress={sendLocalNotificationWithSound}
+            label="Send fake local notification with custom sound"
+          />
+          <Button
+            onPress={scheduleLocalNotification}
+            label="Schedule fake local notification"
+          />
+          <Button
+            onPress={addNotificationRequest}
+            label="Add Notification Request"
+          />
+          <Button
+            onPress={addCriticalNotificationRequest}
+            label="Add Critical Notification Request (only works with Critical Notification entitlement)"
+          />
+          <Button
+            onPress={addMultipleRequests}
+            label="Add Multiple Notification Requests"
+          />
+          <Button
+            onPress={setNotificationCategories}
+            label="Set notification categories"
+          />
+          <Button
+            onPress={removePendingNotificationRequests}
+            label="Remove Partial Pending Notification Requests"
+          />
+          <Button
+            onPress={removeAllPendingNotificationRequests}
+            label="Remove All Pending Notification Requests"
+          />
+          <Button
+            onPress={sendSilentNotification}
+            label="Send fake silent notification"
+          />
 
-      <Button
-        onPress={() => PushNotificationIOS.setApplicationIconBadgeNumber(42)}
-        label="Set app's icon badge to 42"
-      />
-      <Button
-        onPress={() => PushNotificationIOS.setApplicationIconBadgeNumber(0)}
-        label="Clear app's icon badge"
-      />
-      <Button
-        onPress={getPendingNotificationRequests}
-        label="Get Pending Notification Requests"
-      />
-      <View>
-        <Button onPress={showPermissions} label="Show enabled permissions" />
-        <Text>{JSON.stringify(permissions)}</Text>
-      </View>
+          <Button
+            onPress={() =>
+              PushNotificationIOS.setApplicationIconBadgeNumber(42)
+            }
+            label="Set app's icon badge to 42"
+          />
+          <Button
+            onPress={() => PushNotificationIOS.setApplicationIconBadgeNumber(0)}
+            label="Clear app's icon badge"
+          />
+          <Button
+            onPress={getPendingNotificationRequests}
+            label="Get Pending Notification Requests"
+          />
+          <View>
+            <Button
+              onPress={showPermissions}
+              label="Show enabled permissions"
+            />
+            <Text>{JSON.stringify(permissions)}</Text>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  background: {
+    backgroundColor: '#F5FCFF',
+  },
+  flex: {flex: 1},
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexGrow: 1,
     backgroundColor: '#F5FCFF',
   },
   button: {

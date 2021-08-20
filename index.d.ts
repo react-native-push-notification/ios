@@ -179,6 +179,14 @@ export type NotificationRequest = {
    */
   isSilent?: boolean;
   /**
+   * Sets notification to be critical
+   */
+  isCritical?: boolean;
+  /**
+   * The volume for the critical alert’s sound. Set this to a value between 0.0 (silent) and 1.0 (full volume).
+   */
+  criticalSoundVolume?: number;
+  /**
    * Optional data to be added to the notification
    */
   userInfo?: Record<string, any>;
@@ -291,6 +299,7 @@ export interface PushNotificationPermissions {
   alert?: boolean;
   badge?: boolean;
   sound?: boolean;
+  critical?: boolean;
   lockScreen?: boolean;
   notificationCenter?: boolean;
   authorizationStatus?: AuthorizationStatus[keyof AuthorizationStatus];
