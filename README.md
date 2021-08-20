@@ -324,13 +324,46 @@ request is an object containing:
 - `body` : The message displayed in the notification alert.
 - `badge` The number to display as the app's icon badge. Setting the number to 0 removes the icon badge.
 - `fireDate` : The date and time when the system should deliver the notification.
-- `repeats` : Sets notification to repeat daily. Must be used with fireDate.
+- `repeats` : Sets notification to repeat. Must be used with fireDate and repeatsComponent.
+- `repeatsComponent`: An object indicating which parts of fireDate should be repeated.
 - `sound` : The sound played when the notification is fired.
 - `category` : The category of this notification, required for actionable notifications.
 - `isSilent` : If true, the notification will appear without sound.
 - `isCritical` : If true, the notification sound be played even when the device is locked, muted, or has Do Not Disturb enabled.
 - `criticalSoundVolume` : A number between 0 and 1 for volume of critical notification. Default volume will be used if not specified.
 - `userInfo` : An object containing additional notification data.
+
+request.repeatsComponent is an object containing (each field is optionnal):
+
+- `month`: Will repeat every selected month in your fireDate.
+- `day`: Will repeat every selected day in your fireDate.
+- `hour`: Will repeat every selected hour in your fireDate.
+- `minute`: Will repeat every selected minute in your fireDate.
+- `second`: Will repeat every selected second in your fireDate.
+- `nanosecond`: Will repeat every selected nanosecond in your fireDate.
+
+For example, let’s say you want to have a notification repeating every day at 23:54, starting tomorrow, you will use something like this:
+
+```javascript
+const getCorrectDate = () => {
+  const date = new Date();
+  date.setDate(date.getDate() + 1);
+  date.setHours(23);
+  date.setMinutes(54);
+  return date;
+};
+
+PushNotificationIOS.addNotificationRequest({
+  fireDate: getCorrectDate(),
+  repeats: true,
+  repeatsComponent: {
+    hour: true,
+    minute: true,
+  },
+});
+```
+
+If you want to repeat every time the clock reach 54 minutes (like 00:54, 01:54, and so on), just switch hour to false. Every field is used to indicate at what time the notification should be repeated, exactly like you could do on iOS.
 
 ---
 
