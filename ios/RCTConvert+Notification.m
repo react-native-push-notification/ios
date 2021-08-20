@@ -112,12 +112,13 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
     }
 
     NSDictionary<NSString *, id> *userDateComps = [RCTConvert NSDictionary:details[@"repeatsComponent"]];
+    BOOL year       = [RCTConvert BOOL:userDateComps[@"year"]];
     BOOL month      = [RCTConvert BOOL:userDateComps[@"month"]];
     BOOL day        = [RCTConvert BOOL:userDateComps[@"day"]];
+    BOOL dayOfWeek  = [RCTConvert BOOL:userDateComps[@"dayOfWeek"]];
     BOOL hour       = [RCTConvert BOOL:userDateComps[@"hour"]];
     BOOL minute     = [RCTConvert BOOL:userDateComps[@"minute"]];
     BOOL second     = [RCTConvert BOOL:userDateComps[@"second"]];
-    BOOL nanosecond = [RCTConvert BOOL:userDateComps[@"nanosecond"]];
 
     content.userInfo = [RCTConvert NSDictionary:details[@"userInfo"]];
     if (!isSilent) {
@@ -129,7 +130,7 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
             }
         } else {
             content.sound = [RCTConvert NSString:details[@"sound"]] ? [UNNotificationSound soundNamed:[RCTConvert NSString:details[@"sound"]]] : [UNNotificationSound defaultSound];
-        }```
+        }
     }
 
     NSDate* fireDate = [RCTConvert NSDate:details[@"fireDate"]];
@@ -142,12 +143,13 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
         NSCalendarUnitMinute |
         NSCalendarUnitSecond;
     NSCalendarUnit repeatDateComponents =
+        (year ? NSCalendarUnitYear : 0) |
         (month ? NSCalendarUnitMonth : 0) |
         (day ? NSCalendarUnitDay : 0) |
+        (dayOfWeek ? NSCalendarUnitWeekday : 0) |
         (hour ? NSCalendarUnitHour : 0) |
         (minute ? NSCalendarUnitMinute : 0) |
-        (second ? NSCalendarUnitSecond : 0) |
-        (nanosecond ? NSCalendarUnitNanosecond : 0);
+        (second ? NSCalendarUnitSecond : 0);
     NSDateComponents *triggerDate = fireDate
         ? [[NSCalendar currentCalendar]
            components:(repeats ? repeatDateComponents : defaultDateComponents) | NSCalendarUnitTimeZone

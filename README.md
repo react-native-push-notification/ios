@@ -335,12 +335,13 @@ request is an object containing:
 
 request.repeatsComponent is an object containing (each field is optionnal):
 
+- `year`: Will repeat every selected year in your fireDate.
 - `month`: Will repeat every selected month in your fireDate.
 - `day`: Will repeat every selected day in your fireDate.
+- `dayOfWeek`: Will repeast every selected day of the week in your fireDate.
 - `hour`: Will repeat every selected hour in your fireDate.
 - `minute`: Will repeat every selected minute in your fireDate.
 - `second`: Will repeat every selected second in your fireDate.
-- `nanosecond`: Will repeat every selected nanosecond in your fireDate.
 
 For example, let’s say you want to have a notification repeating every day at 23:54, starting tomorrow, you will use something like this:
 

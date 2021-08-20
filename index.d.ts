@@ -175,6 +175,19 @@ export type NotificationRequest = {
    */
   repeats?: boolean;
   /**
+   * Define what components should be used in the fireDate during repeats.
+   * Must be used with repeats and fireDate.
+   */
+  repeatsComponent?: {
+    year?: boolean;
+    month?: boolean;
+    day?: boolean;
+    dayOfWeek?: boolean;
+    hour?: boolean;
+    minute?: boolean;
+    second?: boolean;
+  };
+  /**
    * Sets notification to be silent
    */
   isSilent?: boolean;
