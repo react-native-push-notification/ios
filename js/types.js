@@ -50,12 +50,13 @@ export type NotificationRequest = {|
    * Must be used with repeats and fireDate.
    */
   repeatsComponent?: {
+    year?: boolean,
     month?: boolean,
     day?: boolean,
+    dayOfWeek?: boolean,
     hour?: boolean,
     minute?: boolean,
     second?: boolean,
-    nanosecond?: boolean,
   },
   /**
    * Sets notification to be silent
