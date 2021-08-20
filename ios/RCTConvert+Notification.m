@@ -121,9 +121,15 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
 
     content.userInfo = [RCTConvert NSDictionary:details[@"userInfo"]];
     if (!isSilent) {
-      
-        ? [UNNotificationSound soundNamed:[RCTConvert NSString:details[@"sound"]]]
-        : [UNNotificationSound defaultSound];
+        if (isCritical) {
+            if (criticalSoundVolume) {
+                content.sound = [RCTConvert NSString:details[@"sound"]] ? [UNNotificationSound criticalSoundNamed:[RCTConvert NSString:details[@"sound"]] withAudioVolume:criticalSoundVolume] : [UNNotificationSound defaultCriticalSoundWithAudioVolume:criticalSoundVolume];
+            } else {
+                content.sound = [RCTConvert NSString:details[@"sound"]] ? [UNNotificationSound criticalSoundNamed:[RCTConvert NSString:details[@"sound"]]] : [UNNotificationSound defaultCriticalSound];
+            }
+        } else {
+            content.sound = [RCTConvert NSString:details[@"sound"]] ? [UNNotificationSound soundNamed:[RCTConvert NSString:details[@"sound"]]] : [UNNotificationSound defaultSound];
+        }```
     }
 
     NSDate* fireDate = [RCTConvert NSDate:details[@"fireDate"]];
