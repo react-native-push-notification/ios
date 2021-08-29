@@ -338,7 +338,7 @@ request.repeatsComponent is an object containing (each field is optionnal):
 - `year`: Will repeat every selected year in your fireDate.
 - `month`: Will repeat every selected month in your fireDate.
 - `day`: Will repeat every selected day in your fireDate.
-- `dayOfWeek`: Will repeast every selected day of the week in your fireDate.
+- `dayOfWeek`: Will repeat every selected day of the week in your fireDate.
 - `hour`: Will repeat every selected hour in your fireDate.
 - `minute`: Will repeat every selected minute in your fireDate.
 - `second`: Will repeat every selected second in your fireDate.
