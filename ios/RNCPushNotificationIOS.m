@@ -258,7 +258,7 @@ static inline NSDictionary *RCTPromiseResolveValueForUNNotificationSettings(UNNo
   return RCTSettingsDictForUNNotificationSettings(settings.alertSetting == UNNotificationSettingEnabled,
                                                   settings.badgeSetting == UNNotificationSettingEnabled,
                                                   settings.soundSetting == UNNotificationSettingEnabled,
-                                                  settings.criticalAlertSetting == UNNotificationSettingEnabled,
+                                                  @available(iOS 12, *) && settings.criticalAlertSetting == UNNotificationSettingEnabled,
                                                   settings.lockScreenSetting == UNNotificationSettingEnabled,
                                                   settings.notificationCenterSetting == UNNotificationSettingEnabled,
                                                   settings.authorizationStatus);
