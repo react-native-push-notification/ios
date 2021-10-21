@@ -286,7 +286,8 @@ RCT_EXPORT_METHOD(scheduleLocalNotification:(UILocalNotification *)notification)
   [RCTSharedApplication() scheduleLocalNotification:notification];
 }
 
-RCT_EXPORT_METHOD(addNotificationRequest:(UNNotificationRequest*)request)
+RCT_EXPORT_METHOD(addNotificationRequest:(UNNotificationRequest*)request
+                                          (RCTResponseSenderBlock)callback)
 {
     UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
     NSString *imageUrl = request.content.userInfo[@"image"];
@@ -306,6 +307,7 @@ RCT_EXPORT_METHOD(addNotificationRequest:(UNNotificationRequest*)request)
                     if (!error) {
                         NSLog(@"image notifier request success");
                         }
+                  callback(error);
                     }
                 ];
             }
@@ -316,6 +318,7 @@ RCT_EXPORT_METHOD(addNotificationRequest:(UNNotificationRequest*)request)
             if (!error) {
                 NSLog(@"notifier request success");
                 }
+            callback(error);
             }
         ];
     }

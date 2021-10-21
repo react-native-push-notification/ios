@@ -141,7 +141,7 @@ class PushNotificationIOS {
    * Sends notificationRequest to notification center at specified firedate.
    * Fires immediately if firedate is not set.
    */
-  static addNotificationRequest(request: NotificationRequest) {
+  static addNotificationRequest(request: NotificationRequest, callback: Function = () =>{}) {
     const handledRequest =
       request.fireDate instanceof Date
         ? {...request, fireDate: request.fireDate.toISOString()}
@@ -151,7 +151,7 @@ class PushNotificationIOS {
       repeatsComponent: request.repeatsComponent || {},
     };
 
-    RNCPushNotificationIOS.addNotificationRequest(finalRequest);
+    RNCPushNotificationIOS.addNotificationRequest(finalRequest, callback);
   }
 
   /**
