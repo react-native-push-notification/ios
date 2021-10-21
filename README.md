@@ -98,7 +98,7 @@ At the top of the file:
 #import <RNCPushNotificationIOS.h>
 ```
 
-Then, add the following lines:
+Then, in your AppDelegate implementation, add the following:
 
 ```objective-c
 // Required for the register event.
@@ -126,7 +126,7 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
 }
 ```
 
-And then in your AppDelegate implementation, add the following:
+ And then add the following lines: 
 
 ```objective-c
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
