@@ -286,8 +286,7 @@ RCT_EXPORT_METHOD(scheduleLocalNotification:(UILocalNotification *)notification)
   [RCTSharedApplication() scheduleLocalNotification:notification];
 }
 
-RCT_EXPORT_METHOD(addNotificationRequest:(UNNotificationRequest*)request
-                                          (RCTResponseSenderBlock)callback)
+RCT_EXPORT_METHOD(addNotificationRequest:(UNNotificationRequest*)request callback:(RCTResponseSenderBlock)callback)
 {
     UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
     NSString *imageUrl = request.content.userInfo[@"image"];
