@@ -290,6 +290,7 @@ export const App = (): React.Node => {
         },
       ]);
     }
+    notification.finish('UIBackgroundFetchResultNoData')
   };
 
   const onLocalNotification = (notification) => {
