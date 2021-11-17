@@ -146,8 +146,12 @@ class PushNotificationIOS {
       request.fireDate instanceof Date
         ? {...request, fireDate: request.fireDate.toISOString()}
         : request;
+    const finalRequest = {
+      ...handledRequest,
+      repeatsComponent: request.repeatsComponent || {},
+    };
 
-    RNCPushNotificationIOS.addNotificationRequest(handledRequest);
+    RNCPushNotificationIOS.addNotificationRequest(finalRequest);
   }
 
   /**
@@ -379,10 +383,12 @@ class PushNotificationIOS {
     alert?: boolean,
     badge?: boolean,
     sound?: boolean,
+    critical?: boolean,
   }): Promise<{
     alert: boolean,
     badge: boolean,
     sound: boolean,
+    critical: boolean,
   }> {
     let requestedPermissions = {
       alert: true,
@@ -394,6 +400,7 @@ class PushNotificationIOS {
         alert: !!permissions.alert,
         badge: !!permissions.badge,
         sound: !!permissions.sound,
+        critical: !!permissions.critical,
       };
     }
     invariant(

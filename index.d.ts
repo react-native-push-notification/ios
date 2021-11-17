@@ -175,9 +175,30 @@ export type NotificationRequest = {
    */
   repeats?: boolean;
   /**
+   * Define what components should be used in the fireDate during repeats.
+   * Must be used with repeats and fireDate.
+   */
+  repeatsComponent?: {
+    year?: boolean;
+    month?: boolean;
+    day?: boolean;
+    dayOfWeek?: boolean;
+    hour?: boolean;
+    minute?: boolean;
+    second?: boolean;
+  };
+  /**
    * Sets notification to be silent
    */
   isSilent?: boolean;
+  /**
+   * Sets notification to be critical
+   */
+  isCritical?: boolean;
+  /**
+   * The volume for the critical alert’s sound. Set this to a value between 0.0 (silent) and 1.0 (full volume).
+   */
+  criticalSoundVolume?: number;
   /**
    * Optional data to be added to the notification
    */
@@ -291,6 +312,7 @@ export interface PushNotificationPermissions {
   alert?: boolean;
   badge?: boolean;
   sound?: boolean;
+  critical?: boolean;
   lockScreen?: boolean;
   notificationCenter?: boolean;
   authorizationStatus?: AuthorizationStatus[keyof AuthorizationStatus];

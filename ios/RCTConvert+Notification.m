@@ -93,16 +93,17 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
 + (UNNotificationRequest *)UNNotificationRequest:(id)json
 {
     NSDictionary<NSString *, id> *details = [self NSDictionary:json];
-    
+
     BOOL isSilent = [RCTConvert BOOL:details[@"isSilent"]];
+    BOOL isCritical = [RCTConvert BOOL:details[@"isCritical"]];
+    float criticalSoundVolume = [RCTConvert float:details[@"criticalSoundVolume"]];
     NSString* identifier = [RCTConvert NSString:details[@"id"]];
-    
-    
+
     UNMutableNotificationContent* content = [[UNMutableNotificationContent alloc] init];
-    content.title= [RCTConvert NSString:details[@"title"]];
-    content.subtitle= [RCTConvert NSString:details[@"subtitle"]];
-    content.body =[RCTConvert NSString:details[@"body"]];
-    content.badge = [RCTConvert NSNumber:details[@"badge"]];
+    content.title              = [RCTConvert NSString:details[@"title"]];
+    content.subtitle           = [RCTConvert NSString:details[@"subtitle"]];
+    content.body               = [RCTConvert NSString:details[@"body"]];
+    content.badge              = [RCTConvert NSNumber:details[@"badge"]];
     content.categoryIdentifier = [RCTConvert NSString:details[@"category"]];
 
     NSString* threadIdentifier = [RCTConvert NSString:details[@"threadId"]];
@@ -110,20 +111,51 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
         content.threadIdentifier = threadIdentifier;
     }
 
+    NSDictionary<NSString *, id> *userDateComps = [RCTConvert NSDictionary:details[@"repeatsComponent"]];
+    BOOL year       = [RCTConvert BOOL:userDateComps[@"year"]];
+    BOOL month      = [RCTConvert BOOL:userDateComps[@"month"]];
+    BOOL day        = [RCTConvert BOOL:userDateComps[@"day"]];
+    BOOL dayOfWeek  = [RCTConvert BOOL:userDateComps[@"dayOfWeek"]];
+    BOOL hour       = [RCTConvert BOOL:userDateComps[@"hour"]];
+    BOOL minute     = [RCTConvert BOOL:userDateComps[@"minute"]];
+    BOOL second     = [RCTConvert BOOL:userDateComps[@"second"]];
+
     content.userInfo = [RCTConvert NSDictionary:details[@"userInfo"]];
     if (!isSilent) {
-      content.sound = [RCTConvert NSString:details[@"sound"]] ? [UNNotificationSound soundNamed:[RCTConvert NSString:details[@"sound"]]] : [UNNotificationSound defaultSound];
+        if (isCritical) {
+            if (criticalSoundVolume) {
+                content.sound = [RCTConvert NSString:details[@"sound"]] ? [UNNotificationSound criticalSoundNamed:[RCTConvert NSString:details[@"sound"]] withAudioVolume:criticalSoundVolume] : [UNNotificationSound defaultCriticalSoundWithAudioVolume:criticalSoundVolume];
+            } else {
+                content.sound = [RCTConvert NSString:details[@"sound"]] ? [UNNotificationSound criticalSoundNamed:[RCTConvert NSString:details[@"sound"]]] : [UNNotificationSound defaultCriticalSound];
+            }
+        } else {
+            content.sound = [RCTConvert NSString:details[@"sound"]] ? [UNNotificationSound soundNamed:[RCTConvert NSString:details[@"sound"]]] : [UNNotificationSound defaultSound];
+        }
     }
 
     NSDate* fireDate = [RCTConvert NSDate:details[@"fireDate"]];
     BOOL repeats = [RCTConvert BOOL:details[@"repeats"]];
-    NSDateComponents *triggerDate = fireDate ? [[NSCalendar currentCalendar]
-                                                components:NSCalendarUnitYear +
-                                                NSCalendarUnitMonth + NSCalendarUnitDay +
-                                                NSCalendarUnitHour + NSCalendarUnitMinute +
-                                                NSCalendarUnitSecond + NSCalendarUnitTimeZone
-                                                fromDate:fireDate] : nil;
-    
+    NSCalendarUnit defaultDateComponents =
+        NSCalendarUnitYear |
+        NSCalendarUnitMonth |
+        NSCalendarUnitDay |
+        NSCalendarUnitHour |
+        NSCalendarUnitMinute |
+        NSCalendarUnitSecond;
+    NSCalendarUnit repeatDateComponents =
+        (year ? NSCalendarUnitYear : 0) |
+        (month ? NSCalendarUnitMonth : 0) |
+        (day ? NSCalendarUnitDay : 0) |
+        (dayOfWeek ? NSCalendarUnitWeekday : 0) |
+        (hour ? NSCalendarUnitHour : 0) |
+        (minute ? NSCalendarUnitMinute : 0) |
+        (second ? NSCalendarUnitSecond : 0);
+    NSDateComponents *triggerDate = fireDate
+        ? [[NSCalendar currentCalendar]
+           components:(repeats ? repeatDateComponents : defaultDateComponents) | NSCalendarUnitTimeZone
+           fromDate:fireDate]
+        : nil;
+
     UNCalendarNotificationTrigger* trigger = triggerDate ? [UNCalendarNotificationTrigger triggerWithDateMatchingComponents:triggerDate repeats:repeats] : nil;
 
     UNNotificationRequest* notification = [UNNotificationRequest requestWithIdentifier:identifier content:content trigger:trigger];

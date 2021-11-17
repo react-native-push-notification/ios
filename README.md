@@ -15,6 +15,14 @@ React Native Push Notification API for iOS.
 
 ### Install
 
+Using npm:
+
+```bash
+npm i @react-native-community/push-notification-ios --save
+```
+
+or using Yarn:
+
 ```bash
 yarn add @react-native-community/push-notification-ios
 ```
@@ -90,7 +98,7 @@ At the top of the file:
 #import <RNCPushNotificationIOS.h>
 ```
 
-Then, add the following lines:
+Then, in your AppDelegate implementation, add the following:
 
 ```objective-c
 // Required for the register event.
@@ -118,7 +126,7 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
 }
 ```
 
-And then in your AppDelegate implementation, add the following:
+ And then add the following lines: 
 
 ```objective-c
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -161,7 +169,11 @@ export const App = () => {
   const [permissions, setPermissions] = useState({});
 
   useEffect(() => {
-    PushNotificationIOS.addEventListener('notification', onRemoteNotification);
+    const type = 'notification';
+    PushNotificationIOS.addEventListener(type, onRemoteNotification);
+    return () => {
+      PushNotificationIOS.removeEventListener(type);
+    };
   });
 
   const onRemoteNotification = (notification) => {
@@ -211,7 +223,11 @@ export const App = () => {
   };
 
   useEffect(() => {
-    PushNotificationIOS.addEventListener('notification', onRemoteNotification);
+    const type = 'notification';
+    PushNotificationIOS.addEventListener(type, onRemoteNotification);
+    return () => {
+      PushNotificationIOS.removeEventListener(type);
+    };
   });
 
   const onRemoteNotification = (notification) => {
@@ -232,6 +248,10 @@ export const App = () => {
   };
 };
 ```
+
+## How to recieve rich notification in remote
+
+Follow this [article](https://firebase.google.com/docs/cloud-messaging/ios/send-image) to create rich notification of your own
 
 # Reference
 
@@ -290,6 +310,7 @@ details is an object containing:
 - `isSilent` : If true, the notification will appear without sound (optional).
 - `category` : The category of this notification, required for actionable notifications (optional).
 - `userInfo` : An object containing additional notification data (optional).
+  - `image` : It's useful if you need to diplay rich notification (optional).
 - `applicationIconBadgeNumber` The number to display as the app's icon badge. Setting the number to 0 removes the icon badge (optional).
 - `repeatInterval` : The interval to repeat as a string. Possible values: `minute`, `hour`, `day`, `week`, `month`, `year` (optional).
 
@@ -318,11 +339,47 @@ request is an object containing:
 - `body` : The message displayed in the notification alert.
 - `badge` The number to display as the app's icon badge. Setting the number to 0 removes the icon badge.
 - `fireDate` : The date and time when the system should deliver the notification.
-- `repeats` : Sets notification to repeat daily. Must be used with fireDate.
+- `repeats` : Sets notification to repeat. Must be used with fireDate and repeatsComponent.
+- `repeatsComponent`: An object indicating which parts of fireDate should be repeated.
 - `sound` : The sound played when the notification is fired.
 - `category` : The category of this notification, required for actionable notifications.
 - `isSilent` : If true, the notification will appear without sound.
+- `isCritical` : If true, the notification sound be played even when the device is locked, muted, or has Do Not Disturb enabled.
+- `criticalSoundVolume` : A number between 0 and 1 for volume of critical notification. Default volume will be used if not specified.
 - `userInfo` : An object containing additional notification data.
+
+request.repeatsComponent is an object containing (each field is optionnal):
+
+- `year`: Will repeat every selected year in your fireDate.
+- `month`: Will repeat every selected month in your fireDate.
+- `day`: Will repeat every selected day in your fireDate.
+- `dayOfWeek`: Will repeat every selected day of the week in your fireDate.
+- `hour`: Will repeat every selected hour in your fireDate.
+- `minute`: Will repeat every selected minute in your fireDate.
+- `second`: Will repeat every selected second in your fireDate.
+
+For example, let’s say you want to have a notification repeating every day at 23:54, starting tomorrow, you will use something like this:
+
+```javascript
+const getCorrectDate = () => {
+  const date = new Date();
+  date.setDate(date.getDate() + 1);
+  date.setHours(23);
+  date.setMinutes(54);
+  return date;
+};
+
+PushNotificationIOS.addNotificationRequest({
+  fireDate: getCorrectDate(),
+  repeats: true,
+  repeatsComponent: {
+    hour: true,
+    minute: true,
+  },
+});
+```
+
+If you want to repeat every time the clock reach 54 minutes (like 00:54, 01:54, and so on), just switch hour to false. Every field is used to indicate at what time the notification should be repeated, exactly like you could do on iOS.
 
 ---
 
@@ -363,15 +420,15 @@ Allows you to add specific actions for notification with specific category.
 ### `removePendingNotificationRequests()`
 
 ```jsx
-PushNotificationIOS.removeDeliveredNotifications(identifiers);
+PushNotificationIOS.removePendingNotificationRequests(identifiers);
 ```
 
 Removes the specified pending notifications from Notification Center
 
 **Parameters:**
 
-| Name        | Type  | Required | Description                        |
-| ----------- | ----- | -------- | ---------------------------------- |
+| Name        | Type     | Required | Description                        |
+| ----------- | -------- | -------- | ---------------------------------- |
 | identifiers | string[] | Yes      | Array of notification identifiers. |
 
 ---
@@ -431,8 +488,8 @@ Removes the specified delivered notifications from Notification Center
 
 **Parameters:**
 
-| Name        | Type  | Required | Description                        |
-| ----------- | ----- | -------- | ---------------------------------- |
+| Name        | Type     | Required | Description                        |
+| ----------- | -------- | -------- | ---------------------------------- |
 | identifiers | string[] | Yes      | Array of notification identifiers. |
 
 ---
@@ -554,6 +611,9 @@ Requests notification permissions from iOS, prompting the user's dialog box. By 
 - `alert`
 - `badge`
 - `sound`
+- `critical`
+
+`critical` requires special entitlement that could be requested here: https://developer.apple.com/contact/request/notifications-critical-alerts-entitlement/
 
 If a map is provided to the method, only the permissions with truthy values will be requested.
 
@@ -561,9 +621,9 @@ This method returns a promise that will resolve when the user accepts, rejects, 
 
 **Parameters:**
 
-| Name        | Type  | Required | Description            |
-| ----------- | ----- | -------- | ---------------------- |
-| permissions | array | No       | alert, badge, or sound |
+| Name        | Type  | Required | Description                     |
+| ----------- | ----- | -------- | ------------------------------- |
+| permissions | array | No       | alert, badge, sound or critical |
 
 ---
 
@@ -598,6 +658,7 @@ See what push permissions are currently enabled.
 - `alert` :boolean
 - `badge` :boolean
 - `sound` :boolean
+- `critical` :boolean
 - `lockScreen` :boolean
 - `notificationCenter` :boolean
 - `authorizationStatus` :AuthorizationStatus
