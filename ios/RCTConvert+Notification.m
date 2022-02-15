@@ -50,8 +50,8 @@ RCT_ENUM_CONVERTER(NSCalendarUnit,
     if (!isSilent) {
         notification.soundName = [RCTConvert NSString:details[@"soundName"]] ?: UILocalNotificationDefaultSoundName;
     }
-	if (isTimeZoneAgnostic) {
-		notification.timeZone = [NSTimeZone defaultTimeZone];
+    if (isTimeZoneAgnostic) {
+        notification.timeZone = [NSTimeZone defaultTimeZone];
 	}
     return notification;
 }
