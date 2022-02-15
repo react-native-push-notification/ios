@@ -52,7 +52,7 @@ RCT_ENUM_CONVERTER(NSCalendarUnit,
     }
     if (isTimeZoneAgnostic) {
         notification.timeZone = [NSTimeZone defaultTimeZone];
-	}
+    }
     return notification;
 }
 
