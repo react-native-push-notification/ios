@@ -96,6 +96,7 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
 
     BOOL isSilent = [RCTConvert BOOL:details[@"isSilent"]];
     BOOL isCritical = [RCTConvert BOOL:details[@"isCritical"]];
+    BOOL isTimeSensitive = [RCTConvert BOOL:details[@"isTimeSensitive"]];
     float criticalSoundVolume = [RCTConvert float:details[@"criticalSoundVolume"]];
     NSString* identifier = [RCTConvert NSString:details[@"id"]];
 
@@ -131,6 +132,12 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
         } else {
             content.sound = [RCTConvert NSString:details[@"sound"]] ? [UNNotificationSound soundNamed:[RCTConvert NSString:details[@"sound"]]] : [UNNotificationSound defaultSound];
         }
+    }
+
+    if (@available(iOS 15, *)) {
+        if (isTimeSensitive) {
+            content.interruptionLevel = UNNotificationInterruptionLevelTimeSensitive;
+        } 
     }
 
     NSDate* fireDate = [RCTConvert NSDate:details[@"fireDate"]];

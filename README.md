@@ -126,7 +126,7 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
 }
 ```
 
- And then add the following lines: 
+And then add the following lines:
 
 ```objective-c
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -339,6 +339,7 @@ request is an object containing:
 - `category` : The category of this notification, required for actionable notifications.
 - `isSilent` : If true, the notification will appear without sound.
 - `isCritical` : If true, the notification sound be played even when the device is locked, muted, or has Do Not Disturb enabled.
+- `isTimeSensitive` : (iOS 15 only) Presented immediately; Lights up screen and may play a sound; May be presented during Do Not Disturb
 - `criticalSoundVolume` : A number between 0 and 1 for volume of critical notification. Default volume will be used if not specified.
 - `userInfo` : An object containing additional notification data.
 
