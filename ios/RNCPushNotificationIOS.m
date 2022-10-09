@@ -169,7 +169,13 @@ API_AVAILABLE(ios(10.0)) {
 
 RCT_EXPORT_METHOD(onFinishRemoteNotification:(NSString *)notificationId fetchResult:(UIBackgroundFetchResult)result)
 {
-  [self.remoteNotificationCallbacks removeObjectForKey:notificationId];
+  if (self.remoteNotificationCallbacks) {
+    RNCRemoteNotificationCallback completionHandler = [self.remoteNotificationCallbacks objectForKey:notificationId];
+    if (completionHandler) {
+      completionHandler(result);
+    }
+    [self.remoteNotificationCallbacks removeObjectForKey:notificationId];
+  }
 }
 
 /**
