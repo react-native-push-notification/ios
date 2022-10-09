@@ -13,6 +13,10 @@
 + (NSCalendarUnit)NSCalendarUnit:(id)json;
 @end
 
+@interface RCTConvert (UNNotificationInterruptionLevel)
++ (UNNotificationInterruptionLevel)UNNotificationInterruptionLevel:(id)json API_AVAILABLE(ios(15.0));
+@end
+
 /**
  * Type deprecated in iOS 10.0
  * TODO: This method will be removed in the next major version

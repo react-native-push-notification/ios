@@ -24,6 +24,20 @@ RCT_ENUM_CONVERTER(NSCalendarUnit,
 @end
 
 
+@implementation RCTConvert (UNNotificationInterruptionLevel)
+
+RCT_ENUM_CONVERTER(UNNotificationInterruptionLevel,
+                   (@{
+                      @"passive": @(UNNotificationInterruptionLevelPassive),
+                      @"active": @(UNNotificationInterruptionLevelActive),
+                      @"timeSensitive": @(UNNotificationInterruptionLevelTimeSensitive),
+                      @"critical": @(UNNotificationInterruptionLevelCritical)
+                      }),
+                   0,
+                   integerValue)
+
+@end
+
 
 /**
  * Type deprecated in iOS 10.0
@@ -109,6 +123,13 @@ RCT_ENUM_CONVERTER(UIBackgroundFetchResult, (@{
     content.body               = [RCTConvert NSString:details[@"body"]];
     content.badge              = [RCTConvert NSNumber:details[@"badge"]];
     content.categoryIdentifier = [RCTConvert NSString:details[@"category"]];
+
+    if (@available(iOS 15.0, *)) {
+        UNNotificationInterruptionLevel interruptionLevel =[RCTConvert UNNotificationInterruptionLevel:details[@"interruptionLevel"]];
+        if(interruptionLevel) {
+        content.interruptionLevel = interruptionLevel;
+        }
+    }
 
     NSString* threadIdentifier = [RCTConvert NSString:details[@"threadId"]];
     if (threadIdentifier){
