@@ -35,6 +35,7 @@ RCT_ENUM_CONVERTER(NSCalendarUnit,
 {
     NSDictionary<NSString *, id> *details = [self NSDictionary:json];
     BOOL isSilent = [RCTConvert BOOL:details[@"isSilent"]];
+    BOOL isTimeZoneAgnostic = [RCTConvert BOOL:details[@"isTimeZoneAgnostic"]];
     UILocalNotification *notification = [UILocalNotification new];
     notification.alertTitle = [RCTConvert NSString:details[@"alertTitle"]];
     notification.fireDate = [RCTConvert NSDate:details[@"fireDate"]] ?: [NSDate date];
@@ -48,6 +49,9 @@ RCT_ENUM_CONVERTER(NSCalendarUnit,
     }
     if (!isSilent) {
         notification.soundName = [RCTConvert NSString:details[@"soundName"]] ?: UILocalNotificationDefaultSoundName;
+    }
+    if (isTimeZoneAgnostic) {
+        notification.timeZone = [NSTimeZone defaultTimeZone];
     }
     return notification;
 }

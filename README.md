@@ -341,6 +341,7 @@ request is an object containing:
 - `isCritical` : If true, the notification sound be played even when the device is locked, muted, or has Do Not Disturb enabled.
 - `criticalSoundVolume` : A number between 0 and 1 for volume of critical notification. Default volume will be used if not specified.
 - `userInfo` : An object containing additional notification data.
+- `isTimeZoneAgnostic` : If true, fireDate adjusted automatically upon time zone changes (e.g. for an alarm clock).
 
 request.repeatsComponent is an object containing (each field is optionnal):
 

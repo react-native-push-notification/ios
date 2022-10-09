@@ -74,6 +74,10 @@ export type NotificationRequest = {|
    * Optional data to be added to the notification
    */
   userInfo?: Object,
+  /**
+   * FireDate adjusted automatically upon time zone changes (e.g. for an alarm clock).
+   */
+  isTimeZoneAgnostic?: boolean,
 |};
 
 /**
