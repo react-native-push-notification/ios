@@ -85,11 +85,20 @@ At the top of the file:
 
 Then, add the 'UNUserNotificationCenterDelegate' to protocols:
 
+
+For RN v0.71 and above
+
+```objective-c
+@interface AppDelegate : RCTAppDelegate <UNUserNotificationCenterDelegate>
+```
+
+For RN v0.70 and below
+
 ```objective-c
 @interface AppDelegate : UIResponder <UIApplicationDelegate, RCTBridgeDelegate, UNUserNotificationCenterDelegate>
 ```
 
-### Update `AppDelegate.m`
+### Update `AppDelegate.m` or `AppDelegate.mm`
 
 At the top of the file:
 
