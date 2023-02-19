@@ -258,7 +258,7 @@ export const App = () => {
 };
 ```
 
-## How to recieve rich notification in remote
+## How to receive rich notification in remote
 
 Follow this [article](https://firebase.google.com/docs/cloud-messaging/ios/send-image) to create rich notification of your own
 
