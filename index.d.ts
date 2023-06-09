@@ -532,6 +532,18 @@ export interface PushNotificationIOSStatic {
    * Used to set specific actions for notifications that contains specified category
    */
   setNotificationCategories(categories: NotificationCategory[]): void;
+
+  /**
+   * Subscribes to the given topic (works only with Firebase).
+   * @param topic the topic
+   */
+  subscribeToTopic(topic: string): void;
+
+  /**
+   * Unsubscribes from the given topic (works only with Firebase).
+   * @param topic the topic
+   */
+  unsubscribeFromTopic(topic: string): void;
 }
 
 declare const PushNotificationIOS: PushNotificationIOSStatic;
