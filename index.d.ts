@@ -544,6 +544,11 @@ export interface PushNotificationIOSStatic {
    * @param topic the topic
    */
   unsubscribeFromTopic(topic: string): void;
+
+  /**
+   * Gets the FCM token for the device (works only with Firebase).
+   */
+  getFCMToken(): Promise<string>;
 }
 
 declare const PushNotificationIOS: PushNotificationIOSStatic;

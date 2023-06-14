@@ -525,6 +525,25 @@ RCT_EXPORT_METHOD(unsubscribeFromTopic: (NSString *)topic
   [[FIRMessaging messaging] unsubscribeFromTopic:topic];
 }
 
+RCT_EXPORT_METHOD(getFCMToken:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    [[FIRMessaging messaging] tokenWithCompletion:^(NSString * _Nullable token, NSError * _Nullable error) {
+        if (error) {
+            // Handle the error, if any
+            NSLog(@"Error retrieving FCM token: %@", error.localizedDescription);
+
+            reject(@"-1", error.localizedDescription, error);
+
+        } else if (token) {
+            // FCM token successfully retrieved
+            resolve(token);
+        } else {
+            // Unable to retrieve FCM token
+            reject(@"-1", @"Error - Get FCM token failed.", error);
+        }
+    }];
+}
+
 #else //TARGET_OS_TV
 
 RCT_EXPORT_METHOD(onFinishRemoteNotification:(NSString *)notificationId fetchResult:(NSString *)fetchResult)

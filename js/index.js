@@ -472,6 +472,13 @@ class PushNotificationIOS {
   }
 
   /**
+   * Gets the FCM token for the device (works only with Firebase).
+   */
+  static getFCMToken(): Promise<string> {
+    return RNCPushNotificationIOS.getFCMToken();
+  }
+
+  /**
    * You will never need to instantiate `PushNotificationIOS` yourself.
    * Listening to the `notification` event and invoking
    * `getInitialNotification` is sufficient
