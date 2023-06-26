@@ -98,6 +98,11 @@ export interface PushNotification {
   getTitle(): string;
 
   /**
+   * Gets the notification's subtitle from the `aps` object
+   */
+  getSubtitle(): string | undefined;
+
+  /**
    * Gets the content-available number from the `aps` object
    */
   getContentAvailable(): number;
