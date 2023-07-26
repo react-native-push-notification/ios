@@ -78,6 +78,11 @@ export type NotificationRequest = {|
    * FireDate adjusted automatically upon time zone changes (e.g. for an alarm clock).
    */
   isTimeZoneAgnostic?: boolean,
+  /**
+   * The interruption level for the notification.
+   * Possible values: 'passive', 'active', 'timeSensitive', 'critical'
+   */
+  interruptionLevel?: 'passive' | 'active' | 'timeSensitive' | 'critical',
 |};
 
 /**
