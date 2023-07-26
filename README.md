@@ -357,8 +357,9 @@ request is an object containing:
 - `criticalSoundVolume` : A number between 0 and 1 for volume of critical notification. Default volume will be used if not specified.
 - `userInfo` : An object containing additional notification data.
 - `isTimeZoneAgnostic` : If true, fireDate adjusted automatically upon time zone changes (e.g. for an alarm clock).
+- `interruptionLevel` (iOS15+): A string specifying the interruption level. Valid values are `'active'`, `'passive'`, `'timeSensitive'`, or `'critical'`
 
-request.repeatsComponent is an object containing (each field is optionnal):
+request.repeatsComponent is an object containing (each field is optional):
 
 - `year`: Will repeat every selected year in your fireDate.
 - `month`: Will repeat every selected month in your fireDate.

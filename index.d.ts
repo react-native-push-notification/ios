@@ -203,6 +203,11 @@ export type NotificationRequest = {
    * Optional data to be added to the notification
    */
   userInfo?: Record<string, any>;
+  /**
+   * The interruption level for the notification.
+   * Possible values: 'passive', 'active', 'timeSensitive', 'critical'
+   */
+  interruptionLevel?: 'passive' | 'active' | 'timeSensitive' | 'critical',
 };
 
 /**
