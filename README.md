@@ -762,6 +762,16 @@ Gets the notification's title from the `aps` object
 
 ---
 
+### `getSubtitle()`
+
+```jsx
+getSubtitle();
+```
+
+Gets the notification's subtitle from the `aps` object
+
+---
+
 ### `getContentAvailable()`
 
 ```jsx
