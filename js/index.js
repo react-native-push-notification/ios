@@ -457,6 +457,28 @@ class PushNotificationIOS {
   }
 
   /**
+   * Subscribes to the given topic (works only with Firebase).
+   */
+  static subscribeToTopic(topic: string) {
+    RNCPushNotificationIOS.subscribeToTopic(topic);
+  }
+
+  /**
+   * Unsubscribes from the given topic (works only with Firebase).
+   * @param topic the topic
+   */
+  static  unsubscribeFromTopic(topic: string) {
+    RNCPushNotificationIOS.unsubscribeFromTopic(topic);
+  }
+
+  /**
+   * Gets the FCM token for the device (works only with Firebase).
+   */
+  static getFCMToken(): Promise<string> {
+    return RNCPushNotificationIOS.getFCMToken();
+  }
+
+  /**
    * You will never need to instantiate `PushNotificationIOS` yourself.
    * Listening to the `notification` event and invoking
    * `getInitialNotification` is sufficient
