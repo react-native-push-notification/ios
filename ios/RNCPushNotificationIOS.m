@@ -10,6 +10,7 @@
 #import <React/RCTBridge.h>
 #import <React/RCTConvert.h>
 #import <React/RCTEventDispatcher.h>
+#import <Firebase/Firebase.h>
 
 NSString *const RCTRemoteNotificationReceived = @"RemoteNotificationReceived";
 
@@ -508,6 +509,20 @@ RCT_EXPORT_METHOD(getDeliveredNotifications:(RCTResponseSenderBlock)callback)
       callback(@[formattedNotifications]);
     }];
   }
+}
+
+RCT_EXPORT_METHOD(subscribeToTopic: (NSString *)topic
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject) {
+    
+  [[FIRMessaging messaging] subscribeToTopic:topic];
+}
+
+RCT_EXPORT_METHOD(unsubscribeFromTopic: (NSString *)topic
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject) {
+    
+  [[FIRMessaging messaging] unsubscribeFromTopic:topic];
 }
 
 #else //TARGET_OS_TV
