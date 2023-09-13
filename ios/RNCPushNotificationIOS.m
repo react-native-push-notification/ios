@@ -446,7 +446,14 @@ RCT_EXPORT_METHOD(getInitialNotification:(RCTPromiseResolveBlock)resolve
       initialNotification[@"remote"] = @YES;
       resolve(initialNotification);
     } else if (initialLocalNotification) {
-      resolve([RCTConvert RCTFormatLocalNotification:initialLocalNotification]);
+      NSMutableDictionary<NSString *, id> *formattedInitialLocalNotification = [[RCTConvert RCTFormatLocalNotification:initialLocalNotification] mutableCopy];
+      if ([formattedInitialLocalNotification objectForKey:@"userInfo"] == nil) {
+        formattedInitialLocalNotification[@"userInfo"] = [NSMutableDictionary dictionary];
+      } else {
+        formattedInitialLocalNotification[@"userInfo"] = [formattedInitialLocalNotification[@"userInfo"] mutableCopy]
+      }
+      formattedInitialLocalNotification[@"userInfo"][@"userInteraction"] = [NSNumber numberWithInt:1];
+      resolve(formattedInitialLocalNotification);
     } else {
       resolve((id)kCFNull);
     }
