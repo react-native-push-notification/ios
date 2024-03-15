@@ -140,6 +140,9 @@ API_AVAILABLE(ios(10.0)) {
   NSString *notificationId = [[NSUUID UUID] UUIDString];
   remoteNotification[@"notificationId"] = notificationId;
   remoteNotification[@"remote"] = @YES;
+  if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateInactive) {
+    remoteNotification[@"userInteraction"] = [NSNumber numberWithInt:1];
+  }
   if (completionHandler) {
     if (!self.remoteNotificationCallbacks) {
       // Lazy initialization
