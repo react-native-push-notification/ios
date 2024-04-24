@@ -209,6 +209,10 @@ export type NotificationRequest = {
    */
   userInfo?: Record<string, any>;
   /**
+   * If true, fireDate adjusted automatically upon time zone changes (e.g. for an alarm clock).
+   */
+  isTimeZoneAgnostic?: boolean;
+  /**
    * The interruption level for the notification.
    * Possible values: 'passive', 'active', 'timeSensitive', 'critical'
    */
