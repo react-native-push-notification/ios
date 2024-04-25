@@ -243,6 +243,26 @@ RCT_EXPORT_METHOD(requestPermissions:(NSDictionary *)permissions
   }];
 }
 
+RCT_EXPORT_METHOD(requestToken:(NSDictionary *)permissions
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+  if (RCTRunningInAppExtension()) {
+    reject(kErrorUnableToRequestPermissions, nil, RCTErrorWithMessage(@"Requesting push notifications is currently unavailable in an app extension"));
+    return;
+  }
+    
+  // Add a listener to make sure that startObserving has been called
+  [self addListener:@"remoteNotificationsRegistered"];
+  
+  dispatch_async(dispatch_get_main_queue(), ^(void){
+    [RCTSharedApplication() registerForRemoteNotifications];
+  });
+  [UNUserNotificationCenter.currentNotificationCenter getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
+    resolve(RCTPromiseResolveValueForUNNotificationSettings(settings));
+  }];
+}
+
 RCT_EXPORT_METHOD(abandonPermissions)
 {
   [RCTSharedApplication() unregisterForRemoteNotifications];

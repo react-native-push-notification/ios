@@ -512,6 +512,12 @@ export interface PushNotificationIOSStatic {
   ): Promise<PushNotificationPermissions>;
 
   /**
+   * Requests the APNS token for the app. This is useful for integrating with
+   * other services, such as Amazon's Simple Notification Service.
+   */
+  requestToken(): Promise<PushNotificationPermissions>;
+
+  /**
    * Unregister for all remote notifications received via Apple Push
    * Notification service.
    * You should call this method in rare circumstances only, such as when

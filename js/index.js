@@ -410,6 +410,27 @@ class PushNotificationIOS {
     return RNCPushNotificationIOS.requestPermissions(requestedPermissions);
   }
 
+    /**
+   * Requests notification permissions from iOS, prompting the user's
+   * dialog box. By default, it will request all notification permissions, but
+   * a subset of these can be requested by passing a map of requested
+   * permissions.
+   *
+   * See https://reactnative.dev/docs/pushnotificationios.html#requestpermissions
+   */
+  static requestToken(): Promise<{
+    alert: boolean,
+    badge: boolean,
+    sound: boolean,
+    critical: boolean,
+  }> {
+    invariant(
+      RNCPushNotificationIOS,
+      'PushNotificationManager is not available.',
+    );
+    return RNCPushNotificationIOS.requestToken({});
+  }
+
   /**
    * Unregister for all remote notifications received via Apple Push Notification service.
    *
