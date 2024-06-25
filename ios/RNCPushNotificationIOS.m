@@ -221,6 +221,10 @@ RCT_EXPORT_METHOD(requestPermissions:(NSDictionary *)permissions
         if ([RCTConvert BOOL:permissions[@"critical"]]) {
             types |= UNAuthorizationOptionCriticalAlert;
         }
+        NSInteger authStatus = [RCTConvert NSInteger:permissions[@"authorizationStatus"]];
+        if (authStatus == UNAuthorizationStatusProvisional) {
+          types |= UNAuthorizationOptionProvisional;
+        }
     }
   } else {
     types = UNAuthorizationOptionAlert | UNAuthorizationOptionBadge | UNAuthorizationOptionSound;
