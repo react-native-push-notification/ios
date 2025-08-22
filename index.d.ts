@@ -128,6 +128,11 @@ export interface PushNotification {
   getUserText(): string | undefined;
 
   /**
+   * Gets the complete notification payload including aps and all custom fields
+   */
+  getFullPayload(): Record<string, any>;
+
+  /**
    * iOS Only
    * Signifies remote notification handling is complete
    */
