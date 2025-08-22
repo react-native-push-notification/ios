@@ -464,6 +464,7 @@ class PushNotificationIOS {
    */
   constructor(nativeNotif: Object) {
     this._data = {};
+    this._fullPayload = nativeNotif; // Store the complete payload
     this._remoteNotificationCompleteCallbackCalled = false;
     this._isRemote = nativeNotif.remote;
     if (this._isRemote) {
@@ -642,6 +643,13 @@ class PushNotificationIOS {
    */
   getUserText(): ?string {
     return this._userText;
+  }
+
+  /**
+   * Gets the complete notification payload including aps and all custom fields
+   */
+  getFullPayload(): ?Object {
+    return this._fullPayload;
   }
 }
 
